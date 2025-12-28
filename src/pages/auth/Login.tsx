@@ -1,178 +1,240 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import toast from 'react-hot-toast'
+import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { Eye, EyeOff, Loader2, GraduationCap, Lock, Mail } from 'lucide-react';
+import authService from '../../services/auth.service';
 
 const Login: React.FC = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
-  })
-  const [isLoading, setIsLoading] = useState(false)
+    rememberMe: false,
+  });
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
-    })
-  }
+      [name]: type === 'checkbox' ? checked : value,
+    });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
+    e.preventDefault();
+    setIsLoading(true);
 
     try {
-      // TODO: Replace with actual API call
-      console.log('Login attempt:', formData)
+      const response = await authService.login({
+        email: formData.email,
+        password: formData.password,
+      });
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      // Save token
+      localStorage.setItem('token', response.token);
+      localStorage.setItem('user', JSON.stringify(response.user));
 
-      // For now, just navigate based on dummy data
-      toast.success('Login successful!')
-      navigate('/admin/dashboard') // Change based on user role
-    } catch {
-      toast.error('Login failed. Please try again.')
+      toast.success('Welcome back!');
+
+      // Navigate based on role
+      const role = response.user.role.toLowerCase();
+      navigate(`/${role}/dashboard`);
+    } catch (error: any) {
+      toast.error(error.message || 'Login failed. Please try again.');
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-primary-100 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        {/* Header */}
-        <div className="text-center">
-          <h2 className="text-4xl font-extrabold text-gray-900">
-            Smart Campus
-          </h2>
-          <p className="mt-2 text-sm text-gray-600">Sign in to your account</p>
-        </div>
+    <div className="min-h-screen flex">
+      {/* Left Side - Login Form */}
+      <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-white">
+        <div className="max-w-md w-full space-y-8">
+          {/* Header */}
+          <div className="text-center">
+            <div className="flex justify-center mb-6">
+              <div className="bg-gradient-to-br from-primary-500 to-primary-700 p-4 rounded-2xl shadow-lg">
+                <GraduationCap className="w-12 h-12 text-white" />
+              </div>
+            </div>
+            <h2 className="text-4xl font-bold text-gray-900 tracking-tight">
+              Welcome Back
+            </h2>
+            <p className="mt-3 text-base text-gray-600">
+              Sign in to access your Smart Campus account
+            </p>
+          </div>
 
-        {/* Form */}
-        <div className="bg-white rounded-2xl shadow-xl p-8">
-          <form className="space-y-6" onSubmit={handleSubmit}>
+          {/* Form */}
+          <form className="mt-10 space-y-6" onSubmit={handleSubmit}>
             {/* Email */}
             <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                Email address
+              <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
+                Email Address
               </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                value={formData.email}
-                onChange={handleChange}
-                className="appearance-none relative block w-full px-4 py-3 border border-gray-300 rounded-lg placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition"
-                placeholder="Enter your email"
-              />
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <Mail className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="block w-full pl-12 pr-4 py-3.5 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-200 text-base"
+                  placeholder="your.email@example.com"
+                />
+              </div>
             </div>
 
             {/* Password */}
             <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
+              <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2">
                 Password
               </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                value={formData.password}
-                onChange={handleChange}
-                className="appearance-none relative block w-full px-4 py-3 border border-gray-300 rounded-lg placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition"
-                placeholder="Enter your password"
-              />
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <Lock className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  id="password"
+                  name="password"
+                  type={showPassword ? 'text' : 'password'}
+                  autoComplete="current-password"
+                  required
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="block w-full pl-12 pr-12 py-3.5 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-200 text-base"
+                  placeholder="Enter your password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 transition"
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-5 w-5" />
+                  ) : (
+                    <Eye className="h-5 w-5" />
+                  )}
+                </button>
+              </div>
             </div>
 
             {/* Remember me & Forgot password */}
             <div className="flex items-center justify-between">
               <div className="flex items-center">
                 <input
-                  id="remember-me"
-                  name="remember-me"
+                  id="rememberMe"
+                  name="rememberMe"
                   type="checkbox"
-                  className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                  checked={formData.rememberMe}
+                  onChange={handleChange}
+                  className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded cursor-pointer"
                 />
-                <label
-                  htmlFor="remember-me"
-                  className="ml-2 block text-sm text-gray-700"
-                >
+                <label htmlFor="rememberMe" className="ml-2 block text-sm text-gray-700 cursor-pointer">
                   Remember me
                 </label>
               </div>
 
-              <div className="text-sm">
-                <a
-                  href="/forgot-password"
-                  className="font-medium text-primary-600 hover:text-primary-500"
-                >
-                  Forgot password?
-                </a>
-              </div>
+              <Link
+                to="/forgot-password"
+                className="text-sm font-medium text-primary-600 hover:text-primary-500 transition"
+              >
+                Forgot password?
+              </Link>
             </div>
 
             {/* Submit button */}
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition"
+              className="w-full flex justify-center items-center py-4 px-4 border border-transparent rounded-xl shadow-lg text-base font-semibold text-white bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition duration-200 transform hover:scale-[1.02]"
             >
               {isLoading ? (
-                <span className="flex items-center">
-                  <svg
-                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
+                <>
+                  <Loader2 className="animate-spin -ml-1 mr-3 h-5 w-5" />
                   Signing in...
-                </span>
+                </>
               ) : (
-                'Sign in'
+                'Sign In'
               )}
             </button>
           </form>
 
           {/* Register link */}
-          <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600">
+          <div className="text-center mt-6">
+            <p className="text-base text-gray-600">
               Don't have an account?{' '}
-              <a
-                href="/register"
-                className="font-medium text-primary-600 hover:text-primary-500"
-              >
-                Register here
-              </a>
+              <Link to="/register" className="font-semibold text-primary-600 hover:text-primary-500 transition">
+                Create one now
+              </Link>
             </p>
+          </div>
+
+          {/* Demo credentials */}
+          <div className="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-xl">
+            <p className="text-xs font-semibold text-gray-700 mb-2">Demo Credentials:</p>
+            <div className="space-y-1 text-xs text-gray-600">
+              <p><span className="font-medium">Admin:</span> admin@campus.com / Admin123</p>
+              <p><span className="font-medium">Student:</span> student@campus.com / Student123</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Right Side - Hero Section */}
+      <div className="hidden lg:flex flex-1 bg-gradient-to-br from-primary-600 via-primary-700 to-primary-900 relative overflow-hidden">
+        {/* Animated background shapes */}
+        <div className="absolute inset-0">
+          <div className="absolute top-20 left-20 w-72 h-72 bg-white opacity-10 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-20 right-20 w-96 h-96 bg-white opacity-10 rounded-full blur-3xl animate-pulse delay-700"></div>
+        </div>
+
+        {/* Content */}
+        <div className="relative z-10 flex flex-col justify-center items-center text-center px-12 w-full">
+          <div className="max-w-lg">
+            <h1 className="text-5xl font-bold text-white mb-6 leading-tight">
+              Smart Campus Management System
+            </h1>
+            <p className="text-xl text-primary-100 mb-8 leading-relaxed">
+              Revolutionizing education with AI-powered insights, seamless management, and intelligent automation.
+            </p>
+            
+            {/* Features */}
+            <div className="grid grid-cols-2 gap-6 mt-12">
+              <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
+                <div className="text-3xl mb-2">🎓</div>
+                <h3 className="text-white font-semibold mb-1">AI Predictions</h3>
+                <p className="text-primary-100 text-sm">Smart analytics for student success</p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
+                <div className="text-3xl mb-2">📊</div>
+                <h3 className="text-white font-semibold mb-1">Real-time Insights</h3>
+                <p className="text-primary-100 text-sm">Live performance tracking</p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
+                <div className="text-3xl mb-2">🤖</div>
+                <h3 className="text-white font-semibold mb-1">Smart Chatbot</h3>
+                <p className="text-primary-100 text-sm">24/7 automated assistance</p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
+                <div className="text-3xl mb-2">⚡</div>
+                <h3 className="text-white font-semibold mb-1">Fast & Secure</h3>
+                <p className="text-primary-100 text-sm">Enterprise-grade security</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;
