@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { API_CONFIG } from '@config/api.config'
+import { API_CONFIG } from '../../config/api.config'
 
 const axiosInstance = axios.create({
   baseURL: API_CONFIG.BASE_URL,
@@ -27,6 +27,7 @@ axiosInstance.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem('token')
+      localStorage.removeItem('user')
       window.location.href = '/login'
     }
     return Promise.reject(error)
