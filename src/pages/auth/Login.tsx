@@ -178,23 +178,6 @@ const Login: React.FC = () => {
               </Link>
             </p>
           </div>
-
-          {/* Demo credentials */}
-          <div className="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-xl">
-            <p className="text-xs font-semibold text-gray-700 mb-2">
-              Demo Credentials:
-            </p>
-            <div className="space-y-1 text-xs text-gray-600">
-              <p>
-                <span className="font-medium">Admin:</span> admin@campus.com /
-                Admin123
-              </p>
-              <p>
-                <span className="font-medium">Student:</span> student@campus.com
-                / Student123
-              </p>
-            </div>
-          </div>
         </div>
       </div>
 
