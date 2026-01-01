@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Eye, EyeOff, Loader2, GraduationCap, Lock, Mail } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
-import AuthDebug from '../../components/common/AuthDebug'
 
 const Login: React.FC = () => {
   const { login } = useAuth() // Use the login method from AuthContext
@@ -256,7 +255,6 @@ const Login: React.FC = () => {
           </div>
         </div>
       </div>
-      <AuthDebug />
     </div>
   )
 }
