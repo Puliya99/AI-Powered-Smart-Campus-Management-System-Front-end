@@ -1,52 +1,41 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import toast from 'react-hot-toast';
-import { Eye, EyeOff, Loader2, GraduationCap, Lock, Mail } from 'lucide-react';
-import authService from '../../services/auth.service';
+import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
+import { Eye, EyeOff, Loader2, GraduationCap, Lock, Mail } from 'lucide-react'
+import { useAuth } from '../../context/AuthContext'
 
 const Login: React.FC = () => {
-  const navigate = useNavigate();
+  const { login } = useAuth() // Use the login method from AuthContext
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     rememberMe: false,
-  });
-  const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  })
+  const [showPassword, setShowPassword] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value, type, checked } = e.target
     setFormData({
       ...formData,
       [name]: type === 'checkbox' ? checked : value,
-    });
-  };
+    })
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
+    e.preventDefault()
+    setIsLoading(true)
 
     try {
-      const response = await authService.login({
-        email: formData.email,
-        password: formData.password,
-      });
-
-      // Save token
-      localStorage.setItem('token', response.token);
-      localStorage.setItem('user', JSON.stringify(response.user));
-
-      toast.success('Welcome back!');
-
-      // Navigate based on role
-      const role = response.user.role.toLowerCase();
-      navigate(`/${role}/dashboard`);
-    } catch (error: any) {
-      toast.error(error.message || 'Login failed. Please try again.');
+      // Use the login method from AuthContext
+      await login(formData.email, formData.password)
+      // Navigation is handled in the AuthContext
+    } catch (error) {
+      // Error toast is shown in AuthContext
+      console.error('Login error:', error)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
     <div className="min-h-screen flex">
@@ -72,7 +61,10 @@ const Login: React.FC = () => {
           <form className="mt-10 space-y-6" onSubmit={handleSubmit}>
             {/* Email */}
             <div>
-              <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
+              <label
+                htmlFor="email"
+                className="block text-sm font-semibold text-gray-700 mb-2"
+              >
                 Email Address
               </label>
               <div className="relative">
@@ -95,7 +87,10 @@ const Login: React.FC = () => {
 
             {/* Password */}
             <div>
-              <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2">
+              <label
+                htmlFor="password"
+                className="block text-sm font-semibold text-gray-700 mb-2"
+              >
                 Password
               </label>
               <div className="relative">
@@ -138,7 +133,10 @@ const Login: React.FC = () => {
                   onChange={handleChange}
                   className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded cursor-pointer"
                 />
-                <label htmlFor="rememberMe" className="ml-2 block text-sm text-gray-700 cursor-pointer">
+                <label
+                  htmlFor="rememberMe"
+                  className="ml-2 block text-sm text-gray-700 cursor-pointer"
+                >
                   Remember me
                 </label>
               </div>
@@ -172,19 +170,13 @@ const Login: React.FC = () => {
           <div className="text-center mt-6">
             <p className="text-base text-gray-600">
               Don't have an account?{' '}
-              <Link to="/register" className="font-semibold text-primary-600 hover:text-primary-500 transition">
+              <Link
+                to="/register"
+                className="font-semibold text-primary-600 hover:text-primary-500 transition"
+              >
                 Create one now
               </Link>
             </p>
-          </div>
-
-          {/* Demo credentials */}
-          <div className="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-xl">
-            <p className="text-xs font-semibold text-gray-700 mb-2">Demo Credentials:</p>
-            <div className="space-y-1 text-xs text-gray-600">
-              <p><span className="font-medium">Admin:</span> admin@campus.com / Admin123</p>
-              <p><span className="font-medium">Student:</span> student@campus.com / Student123</p>
-            </div>
           </div>
         </div>
       </div>
@@ -204,37 +196,50 @@ const Login: React.FC = () => {
               Smart Campus Management System
             </h1>
             <p className="text-xl text-primary-100 mb-8 leading-relaxed">
-              Revolutionizing education with AI-powered insights, seamless management, and intelligent automation.
+              Revolutionizing education with AI-powered insights, seamless
+              management, and intelligent automation.
             </p>
-            
+
             {/* Features */}
             <div className="grid grid-cols-2 gap-6 mt-12">
               <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
                 <div className="text-3xl mb-2">🎓</div>
-                <h3 className="text-white font-semibold mb-1">AI Predictions</h3>
-                <p className="text-primary-100 text-sm">Smart analytics for student success</p>
+                <h3 className="text-white font-semibold mb-1">
+                  AI Predictions
+                </h3>
+                <p className="text-primary-100 text-sm">
+                  Smart analytics for student success
+                </p>
               </div>
               <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
                 <div className="text-3xl mb-2">📊</div>
-                <h3 className="text-white font-semibold mb-1">Real-time Insights</h3>
-                <p className="text-primary-100 text-sm">Live performance tracking</p>
+                <h3 className="text-white font-semibold mb-1">
+                  Real-time Insights
+                </h3>
+                <p className="text-primary-100 text-sm">
+                  Live performance tracking
+                </p>
               </div>
               <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
                 <div className="text-3xl mb-2">🤖</div>
                 <h3 className="text-white font-semibold mb-1">Smart Chatbot</h3>
-                <p className="text-primary-100 text-sm">24/7 automated assistance</p>
+                <p className="text-primary-100 text-sm">
+                  24/7 automated assistance
+                </p>
               </div>
               <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
                 <div className="text-3xl mb-2">⚡</div>
                 <h3 className="text-white font-semibold mb-1">Fast & Secure</h3>
-                <p className="text-primary-100 text-sm">Enterprise-grade security</p>
+                <p className="text-primary-100 text-sm">
+                  Enterprise-grade security
+                </p>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Login;
+export default Login

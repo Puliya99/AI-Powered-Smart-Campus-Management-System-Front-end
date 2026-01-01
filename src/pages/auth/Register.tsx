@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
-import toast from 'react-hot-toast'
+import { Link } from 'react-router-dom'
 import {
   Eye,
   EyeOff,
@@ -10,8 +9,10 @@ import {
   Mail,
   User,
   UserCircle,
+  Phone,
+  CreditCard,
 } from 'lucide-react'
-import authService from '../../services/auth.service'
+import { useAuth } from '../../context/AuthContext'
 
 interface FormData {
   username: string
@@ -21,10 +22,12 @@ interface FormData {
   firstName: string
   lastName: string
   role: string
+  mobileNumber: string
+  nic: string
 }
 
 const Register: React.FC = () => {
-  const navigate = useNavigate()
+  const { register } = useAuth()
   const [formData, setFormData] = useState<FormData>({
     username: '',
     email: '',
@@ -33,6 +36,8 @@ const Register: React.FC = () => {
     firstName: '',
     lastName: '',
     role: 'STUDENT',
+    mobileNumber: '',
+    nic: '',
   })
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
@@ -49,69 +54,58 @@ const Register: React.FC = () => {
   }
 
   const validateForm = () => {
-    if (!formData.username || formData.username.length < 3) {
-      toast.error('Username must be at least 3 characters')
-      return false
+    if (!formData.firstName.trim()) {
+      return { valid: false, message: 'First name is required' }
     }
-
-    if (!formData.email.includes('@')) {
-      toast.error('Please enter a valid email address')
-      return false
+    if (!formData.lastName.trim()) {
+      return { valid: false, message: 'Last name is required' }
     }
-
+    if (!formData.email.trim() || !formData.email.includes('@')) {
+      return { valid: false, message: 'Valid email is required' }
+    }
+    if (!formData.username.trim() || formData.username.length < 3) {
+      return { valid: false, message: 'Username must be at least 3 characters' }
+    }
     if (formData.password.length < 8) {
-      toast.error('Password must be at least 8 characters')
-      return false
+      return { valid: false, message: 'Password must be at least 8 characters' }
     }
-
     if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) {
-      toast.error('Password must contain uppercase, lowercase, and number')
-      return false
+      return { valid: false, message: 'Password must contain uppercase, lowercase, and number' }
     }
-
     if (formData.password !== formData.confirmPassword) {
-      toast.error('Passwords do not match')
-      return false
+      return { valid: false, message: 'Passwords do not match' }
     }
-
-    if (!formData.firstName || !formData.lastName) {
-      toast.error('Please enter your full name')
-      return false
+    if (!formData.mobileNumber.trim()) {
+      return { valid: false, message: 'Mobile number is required' }
     }
-
-    return true
+    if (formData.mobileNumber.length < 10) {
+      return { valid: false, message: 'Mobile number must be at least 10 digits' }
+    }
+    if (!formData.nic.trim()) {
+      return { valid: false, message: 'NIC is required' }
+    }
+    if (formData.nic.length < 9) {
+      return { valid: false, message: 'NIC must be at least 9 characters' }
+    }
+    return { valid: true }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!validateForm()) {
+    const validation = validateForm()
+    if (!validation.valid) {
+      // Error will be shown by AuthContext
       return
     }
 
     setIsLoading(true)
 
     try {
-      const response = await authService.register({
-        username: formData.username,
-        email: formData.email,
-        password: formData.password,
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        role: formData.role,
-      })
-
-      // Save token and user
-      localStorage.setItem('token', response.token)
-      localStorage.setItem('user', JSON.stringify(response.user))
-
-      toast.success('Account created successfully!')
-
-      // Navigate based on role
-      const role = response.user.role.toLowerCase()
-      navigate(`/${role}/dashboard`)
-    } catch (error: any) {
-      toast.error(error.message || 'Registration failed. Please try again.')
+      await register(formData)
+      // Navigation handled by AuthContext
+    } catch (error) {
+      // Error handled by AuthContext
     } finally {
       setIsLoading(false)
     }
@@ -145,7 +139,7 @@ const Register: React.FC = () => {
                 htmlFor="role"
                 className="block text-sm font-semibold text-gray-700 mb-2"
               >
-                I am a
+                I am a <span className="text-red-500">*</span>
               </label>
               <select
                 id="role"
@@ -163,43 +157,29 @@ const Register: React.FC = () => {
             {/* Name Fields */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label
-                  htmlFor="firstName"
-                  className="block text-sm font-semibold text-gray-700 mb-2"
-                >
-                  First Name
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <User className="h-5 w-5 text-gray-400" />
-                  </div>
-                  <input
-                    id="firstName"
-                    name="firstName"
-                    type="text"
-                    required
-                    value={formData.firstName}
-                    onChange={handleChange}
-                    className="block w-full pl-12 pr-4 py-3.5 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-200 text-base"
-                    placeholder="John"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label
-                  htmlFor="lastName"
-                  className="block text-sm font-semibold text-gray-700 mb-2"
-                >
-                  Last Name
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  First Name <span className="text-red-500">*</span>
                 </label>
                 <input
-                  id="lastName"
-                  name="lastName"
                   type="text"
+                  name="firstName"
+                  value={formData.firstName}
+                  onChange={handleChange}
                   required
+                  className="block w-full px-4 py-3.5 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-200 text-base"
+                  placeholder="John"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Last Name <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="lastName"
                   value={formData.lastName}
                   onChange={handleChange}
+                  required
                   className="block w-full px-4 py-3.5 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-200 text-base"
                   placeholder="Doe"
                 />
@@ -208,23 +188,19 @@ const Register: React.FC = () => {
 
             {/* Username */}
             <div>
-              <label
-                htmlFor="username"
-                className="block text-sm font-semibold text-gray-700 mb-2"
-              >
-                Username
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Username <span className="text-red-500">*</span>
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                   <UserCircle className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
-                  id="username"
-                  name="username"
                   type="text"
-                  required
+                  name="username"
                   value={formData.username}
                   onChange={handleChange}
+                  required
                   className="block w-full pl-12 pr-4 py-3.5 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-200 text-base"
                   placeholder="johndoe"
                 />
@@ -233,50 +209,84 @@ const Register: React.FC = () => {
 
             {/* Email */}
             <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-semibold text-gray-700 mb-2"
-              >
-                Email Address
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Email Address <span className="text-red-500">*</span>
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                   <Mail className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
-                  id="email"
-                  name="email"
                   type="email"
+                  name="email"
                   autoComplete="email"
-                  required
                   value={formData.email}
                   onChange={handleChange}
+                  required
                   className="block w-full pl-12 pr-4 py-3.5 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-200 text-base"
                   placeholder="john.doe@example.com"
                 />
               </div>
             </div>
 
+            {/* Mobile Number */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Mobile Number <span className="text-red-500">*</span>
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <Phone className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  type="tel"
+                  name="mobileNumber"
+                  value={formData.mobileNumber}
+                  onChange={handleChange}
+                  required
+                  className="block w-full pl-12 pr-4 py-3.5 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-200 text-base"
+                  placeholder="0771234567"
+                />
+              </div>
+            </div>
+
+            {/* NIC */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                NIC Number <span className="text-red-500">*</span>
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <CreditCard className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  type="text"
+                  name="nic"
+                  value={formData.nic}
+                  onChange={handleChange}
+                  required
+                  className="block w-full pl-12 pr-4 py-3.5 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-200 text-base"
+                  placeholder="123456789V or 200012345678"
+                />
+              </div>
+            </div>
+
             {/* Password */}
             <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-semibold text-gray-700 mb-2"
-              >
-                Password
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Password <span className="text-red-500">*</span>
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                   <Lock className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
-                  id="password"
-                  name="password"
                   type={showPassword ? 'text' : 'password'}
+                  name="password"
                   autoComplete="new-password"
-                  required
                   value={formData.password}
                   onChange={handleChange}
+                  required
                   className="block w-full pl-12 pr-12 py-3.5 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-200 text-base"
                   placeholder="Create a strong password"
                 />
@@ -296,24 +306,20 @@ const Register: React.FC = () => {
 
             {/* Confirm Password */}
             <div>
-              <label
-                htmlFor="confirmPassword"
-                className="block text-sm font-semibold text-gray-700 mb-2"
-              >
-                Confirm Password
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Confirm Password <span className="text-red-500">*</span>
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                   <Lock className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
-                  id="confirmPassword"
-                  name="confirmPassword"
                   type={showConfirmPassword ? 'text' : 'password'}
+                  name="confirmPassword"
                   autoComplete="new-password"
-                  required
                   value={formData.confirmPassword}
                   onChange={handleChange}
+                  required
                   className="block w-full pl-12 pr-12 py-3.5 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-200 text-base"
                   placeholder="Confirm your password"
                 />
@@ -384,9 +390,8 @@ const Register: React.FC = () => {
         </div>
       </div>
 
-      {/* Right Side - Hero Section */}
+      {/* Right Side - Hero Section (same as login) */}
       <div className="hidden lg:flex flex-1 bg-gradient-to-br from-primary-600 via-primary-700 to-primary-900 relative overflow-hidden">
-        {/* Animated background shapes */}
         <div className="absolute inset-0">
           <div className="absolute top-20 left-20 w-72 h-72 bg-white opacity-10 rounded-full blur-3xl animate-pulse"></div>
           <div
@@ -394,8 +399,6 @@ const Register: React.FC = () => {
             style={{ animationDelay: '700ms' }}
           ></div>
         </div>
-
-        {/* Content */}
         <div className="relative z-10 flex flex-col justify-center items-center text-center px-12 w-full">
           <div className="max-w-lg">
             <h1 className="text-5xl font-bold text-white mb-6 leading-tight">
@@ -405,8 +408,6 @@ const Register: React.FC = () => {
               Experience cutting-edge education technology with AI-powered
               insights, real-time analytics, and seamless campus management.
             </p>
-
-            {/* Benefits */}
             <div className="space-y-4 mt-12">
               <div className="flex items-center bg-white/10 backdrop-blur-lg rounded-xl p-4 border border-white/20">
                 <div className="flex-shrink-0 w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mr-4">
@@ -419,7 +420,6 @@ const Register: React.FC = () => {
                   </p>
                 </div>
               </div>
-
               <div className="flex items-center bg-white/10 backdrop-blur-lg rounded-xl p-4 border border-white/20">
                 <div className="flex-shrink-0 w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mr-4">
                   <span className="text-2xl">🔒</span>
@@ -431,7 +431,6 @@ const Register: React.FC = () => {
                   </p>
                 </div>
               </div>
-
               <div className="flex items-center bg-white/10 backdrop-blur-lg rounded-xl p-4 border border-white/20">
                 <div className="flex-shrink-0 w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mr-4">
                   <span className="text-2xl">🎓</span>

@@ -59,7 +59,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
         if (storedToken && storedUser) {
           setToken(storedToken)
-          setUser(JSON.parse(storedUser))
+          const parsedUser = JSON.parse(storedUser)
+          setUser(parsedUser)
 
           // Optionally verify token with backend
           try {
@@ -68,6 +69,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             localStorage.setItem('user', JSON.stringify(currentUser))
           } catch (error) {
             // Token might be expired, clear auth
+            console.error('Token verification failed:', error)
             logout()
           }
         }
@@ -84,11 +86,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = async (email: string, password: string) => {
     try {
+      console.log('Starting login process...')
       const response = await authService.login({ email, password })
 
+      console.log('Login response:', response)
+
+      // Set user and token
       setUser(response.user)
       setToken(response.token)
 
+      // Store in localStorage
       localStorage.setItem('token', response.token)
       localStorage.setItem('user', JSON.stringify(response.user))
 
@@ -96,8 +103,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       // Navigate based on role
       const role = response.user.role.toLowerCase()
-      navigate(`/${role}/dashboard`)
+      console.log('Navigating to:', `/${role}/dashboard`)
+
+      // Use setTimeout to ensure state is updated before navigation
+      setTimeout(() => {
+        navigate(`/${role}/dashboard`)
+      }, 100)
     } catch (error: any) {
+      console.error('Login error:', error)
       toast.error(error.message || 'Login failed')
       throw error
     }
@@ -106,18 +119,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const register = async (data: any) => {
     try {
       const response = await authService.register(data)
-
       setUser(response.user)
       setToken(response.token)
-
       localStorage.setItem('token', response.token)
       localStorage.setItem('user', JSON.stringify(response.user))
-
       toast.success('Account created successfully!')
 
       // Navigate based on role
       const role = response.user.role.toLowerCase()
-      navigate(`/${role}/dashboard`)
+      setTimeout(() => {
+        navigate(`/${role}/dashboard`)
+      }, 100)
     } catch (error: any) {
       toast.error(error.message || 'Registration failed')
       throw error
@@ -157,3 +169,5 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
+
+export default AuthContext

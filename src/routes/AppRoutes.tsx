@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import ProtectedRoute from './ProtectedRoute'
 import PublicRoute from './PublicRoute'
 
+
 // Lazy load pages for better performance
 const Login = React.lazy(() => import('../pages/auth/Login'))
 const Register = React.lazy(() => import('../pages/auth/Register'))
@@ -10,8 +11,10 @@ const ForgotPassword = React.lazy(() => import('../pages/auth/ForgotPassword'))
 const ResetPassword = React.lazy(() => import('../pages/auth/ResetPassword'))
 const NotFound = React.lazy(() => import('../pages/NotFound'))
 
+
 // Admin pages
 const AdminDashboard = React.lazy(() => import('../pages/admin/AdminDashboard'))
+const StudentsPage = React.lazy(() => import('../pages/admin/StudentsPage'))
 
 // Student pages
 const StudentDashboard = React.lazy(
