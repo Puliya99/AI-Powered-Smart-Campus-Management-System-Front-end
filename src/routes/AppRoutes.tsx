@@ -1,13 +1,23 @@
 import React from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
+import ProtectedRoute from './ProtectedRoute'
+import PublicRoute from './PublicRoute'
+
 
 // Lazy load pages for better performance
 const Login = React.lazy(() => import('../pages/auth/Login'))
 const Register = React.lazy(() => import('../pages/auth/Register'))
+const ForgotPassword = React.lazy(() => import('../pages/auth/ForgotPassword'))
+const ResetPassword = React.lazy(() => import('../pages/auth/ResetPassword'))
 const NotFound = React.lazy(() => import('../pages/NotFound'))
+
 
 // Admin pages
 const AdminDashboard = React.lazy(() => import('../pages/admin/AdminDashboard'))
+const StudentsPage = React.lazy(() => import('../pages/admin/StudentsPage'))
+const ProgramsPage = React.lazy(() => import('../pages/admin/ProgramsPage'))
+const ModulesPage = React.lazy(() => import('../pages/admin/ModulesPage'))
+const LecturerPage = React.lazy(() => import('../pages/admin/LecturerPage'))
 
 // Student pages
 const StudentDashboard = React.lazy(
@@ -35,39 +45,161 @@ const AppRoutes: React.FC = () => {
       }
     >
       <Routes>
-        {/* Public Routes */}
-        <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        {/* Public Routes - Redirect to dashboard if logged in */}
+        <Route
+          path="/"
+          element={
+            <PublicRoute>
+              <Navigate to="/login" replace />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <PublicRoute>
+              <Login />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <PublicRoute>
+              <Register />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/forgot-password"
+          element={
+            <PublicRoute>
+              <ForgotPassword />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/reset-password/:token"
+          element={
+            <PublicRoute>
+              <ResetPassword />
+            </PublicRoute>
+          }
+        />
 
-        {/* Admin Routes */}
+        {/* Admin Routes - Only accessible by ADMIN */}
         <Route path="/admin">
-          <Route index element={<Navigate to="/admin/dashboard" replace />} />
-          <Route path="dashboard" element={<AdminDashboard />} />
+          <Route
+            index
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN']}>
+                <Navigate to="/admin/dashboard" replace />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="dashboard"
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN']}>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="students"
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN']}>
+                <StudentsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="programs"
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN']}>
+                <ProgramsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="modules"
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN']}>
+                <ModulesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="lecturers"
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN']}>
+                <LecturerPage />
+              </ProtectedRoute>
+            }
+          />
           {/* Add more admin routes */}
         </Route>
 
-        {/* Student Routes */}
+        {/* Student Routes - Only accessible by STUDENT */}
         <Route path="/student">
-          <Route index element={<Navigate to="/student/dashboard" replace />} />
-          <Route path="dashboard" element={<StudentDashboard />} />
+          <Route
+            index
+            element={
+              <ProtectedRoute allowedRoles={['STUDENT']}>
+                <Navigate to="/student/dashboard" replace />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="dashboard"
+            element={
+              <ProtectedRoute allowedRoles={['STUDENT']}>
+                <StudentDashboard />
+              </ProtectedRoute>
+            }
+          />
           {/* Add more student routes */}
         </Route>
 
-        {/* Lecturer Routes */}
+        {/* Lecturer Routes - Only accessible by LECTURER */}
         <Route path="/lecturer">
           <Route
             index
-            element={<Navigate to="/lecturer/dashboard" replace />}
+            element={
+              <ProtectedRoute allowedRoles={['LECTURER']}>
+                <Navigate to="/lecturer/dashboard" replace />
+              </ProtectedRoute>
+            }
           />
-          <Route path="dashboard" element={<LecturerDashboard />} />
+          <Route
+            path="dashboard"
+            element={
+              <ProtectedRoute allowedRoles={['LECTURER']}>
+                <LecturerDashboard />
+              </ProtectedRoute>
+            }
+          />
           {/* Add more lecturer routes */}
         </Route>
 
-        {/* Staff Routes */}
-        <Route path="/staff">
-          <Route index element={<Navigate to="/staff/dashboard" replace />} />
-          <Route path="dashboard" element={<StaffDashboard />} />
+        {/* Staff Routes - Only accessible by USER (staff) */}
+        <Route path="/user">
+          <Route
+            index
+            element={
+              <ProtectedRoute allowedRoles={['USER']}>
+                <Navigate to="/user/dashboard" replace />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="dashboard"
+            element={
+              <ProtectedRoute allowedRoles={['USER']}>
+                <StaffDashboard />
+              </ProtectedRoute>
+            }
+          />
           {/* Add more staff routes */}
         </Route>
 
