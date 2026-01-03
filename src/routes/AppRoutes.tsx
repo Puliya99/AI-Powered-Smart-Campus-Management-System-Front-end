@@ -15,6 +15,9 @@ const NotFound = React.lazy(() => import('../pages/NotFound'))
 // Admin pages
 const AdminDashboard = React.lazy(() => import('../pages/admin/AdminDashboard'))
 const StudentsPage = React.lazy(() => import('../pages/admin/StudentsPage'))
+const ProgramsPage = React.lazy(() => import('../pages/admin/ProgramsPage'))
+const ModulesPage = React.lazy(() => import('../pages/admin/ModulesPage'))
+const LecturerPage = React.lazy(() => import('../pages/admin/LecturerPage'))
 
 // Student pages
 const StudentDashboard = React.lazy(
@@ -99,6 +102,38 @@ const AppRoutes: React.FC = () => {
             element={
               <ProtectedRoute allowedRoles={['ADMIN']}>
                 <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="students"
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN']}>
+                <StudentsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="programs"
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN']}>
+                <ProgramsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="modules"
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN']}>
+                <ModulesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="lecturers"
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN']}>
+                <LecturerPage />
               </ProtectedRoute>
             }
           />
