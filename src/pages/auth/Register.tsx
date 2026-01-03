@@ -35,7 +35,7 @@ const Register: React.FC = () => {
     confirmPassword: '',
     firstName: '',
     lastName: '',
-    role: 'STUDENT',
+    role: 'ADMIN',
     mobileNumber: '',
     nic: '',
   })
@@ -148,9 +148,7 @@ const Register: React.FC = () => {
                 onChange={handleChange}
                 className="block w-full px-4 py-3.5 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-200 text-base bg-white cursor-pointer"
               >
-                <option value="STUDENT">Student</option>
-                <option value="LECTURER">Lecturer</option>
-                <option value="USER">Staff Member</option>
+                <option value="ADMIN">Admin</option>
               </select>
             </div>
 

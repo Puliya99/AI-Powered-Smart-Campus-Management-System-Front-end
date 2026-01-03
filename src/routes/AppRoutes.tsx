@@ -14,10 +14,11 @@ const NotFound = React.lazy(() => import('../pages/NotFound'))
 
 // Admin pages
 const AdminDashboard = React.lazy(() => import('../pages/admin/AdminDashboard'))
-const StudentsPage = React.lazy(() => import('../pages/admin/StudentsPage'))
+const StudentsPage = React.lazy(() => import('../pages/admin/StudentPage'))
 const ProgramsPage = React.lazy(() => import('../pages/admin/ProgramsPage'))
-const ModulesPage = React.lazy(() => import('../pages/admin/ModulesPage'))
+const ModulesPage = React.lazy(() => import('../pages/admin/ModulePage'))
 const LecturerPage = React.lazy(() => import('../pages/admin/LecturerPage'))
+const BatchPage = React.lazy(() => import('../pages/admin/BatchPage'))
 
 // Student pages
 const StudentDashboard = React.lazy(
@@ -134,6 +135,14 @@ const AppRoutes: React.FC = () => {
             element={
               <ProtectedRoute allowedRoles={['ADMIN']}>
                 <LecturerPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="batches"
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN']}>
+                <BatchPage />
               </ProtectedRoute>
             }
           />
