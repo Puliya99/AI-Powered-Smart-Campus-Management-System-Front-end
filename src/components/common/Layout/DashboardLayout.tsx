@@ -22,6 +22,7 @@ import {
   Award,
   CreditCard,
   MessageSquare,
+  Building2,
 } from 'lucide-react'
 
 interface DashboardLayoutProps {
@@ -52,6 +53,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         { name: 'Programs', href: '/admin/programs', icon: BookOpen },
         { name: 'Modules', href: '/admin/modules', icon: FileText },
         { name: 'Batches', href: '/admin/batches', icon: Users },
+        { name: 'Centers', href: '/admin/centers', icon: Building2 },
         { name: 'Schedule', href: '/admin/schedule', icon: Calendar },
         { name: 'Attendance', href: '/admin/attendance', icon: ClipboardList },
         { name: 'Payments', href: '/admin/payments', icon: DollarSign },
