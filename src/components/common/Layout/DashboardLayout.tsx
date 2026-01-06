@@ -18,7 +18,6 @@ import {
   Bell,
   Search,
   ChevronDown,
-  Home,
   Award,
   CreditCard,
   MessageSquare,
@@ -85,6 +84,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
           href: '/lecturer/dashboard',
           icon: LayoutDashboard,
         },
+        { name: 'My Profile', href: '/lecturer/profile', icon: UserCircle },
         { name: 'My Classes', href: '/lecturer/classes', icon: BookOpen },
         { name: 'Schedule', href: '/lecturer/schedule', icon: Calendar },
         {
@@ -99,10 +99,12 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       ],
       user: [
         { name: 'Dashboard', href: '/user/dashboard', icon: LayoutDashboard },
+        { name: 'My Profile', href: '/user/profile', icon: UserCircle },
         { name: 'Students', href: '/user/students', icon: Users },
         { name: 'Enrollment', href: '/user/enrollment', icon: ClipboardList },
         { name: 'Documents', href: '/user/documents', icon: FileText },
         { name: 'Reports', href: '/user/reports', icon: FileText },
+        { name: 'Settings', href: '/user/settings', icon: Settings },
       ],
     }
 
