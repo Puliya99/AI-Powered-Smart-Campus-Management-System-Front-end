@@ -23,6 +23,7 @@ const SchedulePage = React.lazy(() => import('../pages/admin/SchedulesPage'))
 const CentersPage = React.lazy(() => import('../pages/admin/CentersPage'))
 const ReportsPage = React.lazy(() => import('../pages/admin/ReportsPage'))
 const SettingsPage = React.lazy(() => import('../pages/admin/SettingsPage'))
+const ProfilePage = React.lazy(() => import('../pages/common/ProfilePage'))
 
 // Student pages
 const StudentDashboard = React.lazy(
@@ -202,6 +203,14 @@ const AppRoutes: React.FC = () => {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="profile"
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN']}>
+                <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
           {/* Add more admin routes */}
         </Route>
 
@@ -228,6 +237,14 @@ const AppRoutes: React.FC = () => {
             element={
               <ProtectedRoute allowedRoles={['STUDENT']}>
                 <PaymentsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="profile"
+            element={
+              <ProtectedRoute allowedRoles={['STUDENT']}>
+                <ProfilePage />
               </ProtectedRoute>
             }
           />
@@ -260,6 +277,14 @@ const AppRoutes: React.FC = () => {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="profile"
+            element={
+              <ProtectedRoute allowedRoles={['LECTURER']}>
+                <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
           {/* Add more lecturer routes */}
         </Route>
 
@@ -286,6 +311,22 @@ const AppRoutes: React.FC = () => {
             element={
               <ProtectedRoute allowedRoles={['USER']}>
                 <ReportsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="profile"
+            element={
+              <ProtectedRoute allowedRoles={['USER']}>
+                <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="settings"
+            element={
+              <ProtectedRoute allowedRoles={['USER']}>
+                <SettingsPage />
               </ProtectedRoute>
             }
           />

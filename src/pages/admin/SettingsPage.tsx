@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Settings, Save, Loader2, RefreshCw, Trash2, Plus } from 'lucide-react';
+import { Settings, Save, Loader2, RefreshCw } from 'lucide-react';
 import DashboardLayout from '../../components/common/Layout/DashboardLayout';
 import settingService, { Setting } from '../../services/setting.service';
+import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 
 const SettingsPage: React.FC = () => {
@@ -9,6 +10,8 @@ const SettingsPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [activeTab, setActiveTab] = useState('general');
+
+  const { user } = useAuth();
 
   useEffect(() => {
     fetchSettings();
@@ -31,6 +34,23 @@ const SettingsPage: React.FC = () => {
     setSettings(prev => prev.map(s => s.key === key ? { ...s, value } : s));
   };
 
+  const handleJsonValueChange = (key: string, role: string, checked: boolean) => {
+    setSettings(prev => prev.map(s => {
+      if (s.key === key) {
+        try {
+          const currentVal = JSON.parse(s.value);
+          currentVal[role] = checked;
+          return { ...s, value: JSON.stringify(currentVal) };
+        } catch (e) {
+          // If not valid JSON, initialize it
+          const newVal = { [role]: checked };
+          return { ...s, value: JSON.stringify(newVal) };
+        }
+      }
+      return s;
+    }));
+  };
+
   const handleSave = async (group: string) => {
     try {
       setSaving(true);
@@ -47,7 +67,11 @@ const SettingsPage: React.FC = () => {
     }
   };
 
-  const groups = Array.from(new Set(settings.map(s => s.group || 'general')));
+  const groups = Array.from(new Set(settings.map(s => s.group || 'general')))
+    .filter(group => {
+      if (group === 'user_permission' && user?.role !== 'ADMIN') return false;
+      return true;
+    });
   if (groups.length === 0 && !loading) groups.push('general');
   
   // If activeTab is not in groups and we have groups, set it to the first group
@@ -91,7 +115,7 @@ const SettingsPage: React.FC = () => {
                       : 'text-gray-500 hover:text-gray-700'
                   }`}
                 >
-                  {group.charAt(0).toUpperCase() + group.slice(1)}
+                  {group.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
                 </button>
               ))}
             </div>
@@ -116,6 +140,31 @@ const SettingsPage: React.FC = () => {
                           <option value="true">Enabled</option>
                           <option value="false">Disabled</option>
                         </select>
+                      ) : setting.type === 'json' ? (
+                        <div className="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                          {['ADMIN', 'USER', 'LECTURER', 'STUDENT'].map(role => {
+                            let isChecked = false;
+                            try {
+                              const jsonVal = JSON.parse(setting.value);
+                              isChecked = !!jsonVal[role];
+                            } catch (e) {}
+                            
+                            return (
+                              <div key={role} className="flex items-center space-x-3">
+                                <input
+                                  type="checkbox"
+                                  id={`${setting.key}-${role}`}
+                                  checked={isChecked}
+                                  onChange={(e) => handleJsonValueChange(setting.key, role, e.target.checked)}
+                                  className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                                />
+                                <label htmlFor={`${setting.key}-${role}`} className="text-sm font-medium text-gray-700">
+                                  {role.charAt(0) + role.slice(1).toLowerCase()}
+                                </label>
+                              </div>
+                            );
+                          })}
+                        </div>
                       ) : setting.type === 'text' || setting.type === 'number' ? (
                         <input
                           type={setting.type}
