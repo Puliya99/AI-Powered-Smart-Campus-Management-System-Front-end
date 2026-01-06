@@ -21,6 +21,7 @@ const LecturerPage = React.lazy(() => import('../pages/admin/LecturerPage'))
 const BatchPage = React.lazy(() => import('../pages/admin/BatchPage'))
 const SchedulePage = React.lazy(() => import('../pages/admin/SchedulesPage'))
 const CentersPage = React.lazy(() => import('../pages/admin/CentersPage'))
+const ReportsPage = React.lazy(() => import('../pages/admin/ReportsPage'))
 
 // Student pages
 const StudentDashboard = React.lazy(
@@ -163,7 +164,7 @@ const AppRoutes: React.FC = () => {
           <Route
             path="attendance"
             element={
-              <ProtectedRoute allowedRoles={['ADMIN','LECTURER']}>
+              <ProtectedRoute allowedRoles={['ADMIN']}>
                 <AttendancePage />
               </ProtectedRoute>
             }
@@ -179,8 +180,16 @@ const AppRoutes: React.FC = () => {
           <Route
             path="payments"
             element={
-              <ProtectedRoute allowedRoles={['ADMIN', 'STUDENT']}>
+              <ProtectedRoute allowedRoles={['ADMIN']}>
                 <PaymentsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="reports"
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN']}>
+                <ReportsPage />
               </ProtectedRoute>
             }
           />
@@ -205,6 +214,14 @@ const AppRoutes: React.FC = () => {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="payments"
+            element={
+              <ProtectedRoute allowedRoles={['STUDENT']}>
+                <PaymentsPage />
+              </ProtectedRoute>
+            }
+          />
           {/* Add more student routes */}
         </Route>
 
@@ -226,6 +243,14 @@ const AppRoutes: React.FC = () => {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="attendance"
+            element={
+              <ProtectedRoute allowedRoles={['LECTURER']}>
+                <AttendancePage />
+              </ProtectedRoute>
+            }
+          />
           {/* Add more lecturer routes */}
         </Route>
 
@@ -244,6 +269,14 @@ const AppRoutes: React.FC = () => {
             element={
               <ProtectedRoute allowedRoles={['USER']}>
                 <StaffDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="reports"
+            element={
+              <ProtectedRoute allowedRoles={['USER']}>
+                <ReportsPage />
               </ProtectedRoute>
             }
           />
