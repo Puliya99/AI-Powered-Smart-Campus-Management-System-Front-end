@@ -1,20 +1,26 @@
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-import { getStorage } from "firebase/storage";
+import { initializeApp, type FirebaseOptions } from 'firebase/app'
+import { getAnalytics } from 'firebase/analytics'
+import { getStorage } from 'firebase/storage'
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBYg58nMjuVv0FetDBtKifl5-7DtM4Z53k",
-  authDomain: "ai-smart-campus-management.firebaseapp.com",
-  projectId: "ai-smart-campus-management",
-  storageBucket: "ai-smart-campus-management.firebasestorage.app",
-  messagingSenderId: "593398594428",
-  appId: "1:593398594428:web:754a3289996e92d3b0c2f9",
-  measurementId: "G-42K08PXCX0"
-};
+const firebaseConfig: FirebaseOptions = {
+  apiKey: import.meta.env.VITE_apiKey,
+  authDomain: import.meta.env.VITE_authDomain,
+  projectId: import.meta.env.VITE_projectId,
+  storageBucket: import.meta.env.VITE_storageBucket,
+  messagingSenderId: import.meta.env.VITE_messagingSenderId,
+  appId: import.meta.env.VITE_appId,
+  measurementId: import.meta.env.VITE_measurementId,
+}
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = typeof window !== 'undefined' ? getAnalytics(app) : null;
-export const storage = getStorage(app);
+const app = initializeApp(firebaseConfig)
+const enableAnalytics = import.meta.env.VITE_ENABLE_ANALYTICS === 'true'
+const analytics =
+  typeof window !== 'undefined' &&
+  enableAnalytics &&
+  firebaseConfig.measurementId
+    ? getAnalytics(app)
+    : null
+export const storage = getStorage(app)
 
-export default app;
+export default app
