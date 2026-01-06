@@ -80,6 +80,43 @@ class AuthService {
     }
   }
 
+  // Update Profile
+  async updateProfile(data: any): Promise<any> {
+    try {
+      const response = await axiosInstance.put('/auth/profile', data);
+      
+      if (response.data.status === 'success') {
+        const user = response.data.data.user;
+        // Update stored user data
+        localStorage.setItem('user', JSON.stringify(user));
+        return user;
+      }
+      
+      throw new Error(response.data.message || 'Profile update failed');
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message || error.message || 'Profile update failed'
+      );
+    }
+  }
+
+  // Change Password
+  async changePassword(data: any): Promise<any> {
+    try {
+      const response = await axiosInstance.post('/auth/change-password', data);
+      
+      if (response.data.status === 'success') {
+        return response.data;
+      }
+      
+      throw new Error(response.data.message || 'Password change failed');
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message || error.message || 'Password change failed'
+      );
+    }
+  }
+
   // Logout
   async logout(): Promise<void> {
     try {
