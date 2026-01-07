@@ -49,6 +49,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
         { name: 'Students', href: '/admin/students', icon: Users },
         { name: 'Lecturers', href: '/admin/lecturers', icon: UserCircle },
+        { name: 'Users', href: '/admin/users', icon: Users },
         { name: 'Centers', href: '/admin/centers', icon: Building2 },
         { name: 'Programs', href: '/admin/programs', icon: BookOpen },
         { name: 'Modules', href: '/admin/modules', icon: FileText },
@@ -105,6 +106,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         { name: 'Documents', href: '/user/documents', icon: FileText },
         { name: 'Reports', href: '/user/reports', icon: FileText },
         { name: 'Settings', href: '/user/settings', icon: Settings },
+        { name: 'Users', href: '/user/users', icon: Users },
       ],
     }
 
