@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 import DashboardLayout from '../../components/common/Layout/DashboardLayout'
 import ProgramModal from '../../components/admin/Programs/ProgramModal'
+import ProgramViewModal from '../../components/admin/Programs/ProgramViewModal'
 import axiosInstance from '../../services/api/axios.config'
 import toast from 'react-hot-toast'
 
@@ -34,9 +35,12 @@ const ProgramsPage: React.FC = () => {
   const [programs, setPrograms] = useState<Program[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
+  const [selectedCenter, setSelectedCenter] = useState('')
+  const [centers, setCenters] = useState<any[]>([])
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [showAddModal, setShowAddModal] = useState(false)
+  const [showViewModal, setShowViewModal] = useState(false)
   const [selectedProgram, setSelectedProgram] = useState<Program | null>(null)
   const [stats, setStats] = useState({
     totalPrograms: 0,
@@ -48,7 +52,20 @@ const ProgramsPage: React.FC = () => {
   useEffect(() => {
     fetchPrograms()
     fetchStats()
-  }, [currentPage, searchTerm])
+  }, [currentPage, searchTerm, selectedCenter])
+
+  useEffect(() => {
+    fetchCenters()
+  }, [])
+
+  const fetchCenters = async () => {
+    try {
+      const response = await axiosInstance.get('/centers')
+      setCenters(response.data.data.centers || [])
+    } catch (error) {
+      console.error('Failed to fetch centers:', error)
+    }
+  }
 
   const fetchPrograms = async () => {
     try {
@@ -57,6 +74,7 @@ const ProgramsPage: React.FC = () => {
         page: currentPage.toString(),
         limit: '10',
         ...(searchTerm && { search: searchTerm }),
+        ...(selectedCenter && { centerId: selectedCenter }),
       })
 
       const response = await axiosInstance.get(`/programs?${params}`)
@@ -100,8 +118,8 @@ const ProgramsPage: React.FC = () => {
   }
 
   const handleViewDetails = (program: Program) => {
-    // Navigate to program details page
-    window.location.href = `/admin/programs/${program.id}`
+    setSelectedProgram(program)
+    setShowViewModal(true)
   }
 
   const formatCurrency = (amount: number) => {
@@ -175,9 +193,9 @@ const ProgramsPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Search Bar */}
-        <div className="bg-white p-4 rounded-lg shadow">
-          <div className="relative">
+        {/* Search and Filter */}
+        <div className="bg-white p-4 rounded-lg shadow flex flex-col md:flex-row gap-4">
+          <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <input
               type="text"
@@ -186,6 +204,23 @@ const ProgramsPage: React.FC = () => {
               onChange={handleSearch}
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             />
+          </div>
+          <div className="w-full md:w-64">
+            <select
+              value={selectedCenter}
+              onChange={(e) => {
+                setSelectedCenter(e.target.value)
+                setCurrentPage(1)
+              }}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            >
+              <option value="">All Centers</option>
+              {centers.map((center) => (
+                <option key={center.id} value={center.id}>
+                  {center.centerName}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 
@@ -376,6 +411,16 @@ const ProgramsPage: React.FC = () => {
           fetchPrograms()
           fetchStats()
         }}
+      />
+
+      {/* View Program Modal */}
+      <ProgramViewModal
+        isOpen={showViewModal}
+        onClose={() => {
+          setShowViewModal(false)
+          setSelectedProgram(null)
+        }}
+        programId={selectedProgram?.id || null}
       />
     </DashboardLayout>
   )
