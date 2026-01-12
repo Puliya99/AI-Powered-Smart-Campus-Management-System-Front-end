@@ -18,6 +18,7 @@ import {
 } from 'lucide-react'
 import DashboardLayout from '../../components/common/Layout/DashboardLayout'
 import PaymentModal from '../../components/admin/Payments/PaymentModal'
+import PaymentViewModal from '../../components/admin/Payments/PaymentViewModal'
 import axiosInstance from '../../services/api/axios.config'
 import toast from 'react-hot-toast'
 
@@ -41,6 +42,10 @@ interface Payment {
   program: {
     programName: string
   }
+  center?: {
+    id: string
+    centerName: string
+  }
 }
 
 const PaymentsPage: React.FC = () => {
@@ -50,7 +55,9 @@ const PaymentsPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [showAddModal, setShowAddModal] = useState(false)
+  const [showViewModal, setShowViewModal] = useState(false)
   const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null)
+  const [centers, setCenters] = useState<any[]>([])
   const [stats, setStats] = useState({
     totalPayments: 0,
     paidCount: 0,
@@ -61,12 +68,26 @@ const PaymentsPage: React.FC = () => {
   const [filters, setFilters] = useState({
     status: '',
     method: '',
+    centerId: '',
   })
 
   useEffect(() => {
     fetchPayments()
     fetchStats()
   }, [currentPage, searchTerm, filters])
+
+  useEffect(() => {
+    fetchCenters()
+  }, [])
+
+  const fetchCenters = async () => {
+    try {
+      const response = await axiosInstance.get('/centers')
+      setCenters(response.data.data.centers || [])
+    } catch (error) {
+      console.error('Failed to fetch centers:', error)
+    }
+  }
 
   const fetchPayments = async () => {
     try {
@@ -77,6 +98,7 @@ const PaymentsPage: React.FC = () => {
         ...(searchTerm && { search: searchTerm }),
         ...(filters.status && { status: filters.status }),
         ...(filters.method && { method: filters.method }),
+        ...(filters.centerId && { centerId: filters.centerId }),
       })
 
       const response = await axiosInstance.get(`/payments?${params}`)
@@ -246,7 +268,7 @@ const PaymentsPage: React.FC = () => {
 
         {/* Search and Filters */}
         <div className="bg-white p-4 rounded-lg shadow">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             {/* Search */}
             <div className="md:col-span-1">
               <div className="relative">
@@ -260,6 +282,20 @@ const PaymentsPage: React.FC = () => {
                 />
               </div>
             </div>
+
+            {/* Center Filter */}
+            <select
+              value={filters.centerId}
+              onChange={(e) => handleFilterChange('centerId', e.target.value)}
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+            >
+              <option value="">All Centers</option>
+              {centers.map((center) => (
+                <option key={center.id} value={center.id}>
+                  {center.centerName}
+                </option>
+              ))}
+            </select>
 
             {/* Status Filter */}
             <select
@@ -313,6 +349,9 @@ const PaymentsPage: React.FC = () => {
                         Program
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Center
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Amount
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -350,6 +389,9 @@ const PaymentsPage: React.FC = () => {
                           {payment.program.programName}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {payment.center?.centerName || '-'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                           {formatCurrency(payment.amount)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
@@ -373,7 +415,10 @@ const PaymentsPage: React.FC = () => {
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                           <div className="flex space-x-2">
                             <button
-                              onClick={() => setSelectedPayment(payment)}
+                              onClick={() => {
+                                setSelectedPayment(payment)
+                                setShowViewModal(true)
+                              }}
                               className="text-blue-600 hover:text-blue-900"
                               title="View"
                             >
@@ -488,6 +533,16 @@ const PaymentsPage: React.FC = () => {
           fetchPayments()
           fetchStats()
         }}
+      />
+
+      {/* View Payment Modal */}
+      <PaymentViewModal
+        isOpen={showViewModal}
+        onClose={() => {
+          setShowViewModal(false)
+          setSelectedPayment(null)
+        }}
+        paymentId={selectedPayment?.id || null}
       />
     </DashboardLayout>
   )

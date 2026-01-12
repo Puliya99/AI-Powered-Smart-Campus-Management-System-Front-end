@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Users, BookOpen, TrendingUp, DollarSign } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import DashboardLayout from '../../components/common/Layout/DashboardLayout'
 import axiosInstance from '../../services/api/axios.config'
 
@@ -174,26 +175,38 @@ const AdminDashboard: React.FC = () => {
             </div>
             <div className="p-5">
               <div className="grid grid-cols-2 gap-3">
-                <button className="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-colors">
+                <Link
+                  to="/admin/users"
+                  className="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-colors cursor-pointer"
+                >
                   <Users className="w-8 h-8 text-gray-400 mb-2" />
                   <p className="text-sm font-medium text-gray-900">Add User</p>
-                </button>
-                <button className="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-colors">
+                </Link>
+                <Link
+                  to="/admin/programs"
+                  className="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-colors cursor-pointer"
+                >
                   <BookOpen className="w-8 h-8 text-gray-400 mb-2" />
                   <p className="text-sm font-medium text-gray-900">
                     New Program
                   </p>
-                </button>
-                <button className="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-colors">
+                </Link>
+                <Link
+                  to="/admin/reports"
+                  className="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-colors cursor-pointer"
+                >
                   <TrendingUp className="w-8 h-8 text-gray-400 mb-2" />
                   <p className="text-sm font-medium text-gray-900">
                     View Reports
                   </p>
-                </button>
-                <button className="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-colors">
+                </Link>
+                <Link
+                  to="/admin/payments"
+                  className="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-colors cursor-pointer"
+                >
                   <DollarSign className="w-8 h-8 text-gray-400 mb-2" />
                   <p className="text-sm font-medium text-gray-900">Payments</p>
-                </button>
+                </Link>
               </div>
             </div>
           </div>

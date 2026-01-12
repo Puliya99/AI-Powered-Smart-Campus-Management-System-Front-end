@@ -13,6 +13,7 @@ interface PaymentModalProps {
 interface FormData {
   studentId: string
   programId: string
+  centerId: string
   amount: string
   paymentMethod: string
   transactionId: string
@@ -45,9 +46,11 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
   const [loadingData, setLoadingData] = useState(false)
   const [students, setStudents] = useState<Student[]>([])
   const [programs, setPrograms] = useState<Program[]>([])
+  const [centers, setCenters] = useState<any[]>([])
   const [formData, setFormData] = useState<FormData>({
     studentId: '',
     programId: '',
+    centerId: '',
     amount: '',
     paymentMethod: 'CASH',
     transactionId: '',
@@ -68,6 +71,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
       setFormData({
         studentId: payment.student.id || '',
         programId: payment.program.id || '',
+        centerId: payment.center?.id || '',
         amount: payment.amount.toString() || '',
         paymentMethod: payment.paymentMethod || 'CASH',
         transactionId: payment.transactionId || '',
@@ -80,6 +84,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
       setFormData({
         studentId: '',
         programId: '',
+        centerId: '',
         amount: '',
         paymentMethod: 'CASH',
         transactionId: '',
@@ -94,12 +99,14 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
   const fetchDropdownData = async () => {
     try {
       setLoadingData(true)
-      const [studentsRes, programsRes] = await Promise.all([
+      const [studentsRes, programsRes, centersRes] = await Promise.all([
         axiosInstance.get('/students/dropdown'),
         axiosInstance.get('/programs/dropdown'),
+        axiosInstance.get('/centers'),
       ])
       setStudents(studentsRes.data.data.students || [])
       setPrograms(programsRes.data.data.programs || [])
+      setCenters(centersRes.data.data.centers || [])
     } catch (error) {
       console.error('Failed to fetch dropdown data:', error)
       toast.error('Failed to load form data')
@@ -126,6 +133,10 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
     }
     if (!formData.programId) {
       toast.error('Please select a program')
+      return false
+    }
+    if (!formData.centerId) {
+      toast.error('Please select a center')
       return false
     }
     if (!formData.amount || parseFloat(formData.amount) <= 0) {
@@ -250,6 +261,27 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
                       {programs.map((program) => (
                         <option key={program.id} value={program.id}>
                           {program.programName}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Center Selection */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Center <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      name="centerId"
+                      value={formData.centerId}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    >
+                      <option value="">Select center</option>
+                      {centers.map((center) => (
+                        <option key={center.id} value={center.id}>
+                          {center.centerName}
                         </option>
                       ))}
                     </select>

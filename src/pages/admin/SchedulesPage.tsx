@@ -14,6 +14,7 @@ import {
 } from 'lucide-react'
 import DashboardLayout from '../../components/common/Layout/DashboardLayout'
 import ScheduleModal from '../../components/admin/Schedules/ScheduleModal'
+import ScheduleViewModal from '../../components/admin/Schedules/ScheduleViewModal'
 import axiosInstance from '../../services/api/axios.config'
 import toast from 'react-hot-toast'
 
@@ -56,9 +57,11 @@ const SchedulesPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [showAddModal, setShowAddModal] = useState(false)
+  const [showViewModal, setShowViewModal] = useState(false)
   const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(
     null
   )
+  const [centers, setCenters] = useState<any[]>([])
   const [stats, setStats] = useState({
     totalSchedules: 0,
     scheduledCount: 0,
@@ -69,12 +72,26 @@ const SchedulesPage: React.FC = () => {
     status: '',
     startDate: '',
     endDate: '',
+    centerId: '',
   })
 
   useEffect(() => {
     fetchSchedules()
     fetchStats()
   }, [currentPage, searchTerm, filters])
+
+  useEffect(() => {
+    fetchCenters()
+  }, [])
+
+  const fetchCenters = async () => {
+    try {
+      const response = await axiosInstance.get('/centers')
+      setCenters(response.data.data.centers || [])
+    } catch (error) {
+      console.error('Failed to fetch centers:', error)
+    }
+  }
 
   const fetchSchedules = async () => {
     try {
@@ -86,6 +103,7 @@ const SchedulesPage: React.FC = () => {
         ...(filters.status && { status: filters.status }),
         ...(filters.startDate && { startDate: filters.startDate }),
         ...(filters.endDate && { endDate: filters.endDate }),
+        ...(filters.centerId && { centerId: filters.centerId }),
       })
 
       const response = await axiosInstance.get(`/schedules?${params}`)
@@ -228,7 +246,7 @@ const SchedulesPage: React.FC = () => {
 
         {/* Search and Filters */}
         <div className="bg-white p-4 rounded-lg shadow">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
             {/* Search */}
             <div className="md:col-span-2">
               <div className="relative">
@@ -242,6 +260,20 @@ const SchedulesPage: React.FC = () => {
                 />
               </div>
             </div>
+
+            {/* Center Filter */}
+            <select
+              value={filters.centerId}
+              onChange={(e) => handleFilterChange('centerId', e.target.value)}
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+            >
+              <option value="">All Centers</option>
+              {centers.map((center) => (
+                <option key={center.id} value={center.id}>
+                  {center.centerName}
+                </option>
+              ))}
+            </select>
 
             {/* Status Filter */}
             <select
@@ -350,7 +382,8 @@ const SchedulesPage: React.FC = () => {
                     <div className="flex space-x-2 pt-4 border-t border-gray-200">
                       <button
                         onClick={() => {
-                          window.location.href = `/admin/schedules/${schedule.id}`
+                          setSelectedSchedule(schedule)
+                          setShowViewModal(true)
                         }}
                         className="flex-1 flex items-center justify-center px-3 py-2 text-sm text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition"
                         title="View Details"
@@ -473,6 +506,16 @@ const SchedulesPage: React.FC = () => {
           schedule={selectedSchedule}
         />
       )}
+
+      {/* View Schedule Modal */}
+      <ScheduleViewModal
+        isOpen={showViewModal}
+        onClose={() => {
+          setShowViewModal(false)
+          setSelectedSchedule(null)
+        }}
+        scheduleId={selectedSchedule?.id || null}
+      />
     </DashboardLayout>
   )
 }

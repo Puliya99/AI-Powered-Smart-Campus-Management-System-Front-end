@@ -16,6 +16,7 @@ import {
 } from 'lucide-react'
 import DashboardLayout from '../../components/common/Layout/DashboardLayout'
 import StudentModal from '../../components/admin/Student/StudentModal'
+import StudentViewModal from '../../components/admin/Student/StudentViewModal'
 import axiosInstance from '../../services/api/axios.config'
 import toast from 'react-hot-toast'
 
@@ -43,15 +44,37 @@ const StudentsPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [showAddModal, setShowAddModal] = useState(false)
+  const [showViewModal, setShowViewModal] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null)
   const [filters, setFilters] = useState({
     paymentType: '',
     isActive: '',
+    centerId: '',
+    batchId: '',
   })
+  const [centers, setCenters] = useState<any[]>([])
+  const [batches, setBatches] = useState<any[]>([])
 
   useEffect(() => {
     fetchStudents()
   }, [currentPage, searchTerm, filters])
+
+  useEffect(() => {
+    fetchFiltersData()
+  }, [])
+
+  const fetchFiltersData = async () => {
+    try {
+      const [centersRes, batchesRes] = await Promise.all([
+        axiosInstance.get('/centers/dropdown'),
+        axiosInstance.get('/batches/dropdown'),
+      ])
+      setCenters(centersRes.data.data.centers)
+      setBatches(batchesRes.data.data.batches)
+    } catch (error) {
+      console.error('Failed to fetch filter data', error)
+    }
+  }
 
   const fetchStudents = async () => {
     try {
@@ -62,6 +85,8 @@ const StudentsPage: React.FC = () => {
         ...(searchTerm && { search: searchTerm }),
         ...(filters.paymentType && { paymentType: filters.paymentType }),
         ...(filters.isActive && { isActive: filters.isActive }),
+        ...(filters.centerId && { centerId: filters.centerId }),
+        ...(filters.batchId && { batchId: filters.batchId }),
       })
 
       const response = await axiosInstance.get(`/students?${params}`)
@@ -168,20 +193,48 @@ const StudentsPage: React.FC = () => {
 
         {/* Search and Filters */}
         <div className="bg-white p-4 rounded-lg shadow">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
             {/* Search */}
-            <div className="md:col-span-2">
+            <div className="md:col-span-1">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
                   type="text"
-                  placeholder="Search by name, email, or university number..."
+                  placeholder="Search..."
                   value={searchTerm}
                   onChange={handleSearch}
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 />
               </div>
             </div>
+
+            {/* Center Filter */}
+            <select
+              value={filters.centerId}
+              onChange={(e) => handleFilterChange('centerId', e.target.value)}
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+            >
+              <option value="">All Centers</option>
+              {centers.map((center) => (
+                <option key={center.id} value={center.id}>
+                  {center.centerName}
+                </option>
+              ))}
+            </select>
+
+            {/* Batch Filter */}
+            <select
+              value={filters.batchId}
+              onChange={(e) => handleFilterChange('batchId', e.target.value)}
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+            >
+              <option value="">All Batches</option>
+              {batches.map((batch) => (
+                <option key={batch.id} value={batch.id}>
+                  {batch.batchNumber}
+                </option>
+              ))}
+            </select>
 
             {/* Payment Type Filter */}
             <select
@@ -305,7 +358,10 @@ const StudentsPage: React.FC = () => {
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                           <div className="flex space-x-2">
                             <button
-                              onClick={() => setSelectedStudent(student)}
+                              onClick={() => {
+                                setSelectedStudent(student)
+                                setShowViewModal(true)
+                              }}
                               className="text-blue-600 hover:text-blue-900"
                               title="View"
                             >
@@ -417,6 +473,16 @@ const StudentsPage: React.FC = () => {
         }}
         student={selectedStudent}
         onSuccess={fetchStudents}
+      />
+
+      {/* View Student Modal */}
+      <StudentViewModal
+        isOpen={showViewModal}
+        onClose={() => {
+          setShowViewModal(false)
+          setSelectedStudent(null)
+        }}
+        studentId={selectedStudent?.id || null}
       />
     </DashboardLayout>
   )

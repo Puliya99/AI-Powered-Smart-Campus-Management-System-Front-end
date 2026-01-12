@@ -7,10 +7,12 @@ import {
   Trash2,
   Users,
   User,
+  Eye,
   Calendar,
 } from 'lucide-react'
 import DashboardLayout from '../../components/common/Layout/DashboardLayout'
 import CenterModal from '../../components/admin/Centers/CenterModal'
+import CenterViewModal from '../../components/admin/Centers/CenterViewModal'
 import axiosInstance from '../../services/api/axios.config'
 import toast from 'react-hot-toast'
 
@@ -23,6 +25,7 @@ interface Center {
   phone: string | null
   stats?: {
     userCount: number
+    studentCount: number
     lecturerCount: number
     scheduleCount: number
   }
@@ -36,10 +39,12 @@ const CentersPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [showAddModal, setShowAddModal] = useState(false)
+  const [showViewModal, setShowViewModal] = useState(false)
   const [selectedCenter, setSelectedCenter] = useState<Center | null>(null)
   const [stats, setStats] = useState({
     totalCenters: 0,
     totalUsers: 0,
+    totalStudents: 0,
     totalLecturers: 0,
     totalSchedules: 0,
   })
@@ -119,7 +124,7 @@ const CentersPage: React.FC = () => {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <div className="bg-white p-5 rounded-lg shadow">
             <div className="flex items-center justify-between">
               <div>
@@ -132,7 +137,7 @@ const CentersPage: React.FC = () => {
           <div className="bg-white p-5 rounded-lg shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Total Users</p>
+                <p className="text-sm text-gray-600">Admin/Staff</p>
                 <p className="text-2xl font-bold text-green-600">
                   {stats.totalUsers}
                 </p>
@@ -143,7 +148,18 @@ const CentersPage: React.FC = () => {
           <div className="bg-white p-5 rounded-lg shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Total Lecturers</p>
+                <p className="text-sm text-gray-600">Students</p>
+                <p className="text-2xl font-bold text-blue-600">
+                  {stats.totalStudents}
+                </p>
+              </div>
+              <Users className="w-10 h-10 text-blue-500" />
+            </div>
+          </div>
+          <div className="bg-white p-5 rounded-lg shadow">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600">Lecturers</p>
                 <p className="text-2xl font-bold text-purple-600">
                   {stats.totalLecturers}
                 </p>
@@ -154,7 +170,7 @@ const CentersPage: React.FC = () => {
           <div className="bg-white p-5 rounded-lg shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Total Schedules</p>
+                <p className="text-sm text-gray-600">Schedules</p>
                 <p className="text-2xl font-bold text-orange-600">
                   {stats.totalSchedules}
                 </p>
@@ -252,22 +268,28 @@ const CentersPage: React.FC = () => {
                           )}
                         </td>
                         <td className="px-6 py-4">
-                          <div className="grid grid-cols-3 gap-2 text-center">
+                          <div className="grid grid-cols-4 gap-2 text-center">
                             <div>
-                              <p className="text-xs text-gray-600">Users</p>
-                              <p className="font-semibold">
+                              <p className="text-xs text-gray-600">Staff</p>
+                              <p className="font-semibold text-green-600">
                                 {center.stats?.userCount || 0}
                               </p>
                             </div>
                             <div>
+                              <p className="text-xs text-gray-600">Students</p>
+                              <p className="font-semibold text-blue-600">
+                                {center.stats?.studentCount || 0}
+                              </p>
+                            </div>
+                            <div>
                               <p className="text-xs text-gray-600">Lecturers</p>
-                              <p className="font-semibold">
+                              <p className="font-semibold text-purple-600">
                                 {center.stats?.lecturerCount || 0}
                               </p>
                             </div>
                             <div>
                               <p className="text-xs text-gray-600">Schedules</p>
-                              <p className="font-semibold">
+                              <p className="font-semibold text-orange-600">
                                 {center.stats?.scheduleCount || 0}
                               </p>
                             </div>
@@ -275,6 +297,16 @@ const CentersPage: React.FC = () => {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                           <div className="flex space-x-2">
+                            <button
+                              onClick={() => {
+                                setSelectedCenter(center)
+                                setShowViewModal(true)
+                              }}
+                              className="text-blue-600 hover:text-blue-900"
+                              title="View"
+                            >
+                              <Eye className="w-5 h-5" />
+                            </button>
                             <button
                               onClick={() => {
                                 setSelectedCenter(center)
@@ -384,6 +416,16 @@ const CentersPage: React.FC = () => {
           fetchCenters()
           fetchStats()
         }}
+      />
+
+      {/* View Center Modal */}
+      <CenterViewModal
+        isOpen={showViewModal}
+        onClose={() => {
+          setShowViewModal(false)
+          setSelectedCenter(null)
+        }}
+        centerId={selectedCenter?.id || null}
       />
     </DashboardLayout>
   )

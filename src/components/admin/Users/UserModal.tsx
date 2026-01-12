@@ -18,7 +18,7 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, user, onSuccess 
     username: '',
     email: '',
     password: '',
-    role: 'STUDENT',
+    role: 'ADMIN',
     title: 'Mr',
     firstName: '',
     lastName: '',
@@ -44,7 +44,7 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, user, onSuccess 
         username: user.username || '',
         email: user.email || '',
         password: '', // Don't pre-fill password for editing
-        role: user.role || 'STUDENT',
+        role: user.role || 'ADMIN',
         title: user.title || 'Mr',
         firstName: user.firstName || '',
         lastName: user.lastName || '',
@@ -62,7 +62,7 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, user, onSuccess 
         username: '',
         email: '',
         password: '',
-        role: 'STUDENT',
+        role: 'ADMIN',
         title: 'Mr',
         firstName: '',
         lastName: '',
@@ -74,7 +74,7 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, user, onSuccess 
         homeNumber: '',
         centerId: '',
         isActive: true,
-      });
+      })
     }
   }, [user, isOpen]);
 
@@ -185,8 +185,6 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, user, onSuccess 
                       onChange={handleChange}
                       className="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm h-10 border"
                     >
-                      <option value="STUDENT">Student</option>
-                      <option value="LECTURER">Lecturer</option>
                       <option value="ADMIN">Admin</option>
                       <option value="USER">Staff</option>
                     </select>

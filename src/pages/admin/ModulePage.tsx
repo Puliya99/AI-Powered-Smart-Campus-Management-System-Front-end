@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import DashboardLayout from '../../components/common/Layout/DashboardLayout';
 import ModuleModal from '../../components/admin/Modules/ModuleModal';
+import ModuleViewModal from '../../components/admin/Modules/ModuleViewModal';
 import axiosInstance from '../../services/api/axios.config';
 import toast from 'react-hot-toast';
 
@@ -44,6 +45,7 @@ const ModulesPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showViewModal, setShowViewModal] = useState(false);
   const [selectedModule, setSelectedModule] = useState<Module | null>(null);
   const [stats, setStats] = useState({
     totalModules: 0,
@@ -54,11 +56,25 @@ const ModulesPage: React.FC = () => {
     programId: '',
     semesterNumber: '',
   });
+  const [programs, setPrograms] = useState<any[]>([]);
 
   useEffect(() => {
     fetchModules();
     fetchStats();
   }, [currentPage, searchTerm, filters]);
+
+  useEffect(() => {
+    fetchPrograms();
+  }, []);
+
+  const fetchPrograms = async () => {
+    try {
+      const response = await axiosInstance.get('/programs/dropdown');
+      setPrograms(response.data.data.programs);
+    } catch (error) {
+      console.error('Failed to fetch programs', error);
+    }
+  };
 
   const fetchModules = async () => {
     try {
@@ -171,20 +187,34 @@ const ModulesPage: React.FC = () => {
 
         {/* Search and Filters */}
         <div className="bg-white p-4 rounded-lg shadow">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             {/* Search */}
-            <div className="md:col-span-2">
+            <div className="md:col-span-1">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
                   type="text"
-                  placeholder="Search by module name or code..."
+                  placeholder="Search modules..."
                   value={searchTerm}
                   onChange={handleSearch}
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 />
               </div>
             </div>
+
+            {/* Program Filter */}
+            <select
+              value={filters.programId}
+              onChange={(e) => handleFilterChange('programId', e.target.value)}
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+            >
+              <option value="">All Programs</option>
+              {programs.map((program) => (
+                <option key={program.id} value={program.id}>
+                  {program.programName}
+                </option>
+              ))}
+            </select>
 
             {/* Semester Filter */}
             <select
@@ -269,6 +299,16 @@ const ModulesPage: React.FC = () => {
 
                     {/* Actions */}
                     <div className="flex space-x-2 pt-4 border-t border-gray-200">
+                      <button
+                        onClick={() => {
+                          setSelectedModule(module)
+                          setShowViewModal(true)
+                        }}
+                        className="flex-1 flex items-center justify-center px-3 py-2 text-sm text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition"
+                      >
+                        <Eye className="w-4 h-4 mr-1" />
+                        View
+                      </button>
                       <button
                         onClick={() => {
                           setSelectedModule(module)
@@ -382,6 +422,15 @@ const ModulesPage: React.FC = () => {
           module={selectedModule}
         />
       )}
+      {/* View Module Modal */}
+      <ModuleViewModal
+        isOpen={showViewModal}
+        onClose={() => {
+          setShowViewModal(false)
+          setSelectedModule(null)
+        }}
+        moduleId={selectedModule?.id || null}
+      />
     </DashboardLayout>
   )
 }

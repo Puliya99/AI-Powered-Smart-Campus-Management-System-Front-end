@@ -16,6 +16,7 @@ interface FormData {
   endDate: string
   programId: string
   status: string
+  centerId: string
 }
 
 interface Program {
@@ -33,19 +34,31 @@ const BatchModal: React.FC<BatchModalProps> = ({
   const [loading, setLoading] = useState(false)
   const [loadingData, setLoadingData] = useState(false)
   const [programs, setPrograms] = useState<Program[]>([])
+  const [centers, setCenters] = useState<any[]>([])
   const [formData, setFormData] = useState<FormData>({
     batchNumber: '',
     startDate: '',
     endDate: '',
     programId: '',
     status: 'UPCOMING',
+    centerId: '',
   })
 
   useEffect(() => {
     if (isOpen) {
       fetchPrograms()
+      fetchCenters()
     }
   }, [isOpen])
+
+  const fetchCenters = async () => {
+    try {
+      const response = await axiosInstance.get('/centers')
+      setCenters(response.data.data.centers || [])
+    } catch (error) {
+      console.error('Failed to fetch centers:', error)
+    }
+  }
 
   useEffect(() => {
     if (batch) {
@@ -55,6 +68,7 @@ const BatchModal: React.FC<BatchModalProps> = ({
         endDate: batch.endDate?.split('T')[0] || '',
         programId: batch.program?.id || '',
         status: batch.status || 'UPCOMING',
+        centerId: batch.centers?.[0]?.id || '',
       })
     } else {
       // Generate default batch number
@@ -66,6 +80,7 @@ const BatchModal: React.FC<BatchModalProps> = ({
         endDate: '',
         programId: '',
         status: 'UPCOMING',
+        centerId: '',
       })
     }
   }, [batch])
@@ -112,6 +127,10 @@ const BatchModal: React.FC<BatchModalProps> = ({
       toast.error('End date must be after start date')
       return false
     }
+    if (!formData.centerId) {
+      toast.error('Please select a center')
+      return false
+    }
     return true
   }
 
@@ -126,8 +145,12 @@ const BatchModal: React.FC<BatchModalProps> = ({
 
     try {
       const payload = {
-        ...formData,
+        batchNumber: formData.batchNumber,
+        startDate: formData.startDate,
         endDate: formData.endDate || null,
+        programId: formData.programId,
+        status: formData.status,
+        centerIds: [formData.centerId],
       }
 
       if (batch) {
@@ -255,6 +278,27 @@ const BatchModal: React.FC<BatchModalProps> = ({
                       />
                       <p className="text-xs text-gray-500 mt-1">Optional</p>
                     </div>
+                  </div>
+
+                  {/* Center Selection */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Center <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      name="centerId"
+                      value={formData.centerId}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    >
+                      <option value="">Select a center</option>
+                      {centers.map((center) => (
+                        <option key={center.id} value={center.id}>
+                          {center.centerName}
+                        </option>
+                      ))}
+                    </select>
                   </div>
 
                   {/* Status */}

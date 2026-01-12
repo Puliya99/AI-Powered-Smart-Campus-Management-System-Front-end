@@ -27,6 +27,9 @@ interface FormData {
 
   // Student fields
   paymentType: string
+  centerId: string
+  programId: string
+  batchId: string
 }
 
 const StudentModal: React.FC<StudentModalProps> = ({
@@ -36,6 +39,9 @@ const StudentModal: React.FC<StudentModalProps> = ({
   onSuccess,
 }) => {
   const [loading, setLoading] = useState(false)
+  const [centers, setCenters] = useState<any[]>([])
+  const [programs, setPrograms] = useState<any[]>([])
+  const [batches, setBatches] = useState<any[]>([])
   const [formData, setFormData] = useState<FormData>({
     username: '',
     email: '',
@@ -50,7 +56,29 @@ const StudentModal: React.FC<StudentModalProps> = ({
     mobileNumber: '',
     homeNumber: '',
     paymentType: 'FULL',
+    centerId: '',
+    programId: '',
+    batchId: '',
   })
+
+  useEffect(() => {
+    fetchSelectionData()
+  }, [])
+
+  const fetchSelectionData = async () => {
+    try {
+      const [centersRes, programsRes, batchesRes] = await Promise.all([
+        axiosInstance.get('/centers/dropdown'),
+        axiosInstance.get('/programs/dropdown'),
+        axiosInstance.get('/batches/dropdown'),
+      ])
+      setCenters(centersRes.data.data.centers)
+      setPrograms(programsRes.data.data.programs)
+      setBatches(batchesRes.data.data.batches)
+    } catch (error) {
+      console.error('Failed to fetch selection data', error)
+    }
+  }
 
   useEffect(() => {
     if (student) {
@@ -68,6 +96,9 @@ const StudentModal: React.FC<StudentModalProps> = ({
         mobileNumber: student.user.mobileNumber || '',
         homeNumber: student.user.homeNumber || '',
         paymentType: student.paymentType || 'FULL',
+        centerId: student.user.center?.id || '',
+        programId: student.enrollments?.[0]?.program?.id || '',
+        batchId: student.enrollments?.[0]?.batch?.id || '',
       })
     } else {
       // Reset form for new student
@@ -85,6 +116,9 @@ const StudentModal: React.FC<StudentModalProps> = ({
         mobileNumber: '',
         homeNumber: '',
         paymentType: 'FULL',
+        centerId: '',
+        programId: '',
+        batchId: '',
       })
     }
   }, [student])
@@ -94,10 +128,33 @@ const StudentModal: React.FC<StudentModalProps> = ({
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
     >
   ) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    })
+    const { name, value } = e.target
+    if (name === 'programId') {
+      setFormData({
+        ...formData,
+        [name]: value,
+        batchId: '', // Reset batch when program changes
+      })
+    } else if (name === 'batchId') {
+      const selectedBatch = batches.find((b) => b.id === value)
+      if (selectedBatch && selectedBatch.program) {
+        setFormData({
+          ...formData,
+          [name]: value,
+          programId: selectedBatch.program.id,
+        })
+      } else {
+        setFormData({
+          ...formData,
+          [name]: value,
+        })
+      }
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value,
+      })
+    }
   }
 
   const validateForm = () => {
@@ -129,6 +186,18 @@ const StudentModal: React.FC<StudentModalProps> = ({
       toast.error('NIC is required')
       return false
     }
+    if (!student && !formData.centerId) {
+      toast.error('Center is required')
+      return false
+    }
+    if (!student && !formData.programId) {
+      toast.error('Program is required')
+      return false
+    }
+    if (!student && !formData.batchId) {
+      toast.error('Batch is required')
+      return false
+    }
     return true
   }
 
@@ -156,8 +225,12 @@ const StudentModal: React.FC<StudentModalProps> = ({
             address: formData.address,
             mobileNumber: formData.mobileNumber,
             homeNumber: formData.homeNumber,
+            center: formData.centerId ? { id: formData.centerId } : null,
           },
           paymentType: formData.paymentType,
+          centerId: formData.centerId,
+          programId: formData.programId,
+          batchId: formData.batchId,
         })
         toast.success('Student updated successfully')
       } else {
@@ -179,6 +252,13 @@ const StudentModal: React.FC<StudentModalProps> = ({
   }
 
   if (!isOpen) return null
+
+  const filteredBatches = batches.filter((b) => {
+    if (!formData.programId) return true
+    // If b.program is just an ID (due to how TypeORM might return it if not careful, 
+    // but we use leftJoinAndSelect with select)
+    return b.program?.id === formData.programId
+  })
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
@@ -299,22 +379,6 @@ const StudentModal: React.FC<StudentModalProps> = ({
                   />
                 </div>
 
-                {/* NIC */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    NIC <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    name="nic"
-                    value={formData.nic}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    placeholder="123456789V"
-                  />
-                </div>
-
                 {/* Account Information */}
                 <div className="md:col-span-2 mt-4">
                   <h4 className="text-lg font-semibold text-gray-900 mb-4 border-b pb-2">
@@ -388,6 +452,92 @@ const StudentModal: React.FC<StudentModalProps> = ({
                     <option value="FULL">Full Payment</option>
                     <option value="INSTALLMENT">Installment</option>
                   </select>
+                </div>
+
+                {/* Academic Information */}
+                <div className="md:col-span-2 mt-4">
+                  <h4 className="text-lg font-semibold text-gray-900 mb-4 border-b pb-2">
+                    Academic Information
+                  </h4>
+                </div>
+
+                {/* Center */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Center <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    name="centerId"
+                    value={formData.centerId}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  >
+                    <option value="">Select Center</option>
+                    {centers.map((center) => (
+                      <option key={center.id} value={center.id}>
+                        {center.centerName}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Program */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Program <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    name="programId"
+                    value={formData.programId}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  >
+                    <option value="">Select Program</option>
+                    {programs.map((program) => (
+                      <option key={program.id} value={program.id}>
+                        {program.programName}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Batch */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Batch <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    name="batchId"
+                    value={formData.batchId}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  >
+                    <option value="">Select Batch</option>
+                    {filteredBatches.map((batch) => (
+                      <option key={batch.id} value={batch.id}>
+                        {batch.batchNumber}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Nic */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    NIC <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="nic"
+                    value={formData.nic}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    placeholder="123456789V"
+                  />
                 </div>
 
                 {/* Contact Information */}

@@ -16,6 +16,7 @@ interface FormData {
   duration: string
   programFee: string
   description: string
+  centerIds: string[]
 }
 
 const ProgramModal: React.FC<ProgramModalProps> = ({
@@ -25,13 +26,29 @@ const ProgramModal: React.FC<ProgramModalProps> = ({
   onSuccess,
 }) => {
   const [loading, setLoading] = useState(false)
+  const [centers, setCenters] = useState<any[]>([])
   const [formData, setFormData] = useState<FormData>({
     programCode: '',
     programName: '',
     duration: '',
     programFee: '',
     description: '',
+    centerIds: [],
   })
+
+  useEffect(() => {
+    fetchCenters()
+  }, [])
+
+  const fetchCenters = async () => {
+    try {
+      const response = await axiosInstance.get('/centers')
+      // Assuming /centers returns an array of centers in data.data.centers
+      setCenters(response.data.data.centers || [])
+    } catch (error) {
+      console.error('Failed to fetch centers:', error)
+    }
+  }
 
   useEffect(() => {
     if (program) {
@@ -41,6 +58,7 @@ const ProgramModal: React.FC<ProgramModalProps> = ({
         duration: program.duration || '',
         programFee: program.programFee?.toString() || '',
         description: program.description || '',
+        centerIds: program.centers?.map((c: any) => c.id) || [],
       })
     } else {
       setFormData({
@@ -49,6 +67,7 @@ const ProgramModal: React.FC<ProgramModalProps> = ({
         duration: '',
         programFee: '',
         description: '',
+        centerIds: [],
       })
     }
   }, [program])
@@ -58,9 +77,27 @@ const ProgramModal: React.FC<ProgramModalProps> = ({
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) => {
+    const { name, value } = e.target
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: value,
+    })
+  }
+
+  const handleCenterChange = (centerId: string) => {
+    setFormData(prev => {
+      const isSelected = prev.centerIds.includes(centerId)
+      if (isSelected) {
+        return {
+          ...prev,
+          centerIds: prev.centerIds.filter(id => id !== centerId)
+        }
+      } else {
+        return {
+          ...prev,
+          centerIds: [...prev.centerIds, centerId]
+        }
+      }
     })
   }
 
@@ -79,6 +116,10 @@ const ProgramModal: React.FC<ProgramModalProps> = ({
     }
     if (!formData.programFee || parseFloat(formData.programFee) <= 0) {
       toast.error('Valid program fee is required')
+      return false
+    }
+    if (formData.centerIds.length === 0) {
+      toast.error('At least one center must be selected')
       return false
     }
     return true
@@ -238,6 +279,33 @@ const ProgramModal: React.FC<ProgramModalProps> = ({
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   placeholder="Enter program description, objectives, and key features..."
                 />
+              </div>
+
+              {/* Centers */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Available Centers <span className="text-red-500">*</span>
+                </label>
+                <div className="grid grid-cols-2 gap-3 border border-gray-300 rounded-lg p-4 max-h-48 overflow-y-auto">
+                  {centers.length > 0 ? (
+                    centers.map((center) => (
+                      <label key={center.id} className="flex items-center space-x-3 cursor-pointer p-2 hover:bg-gray-50 rounded transition">
+                        <input
+                          type="checkbox"
+                          checked={formData.centerIds.includes(center.id)}
+                          onChange={() => handleCenterChange(center.id)}
+                          className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                        />
+                        <span className="text-sm text-gray-700">{center.centerName}</span>
+                      </label>
+                    ))
+                  ) : (
+                    <p className="col-span-2 text-sm text-gray-500 italic">No centers available</p>
+                  )}
+                </div>
+                {formData.centerIds.length === 0 && (
+                  <p className="text-xs text-red-500 mt-1">Select at least one center</p>
+                )}
               </div>
             </div>
 

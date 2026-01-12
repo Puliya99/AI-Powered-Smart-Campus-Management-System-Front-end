@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 import DashboardLayout from '../../components/common/Layout/DashboardLayout'
 import BatchModal from '../../components/admin/Batches/BatchModal'
+import BatchViewModal from '../../components/admin/Batches/BatchViewModal'
 import axiosInstance from '../../services/api/axios.config'
 import toast from 'react-hot-toast'
 
@@ -42,7 +43,9 @@ const BatchesPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [showAddModal, setShowAddModal] = useState(false)
+  const [showViewModal, setShowViewModal] = useState(false)
   const [selectedBatch, setSelectedBatch] = useState<Batch | null>(null)
+  const [centers, setCenters] = useState<any[]>([])
   const [stats, setStats] = useState({
     totalBatches: 0,
     activeBatches: 0,
@@ -52,12 +55,26 @@ const BatchesPage: React.FC = () => {
   const [filters, setFilters] = useState({
     status: '',
     programId: '',
+    centerId: '',
   })
 
   useEffect(() => {
     fetchBatches()
     fetchStats()
   }, [currentPage, searchTerm, filters])
+
+  useEffect(() => {
+    fetchCenters()
+  }, [])
+
+  const fetchCenters = async () => {
+    try {
+      const response = await axiosInstance.get('/centers')
+      setCenters(response.data.data.centers || [])
+    } catch (error) {
+      console.error('Failed to fetch centers:', error)
+    }
+  }
 
   const fetchBatches = async () => {
     try {
@@ -68,6 +85,7 @@ const BatchesPage: React.FC = () => {
         ...(searchTerm && { search: searchTerm }),
         ...(filters.status && { status: filters.status }),
         ...(filters.programId && { programId: filters.programId }),
+        ...(filters.centerId && { centerId: filters.centerId }),
       })
 
       const response = await axiosInstance.get(`/batches?${params}`)
@@ -202,32 +220,46 @@ const BatchesPage: React.FC = () => {
 
         {/* Search and Filters */}
         <div className="bg-white p-4 rounded-lg shadow">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="flex flex-col md:flex-row gap-4">
             {/* Search */}
-            <div className="md:col-span-2">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                <input
-                  type="text"
-                  placeholder="Search by batch number or program..."
-                  value={searchTerm}
-                  onChange={handleSearch}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                />
-              </div>
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <input
+                type="text"
+                placeholder="Search by batch number or program..."
+                value={searchTerm}
+                onChange={handleSearch}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              />
             </div>
 
-            {/* Status Filter */}
-            <select
-              value={filters.status}
-              onChange={(e) => handleFilterChange('status', e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-            >
-              <option value="">All Status</option>
-              <option value="UPCOMING">Upcoming</option>
-              <option value="ACTIVE">Active</option>
-              <option value="COMPLETED">Completed</option>
-            </select>
+            <div className="flex gap-4">
+              {/* Center Filter */}
+              <select
+                value={filters.centerId}
+                onChange={(e) => handleFilterChange('centerId', e.target.value)}
+                className="w-full md:w-48 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+              >
+                <option value="">All Centers</option>
+                {centers.map((center) => (
+                  <option key={center.id} value={center.id}>
+                    {center.centerName}
+                  </option>
+                ))}
+              </select>
+
+              {/* Status Filter */}
+              <select
+                value={filters.status}
+                onChange={(e) => handleFilterChange('status', e.target.value)}
+                className="w-full md:w-48 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+              >
+                <option value="">All Status</option>
+                <option value="UPCOMING">Upcoming</option>
+                <option value="ACTIVE">Active</option>
+                <option value="COMPLETED">Completed</option>
+              </select>
+            </div>
           </div>
         </div>
 
@@ -306,7 +338,8 @@ const BatchesPage: React.FC = () => {
                     <div className="flex space-x-2 pt-4 border-t border-gray-200">
                       <button
                         onClick={() => {
-                          window.location.href = `/admin/batches/${batch.id}`
+                          setSelectedBatch(batch)
+                          setShowViewModal(true)
                         }}
                         className="flex-1 flex items-center justify-center px-3 py-2 text-sm text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition"
                         title="View Details"
@@ -429,6 +462,16 @@ const BatchesPage: React.FC = () => {
           batch={selectedBatch}
         />
       )}
+
+      {/* View Batch Modal */}
+      <BatchViewModal
+        isOpen={showViewModal}
+        onClose={() => {
+          setShowViewModal(false)
+          setSelectedBatch(null)
+        }}
+        batchId={selectedBatch?.id || null}
+      />
     </DashboardLayout>
   )
 }

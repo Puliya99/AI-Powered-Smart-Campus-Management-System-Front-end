@@ -12,10 +12,13 @@ import {
   CheckCircle,
   XCircle,
   RefreshCw,
+  Eye,
 } from 'lucide-react';
 import DashboardLayout from '../../components/common/Layout/DashboardLayout';
 import userService, { User } from '../../services/user.service';
 import UserModal from '../../components/admin/Users/UserModal';
+import UserViewModal from '../../components/admin/Users/UserViewModal';
+import axiosInstance from '../../services/api/axios.config';
 import toast from 'react-hot-toast';
 
 const UsersPage: React.FC = () => {
@@ -25,6 +28,7 @@ const UsersPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [showModal, setShowModal] = useState(false);
+  const [showViewModal, setShowViewModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [stats, setStats] = useState({
     totalUsers: 0,
@@ -34,12 +38,27 @@ const UsersPage: React.FC = () => {
   const [filters, setFilters] = useState({
     role: '',
     isActive: '',
+    centerId: '',
   });
+  const [centers, setCenters] = useState<any[]>([]);
 
   useEffect(() => {
     fetchUsers();
     fetchStats();
   }, [currentPage, searchTerm, filters]);
+
+  useEffect(() => {
+    fetchCenters();
+  }, []);
+
+  const fetchCenters = async () => {
+    try {
+      const response = await axiosInstance.get('/centers/dropdown');
+      setCenters(response.data.data.centers);
+    } catch (error) {
+      console.error('Failed to fetch centers:', error);
+    }
+  };
 
   const fetchUsers = async () => {
     try {
@@ -48,8 +67,9 @@ const UsersPage: React.FC = () => {
         page: currentPage,
         limit: 10,
         search: searchTerm,
-        role: filters.role || undefined,
+        role: filters.role || 'ADMIN,USER',
         isActive: filters.isActive === '' ? undefined : filters.isActive === 'true',
+        centerId: filters.centerId,
       };
 
       const response = await userService.getAllUsers(params);
@@ -100,9 +120,7 @@ const UsersPage: React.FC = () => {
   const getRoleBadgeColor = (role: string) => {
     switch (role) {
       case 'ADMIN': return 'bg-red-100 text-red-800';
-      case 'LECTURER': return 'bg-blue-100 text-blue-800';
-      case 'STUDENT': return 'bg-green-100 text-green-800';
-      case 'USER': return 'bg-purple-100 text-purple-800';
+      case 'USER': return 'bg-blue-100 text-blue-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
@@ -173,17 +191,17 @@ const UsersPage: React.FC = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-500 font-medium">Staff</p>
-                <p className="text-2xl font-bold text-purple-600">{stats.roles.STAFF}</p>
+                <p className="text-2xl font-bold text-blue-600">{stats.roles.STAFF}</p>
               </div>
-              <Users className="w-10 h-10 text-purple-100" />
+              <Users className="w-10 h-10 text-blue-100" />
             </div>
           </div>
         </div>
 
         {/* Search and Filters */}
         <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="md:col-span-2">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+            <div className="md:col-span-1">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
@@ -196,14 +214,24 @@ const UsersPage: React.FC = () => {
               </div>
             </div>
             <select
+              value={filters.centerId}
+              onChange={(e) => handleFilterChange('centerId', e.target.value)}
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+            >
+              <option value="">All Centers</option>
+              {centers.map((center) => (
+                <option key={center.id} value={center.id}>
+                  {center.centerName}
+                </option>
+              ))}
+            </select>
+            <select
               value={filters.role}
               onChange={(e) => handleFilterChange('role', e.target.value)}
               className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
             >
               <option value="">All Roles</option>
               <option value="ADMIN">Admin</option>
-              <option value="LECTURER">Lecturer</option>
-              <option value="STUDENT">Student</option>
               <option value="USER">Staff</option>
             </select>
             <select
@@ -297,9 +325,19 @@ const UsersPage: React.FC = () => {
                             <button
                               onClick={() => {
                                 setSelectedUser(user);
-                                setShowModal(true);
+                                setShowViewModal(true);
                               }}
                               className="text-primary-600 hover:text-primary-900"
+                              title="View"
+                            >
+                              <Eye className="w-5 h-5" />
+                            </button>
+                            <button
+                              onClick={() => {
+                                setSelectedUser(user);
+                                setShowModal(true);
+                              }}
+                              className="text-green-600 hover:text-green-900"
                               title="Edit"
                             >
                               <Edit className="w-5 h-5" />
@@ -393,6 +431,15 @@ const UsersPage: React.FC = () => {
           fetchUsers();
           fetchStats();
         }}
+      />
+
+      <UserViewModal
+        isOpen={showViewModal}
+        onClose={() => {
+          setShowViewModal(false);
+          setSelectedUser(null);
+        }}
+        userId={selectedUser?.id || null}
       />
     </DashboardLayout>
   );

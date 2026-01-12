@@ -14,6 +14,7 @@ import {
 } from 'lucide-react'
 import DashboardLayout from '../../components/common/Layout/DashboardLayout'
 import AttendanceModal from '../../components/admin/Attendance/AttendanceModal'
+import AttendanceViewModal from '../../components/admin/Attendance/AttendanceViewModal'
 import axiosInstance from '../../services/api/axios.config'
 import toast from 'react-hot-toast'
 
@@ -52,9 +53,11 @@ const AttendancePage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [showAttendanceModal, setShowAttendanceModal] = useState(false)
+  const [showViewModal, setShowViewModal] = useState(false)
   const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(
     null
   )
+  const [centers, setCenters] = useState<any[]>([])
   const [stats, setStats] = useState({
     totalRecords: 0,
     presentCount: 0,
@@ -65,12 +68,26 @@ const AttendancePage: React.FC = () => {
     status: '',
     startDate: new Date().toISOString().split('T')[0],
     endDate: '',
+    centerId: '',
   })
 
   useEffect(() => {
     fetchSchedules()
     fetchStats()
   }, [currentPage, searchTerm, filters])
+
+  useEffect(() => {
+    fetchCenters()
+  }, [])
+
+  const fetchCenters = async () => {
+    try {
+      const response = await axiosInstance.get('/centers')
+      setCenters(response.data.data.centers || [])
+    } catch (error) {
+      console.error('Failed to fetch centers:', error)
+    }
+  }
 
   const fetchSchedules = async () => {
     try {
@@ -82,6 +99,7 @@ const AttendancePage: React.FC = () => {
         ...(filters.status && { status: filters.status }),
         ...(filters.startDate && { startDate: filters.startDate }),
         ...(filters.endDate && { endDate: filters.endDate }),
+        ...(filters.centerId && { centerId: filters.centerId }),
       })
 
       const response = await axiosInstance.get(`/schedules?${params}`)
@@ -109,8 +127,9 @@ const AttendancePage: React.FC = () => {
     setShowAttendanceModal(true)
   }
 
-  const handleViewAttendance = (scheduleId: string) => {
-    window.location.href = `/admin/attendance/schedule/${scheduleId}`
+  const handleViewAttendance = (schedule: Schedule) => {
+    setSelectedSchedule(schedule)
+    setShowViewModal(true)
   }
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -211,7 +230,7 @@ const AttendancePage: React.FC = () => {
 
         {/* Search and Filters */}
         <div className="bg-white p-4 rounded-lg shadow">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
             <div className="md:col-span-2">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -224,6 +243,19 @@ const AttendancePage: React.FC = () => {
                 />
               </div>
             </div>
+
+            <select
+              value={filters.centerId}
+              onChange={(e) => handleFilterChange('centerId', e.target.value)}
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+            >
+              <option value="">All Centers</option>
+              {centers.map((center) => (
+                <option key={center.id} value={center.id}>
+                  {center.centerName}
+                </option>
+              ))}
+            </select>
 
             <input
               type="date"
@@ -316,7 +348,7 @@ const AttendancePage: React.FC = () => {
                         Mark
                       </button>
                       <button
-                        onClick={() => handleViewAttendance(schedule.id)}
+                        onClick={() => handleViewAttendance(schedule)}
                         className="flex-1 flex items-center justify-center px-3 py-2 text-sm text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition"
                       >
                         <Eye className="w-4 h-4 mr-1" />
@@ -380,6 +412,16 @@ const AttendancePage: React.FC = () => {
           }}
         />
       )}
+
+      {/* View Attendance Modal */}
+      <AttendanceViewModal
+        isOpen={showViewModal}
+        onClose={() => {
+          setShowViewModal(false)
+          setSelectedSchedule(null)
+        }}
+        scheduleId={selectedSchedule?.id || null}
+      />
     </DashboardLayout>
   )
 }
