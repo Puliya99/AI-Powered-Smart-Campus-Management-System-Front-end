@@ -5,9 +5,10 @@ import reportService from '../../../services/report.service';
 
 interface ReportGeneratorProps {
   onReportGenerated: (type: string, data: any) => void;
+  selectedCenter: string;
 }
 
-const ReportGenerator: React.FC<ReportGeneratorProps> = ({ onReportGenerated }) => {
+const ReportGenerator: React.FC<ReportGeneratorProps> = ({ onReportGenerated, selectedCenter }) => {
   const [loading, setLoading] = useState(false);
   const [reportType, setReportType] = useState('enrollment');
   const [filters, setFilters] = useState({
@@ -22,13 +23,13 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({ onReportGenerated }) 
       let data;
       switch (reportType) {
         case 'enrollment':
-          data = await reportService.getEnrollmentReport();
+          data = await reportService.getEnrollmentReport(selectedCenter);
           break;
         case 'payment':
-          data = await reportService.getPaymentReport(filters.startDate, filters.endDate);
+          data = await reportService.getPaymentReport(filters.startDate, filters.endDate, selectedCenter);
           break;
         case 'attendance':
-          data = await reportService.getAttendanceReport(filters.batchId);
+          data = await reportService.getAttendanceReport(filters.batchId, selectedCenter);
           break;
         default:
           throw new Error('Invalid report type');
