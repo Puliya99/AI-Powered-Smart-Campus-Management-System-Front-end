@@ -36,6 +36,9 @@ const PaymentsPage = React.lazy(() => import('../pages/admin/PaymentsPage'))
 const LecturerDashboard = React.lazy(
   () => import('../pages/lecturer/LecturerDashboard')
 )
+const LecturerClassesPage = React.lazy(
+  () => import('../pages/lecturer/LecturerClassesPage')
+)
 const AttendancePage = React.lazy(
   () => import('../pages/admin/AttendancePage')
 )
@@ -220,6 +223,7 @@ const AppRoutes: React.FC = () => {
               </ProtectedRoute>
             }
           />
+
           {/* Add more admin routes */}
         </Route>
 
@@ -238,14 +242,6 @@ const AppRoutes: React.FC = () => {
             element={
               <ProtectedRoute allowedRoles={['STUDENT']}>
                 <StudentDashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="payments"
-            element={
-              <ProtectedRoute allowedRoles={['STUDENT']}>
-                <PaymentsPage />
               </ProtectedRoute>
             }
           />
@@ -275,6 +271,14 @@ const AppRoutes: React.FC = () => {
             element={
               <ProtectedRoute allowedRoles={['LECTURER']}>
                 <LecturerDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="classes"
+            element={
+              <ProtectedRoute allowedRoles={['LECTURER']}>
+                <LecturerClassesPage />
               </ProtectedRoute>
             }
           />
@@ -312,6 +316,14 @@ const AppRoutes: React.FC = () => {
             element={
               <ProtectedRoute allowedRoles={['USER']}>
                 <StaffDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="students"
+            element={
+              <ProtectedRoute allowedRoles={['USER']}>
+                <StudentsPage />
               </ProtectedRoute>
             }
           />
