@@ -8,6 +8,7 @@ import {
   FileText,
   HelpCircle,
   ClipboardList,
+  Users,
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import DashboardLayout from '../../components/common/Layout/DashboardLayout'
@@ -24,10 +25,8 @@ const StudentCoursesPage: React.FC = () => {
 
   const fetchEnrolledCourses = async () => {
     try {
-      const response = await axiosInstance.get('/dashboard/student')
-      // Assuming the student dashboard data contains enrolled modules/courses
-      // If there's a specific endpoint for student courses, use that instead.
-      setCourses(response.data.data.enrolledModules || [])
+      const response = await axiosInstance.get('/students/my-courses')
+      setCourses(response.data.data.courses || [])
     } catch (error) {
       console.error('Failed to fetch enrolled courses:', error)
     } finally {
@@ -151,6 +150,12 @@ const StudentCoursesPage: React.FC = () => {
                       <Clock className="h-4 w-4 mr-2" />
                       <span>{course.credits} Credits</span>
                     </div>
+                    {course.lecturer && (
+                      <div className="flex items-center text-sm text-gray-600 mt-2">
+                        <Users className="h-4 w-4 mr-2" />
+                        <span>{course.lecturer.name}</span>
+                      </div>
+                    )}
                   </div>
                 </div>
 
