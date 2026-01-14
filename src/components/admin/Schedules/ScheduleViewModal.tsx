@@ -79,6 +79,17 @@ const ScheduleViewModal: React.FC<ScheduleViewModalProps> = ({
     }
   }
 
+  const getTypeColor = (type: string) => {
+    switch (type) {
+      case 'ONLINE':
+        return 'bg-purple-100 text-purple-800'
+      case 'PHYSICAL':
+        return 'bg-amber-100 text-amber-800'
+      default:
+        return 'bg-gray-100 text-gray-800'
+    }
+  }
+
   if (!isOpen) return null
 
   return (
@@ -118,6 +129,9 @@ const ScheduleViewModal: React.FC<ScheduleViewModalProps> = ({
                       <h2 className="text-2xl font-bold text-gray-900">
                         {schedule.module?.moduleName}
                       </h2>
+                      <span className={`px-3 py-1 text-xs font-semibold rounded-full ${getTypeColor(schedule.type)}`}>
+                        {schedule.type || 'PHYSICAL'}
+                      </span>
                       <span className={`px-3 py-1 text-xs font-semibold rounded-full ${getStatusColor(schedule.status)}`}>
                         {schedule.status}
                       </span>
