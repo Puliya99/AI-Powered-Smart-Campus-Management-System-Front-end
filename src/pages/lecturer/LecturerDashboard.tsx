@@ -106,6 +106,12 @@ const LecturerDashboard: React.FC = () => {
       icon: Calendar,
       description: 'Check your full teaching schedule',
     },
+    {
+      name: 'My Classes',
+      href: '/lecturer/classes',
+      icon: BookOpen,
+      description: 'View and manage your assigned modules',
+    },
   ]
 
   return (
@@ -186,7 +192,7 @@ const LecturerDashboard: React.FC = () => {
                           </span>
                         </div>
                         <p className="text-xs text-gray-500 mt-1">
-                          {item.batch?.name} | {item.location || 'Online'}
+                          {item.batch?.name} | {item.location || 'Online'} | <span className={`font-bold ${item.type === 'ONLINE' ? 'text-purple-600' : 'text-amber-600'}`}>{item.type || 'PHYSICAL'}</span>
                         </p>
                       </div>
                     </div>
