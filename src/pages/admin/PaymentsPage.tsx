@@ -21,6 +21,7 @@ import PaymentModal from '../../components/admin/Payments/PaymentModal'
 import PaymentViewModal from '../../components/admin/Payments/PaymentViewModal'
 import axiosInstance from '../../services/api/axios.config'
 import toast from 'react-hot-toast'
+import { useAuth } from '../../context/AuthContext'
 
 interface Payment {
   id: string
@@ -49,6 +50,7 @@ interface Payment {
 }
 
 const PaymentsPage: React.FC = () => {
+  const { user } = useAuth()
   const [payments, setPayments] = useState<Payment[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
@@ -284,18 +286,20 @@ const PaymentsPage: React.FC = () => {
             </div>
 
             {/* Center Filter */}
-            <select
-              value={filters.centerId}
-              onChange={(e) => handleFilterChange('centerId', e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-            >
-              <option value="">All Centers</option>
-              {centers.map((center) => (
-                <option key={center.id} value={center.id}>
-                  {center.centerName}
-                </option>
-              ))}
-            </select>
+            {user?.role === 'ADMIN' && (
+              <select
+                value={filters.centerId}
+                onChange={(e) => handleFilterChange('centerId', e.target.value)}
+                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+              >
+                <option value="">All Centers</option>
+                {centers.map((center) => (
+                  <option key={center.id} value={center.id}>
+                    {center.centerName}
+                  </option>
+                ))}
+              </select>
+            )}
 
             {/* Status Filter */}
             <select

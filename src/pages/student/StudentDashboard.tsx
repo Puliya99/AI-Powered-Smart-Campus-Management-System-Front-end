@@ -79,7 +79,7 @@ const StudentDashboard: React.FC = () => {
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Student Dashboard</h1>
           <p className="text-gray-600 mt-1">
-            Welcome back, {dashboardData?.profile?.name}! Track your academic progress.
+            Welcome back, {dashboardData?.profile?.nameWithInitials || dashboardData?.profile?.name}! Track your academic progress.
           </p>
         </div>
 
@@ -120,7 +120,7 @@ const StudentDashboard: React.FC = () => {
                         <p className="text-xs text-gray-500">{item.startTime} - {item.endTime}</p>
                       </div>
                       <span className="text-xs font-medium text-primary-600 bg-primary-50 px-2 py-1 rounded">
-                        {item.location || 'Online'}
+                        {item.location || 'Online'} | {item.type || 'PHYSICAL'}
                       </span>
                     </div>
                   ))}
@@ -185,6 +185,10 @@ const StudentDashboard: React.FC = () => {
             <Link to="/student/courses" className="flex flex-col items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
               <BookOpen className="h-6 w-6 text-orange-600 mb-2" />
               <span className="text-sm font-medium">Courses</span>
+            </Link>
+            <Link to="/student/results" className="flex flex-col items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+              <Award className="h-6 w-6 text-yellow-600 mb-2" />
+              <span className="text-sm font-medium">Results</span>
             </Link>
           </div>
         </div>

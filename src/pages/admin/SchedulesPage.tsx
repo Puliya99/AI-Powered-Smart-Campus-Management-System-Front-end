@@ -17,6 +17,7 @@ import ScheduleModal from '../../components/admin/Schedules/ScheduleModal'
 import ScheduleViewModal from '../../components/admin/Schedules/ScheduleViewModal'
 import axiosInstance from '../../services/api/axios.config'
 import toast from 'react-hot-toast'
+import { useAuth } from '../../context/AuthContext'
 
 interface Schedule {
   id: string
@@ -25,6 +26,7 @@ interface Schedule {
   endTime: string
   lectureHall: string
   status: string
+  type: string
   module: {
     id: string
     moduleCode: string
@@ -51,6 +53,7 @@ interface Schedule {
 }
 
 const SchedulesPage: React.FC = () => {
+  const { user } = useAuth()
   const [schedules, setSchedules] = useState<Schedule[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
@@ -166,6 +169,17 @@ const SchedulesPage: React.FC = () => {
     }
   }
 
+  const getTypeColor = (type: string) => {
+    switch (type) {
+      case 'ONLINE':
+        return 'bg-purple-100 text-purple-800'
+      case 'PHYSICAL':
+        return 'bg-amber-100 text-amber-800'
+      default:
+        return 'bg-gray-100 text-gray-800'
+    }
+  }
+
   const formatDate = (date: string) => {
     return new Date(date).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -186,16 +200,18 @@ const SchedulesPage: React.FC = () => {
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Schedules</h1>
             <p className="text-gray-600 mt-1">
-              Manage class schedules and timetables
+              {user?.role === 'LECTURER' ? 'View your class schedules' : 'Manage class schedules and timetables'}
             </p>
           </div>
-          <button
-            onClick={() => setShowAddModal(true)}
-            className="flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition"
-          >
-            <Plus className="w-5 h-5 mr-2" />
-            Add Schedule
-          </button>
+          {(user?.role === 'ADMIN' || user?.role === 'USER') && (
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition"
+            >
+              <Plus className="w-5 h-5 mr-2" />
+              Add Schedule
+            </button>
+          )}
         </div>
 
         {/* Stats Cards */}
@@ -262,18 +278,20 @@ const SchedulesPage: React.FC = () => {
             </div>
 
             {/* Center Filter */}
-            <select
-              value={filters.centerId}
-              onChange={(e) => handleFilterChange('centerId', e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-            >
-              <option value="">All Centers</option>
-              {centers.map((center) => (
-                <option key={center.id} value={center.id}>
-                  {center.centerName}
-                </option>
-              ))}
-            </select>
+            {user?.role === 'ADMIN' && (
+              <select
+                value={filters.centerId}
+                onChange={(e) => handleFilterChange('centerId', e.target.value)}
+                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+              >
+                <option value="">All Centers</option>
+                {centers.map((center) => (
+                  <option key={center.id} value={center.id}>
+                    {center.centerName}
+                  </option>
+                ))}
+              </select>
+            )}
 
             {/* Status Filter */}
             <select
@@ -323,6 +341,13 @@ const SchedulesPage: React.FC = () => {
                       <div className="flex items-center justify-between mb-2">
                         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-100 text-primary-800">
                           {schedule.module.moduleCode}
+                        </span>
+                        <span
+                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getTypeColor(
+                            schedule.type || 'PHYSICAL'
+                          )}`}
+                        >
+                          {schedule.type || 'PHYSICAL'}
                         </span>
                         <span
                           className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
@@ -391,25 +416,29 @@ const SchedulesPage: React.FC = () => {
                         <Eye className="w-4 h-4 mr-1" />
                         View
                       </button>
-                      <button
-                        onClick={() => {
-                          setSelectedSchedule(schedule)
-                          setShowAddModal(true)
-                        }}
-                        className="flex-1 flex items-center justify-center px-3 py-2 text-sm text-green-600 bg-green-50 rounded-lg hover:bg-green-100 transition"
-                        title="Edit"
-                      >
-                        <Edit className="w-4 h-4 mr-1" />
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDelete(schedule.id)}
-                        className="flex-1 flex items-center justify-center px-3 py-2 text-sm text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition"
-                        title="Delete"
-                      >
-                        <Trash2 className="w-4 h-4 mr-1" />
-                        Delete
-                      </button>
+                      {(user?.role === 'ADMIN' || user?.role === 'USER') && (
+                        <>
+                          <button
+                            onClick={() => {
+                              setSelectedSchedule(schedule)
+                              setShowAddModal(true)
+                            }}
+                            className="flex-1 flex items-center justify-center px-3 py-2 text-sm text-green-600 bg-green-50 rounded-lg hover:bg-green-100 transition"
+                            title="Edit"
+                          >
+                            <Edit className="w-4 h-4 mr-1" />
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDelete(schedule.id)}
+                            className="flex-1 flex items-center justify-center px-3 py-2 text-sm text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition"
+                            title="Delete"
+                          >
+                            <Trash2 className="w-4 h-4 mr-1" />
+                            Delete
+                          </button>
+                        </>
+                      )}
                     </div>
                   </div>
                 ))}

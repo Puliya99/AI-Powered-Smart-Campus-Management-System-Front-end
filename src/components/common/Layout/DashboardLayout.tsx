@@ -22,6 +22,7 @@ import {
   CreditCard,
   MessageSquare,
   Building2,
+  Video,
 } from 'lucide-react'
 
 interface DashboardLayoutProps {
@@ -58,6 +59,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         { name: 'Attendance', href: '/admin/attendance', icon: ClipboardList },
         { name: 'Payments', href: '/admin/payments', icon: DollarSign },
         { name: 'Reports', href: '/admin/reports', icon: FileText },
+        { name: 'Performance', href: '/admin/performance', icon: Award },
         { name: 'Settings', href: '/admin/settings', icon: Settings },
       ],
       student: [
@@ -68,11 +70,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         },
         { name: 'My Courses', href: '/student/courses', icon: BookOpen },
         { name: 'Schedule', href: '/student/schedule', icon: Calendar },
-        {
-          name: 'Attendance',
-          href: '/student/attendance',
-          icon: ClipboardList,
-        },
         { name: 'Assignments', href: '/student/assignments', icon: FileText },
         { name: 'Results', href: '/student/results', icon: Award },
         { name: 'Payments', href: '/student/payments', icon: CreditCard },
@@ -90,9 +87,11 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
           href: '/lecturer/attendance',
           icon: ClipboardList,
         },
+        { name: 'Materials', href: '/lecturer/materials', icon: FileText },
+        { name: 'Online Classes', href: '/lecturer/online-classes', icon: Video },
+        { name: 'Online Tests', href: '/lecturer/quizzes', icon: ClipboardList },
         { name: 'Assignments', href: '/lecturer/assignments', icon: FileText },
         { name: 'Results', href: '/lecturer/results', icon: Award },
-        { name: 'Materials', href: '/lecturer/materials', icon: FileText },
         { name: 'Performance', href: '/lecturer/performance', icon: Award },
       ],
       user: [

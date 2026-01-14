@@ -20,8 +20,10 @@ import UserModal from '../../components/admin/Users/UserModal';
 import UserViewModal from '../../components/admin/Users/UserViewModal';
 import axiosInstance from '../../services/api/axios.config';
 import toast from 'react-hot-toast';
+import { useAuth } from '../../context/AuthContext';
 
 const UsersPage: React.FC = () => {
+  const { user } = useAuth();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -213,18 +215,20 @@ const UsersPage: React.FC = () => {
                 />
               </div>
             </div>
-            <select
-              value={filters.centerId}
-              onChange={(e) => handleFilterChange('centerId', e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-            >
-              <option value="">All Centers</option>
-              {centers.map((center) => (
-                <option key={center.id} value={center.id}>
-                  {center.centerName}
-                </option>
-              ))}
-            </select>
+            {user?.role === 'ADMIN' && (
+              <select
+                value={filters.centerId}
+                onChange={(e) => handleFilterChange('centerId', e.target.value)}
+                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+              >
+                <option value="">All Centers</option>
+                {centers.map((center) => (
+                  <option key={center.id} value={center.id}>
+                    {center.centerName}
+                  </option>
+                ))}
+              </select>
+            )}
             <select
               value={filters.role}
               onChange={(e) => handleFilterChange('role', e.target.value)}

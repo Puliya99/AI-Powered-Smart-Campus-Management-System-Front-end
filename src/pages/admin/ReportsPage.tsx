@@ -5,8 +5,10 @@ import ReportGenerator from '../../components/admin/Reports/ReportGenerator';
 import ReportPreview from '../../components/admin/Reports/ReportPreview';
 import reportService from '../../services/report.service';
 import axiosInstance from '../../services/api/axios.config';
+import { useAuth } from '../../context/AuthContext';
 
 const ReportsPage: React.FC = () => {
+  const { user } = useAuth();
   const [reportData, setReportData] = useState<{ type: string; data: any[] } | null>(null);
   const [selectedCenter, setSelectedCenter] = useState('');
   const [centers, setCenters] = useState<any[]>([]);
@@ -55,20 +57,22 @@ const ReportsPage: React.FC = () => {
             <h1 className="text-3xl font-bold text-gray-900">Reports Management</h1>
             <p className="text-gray-600 mt-1">Generate and view campus reports</p>
           </div>
-          <div className="w-full md:w-64">
-            <select
-              value={selectedCenter}
-              onChange={(e) => setSelectedCenter(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-            >
-              <option value="">All Centers</option>
-              {centers.map((center) => (
-                <option key={center.id} value={center.id}>
-                  {center.centerName}
-                </option>
-              ))}
-            </select>
-          </div>
+          {user?.role === 'ADMIN' && (
+            <div className="w-full md:w-64">
+              <select
+                value={selectedCenter}
+                onChange={(e) => setSelectedCenter(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              >
+                <option value="">All Centers</option>
+                {centers.map((center) => (
+                  <option key={center.id} value={center.id}>
+                    {center.centerName}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
         </div>
 
         {/* Stats Grid */}
