@@ -101,12 +101,20 @@ const LecturerClassesPage: React.FC = () => {
                 </div>
 
                 <div className="px-5 py-4 bg-gray-50 border-t border-gray-200 flex items-center justify-between">
-                  <Link 
-                    to={`/lecturer/attendance?moduleId=${module.id}`}
-                    className="text-sm font-medium text-primary-600 hover:text-primary-700"
-                  >
-                    View Attendance
-                  </Link>
+                  <div className="flex space-x-4">
+                    <Link 
+                      to={`/lecturer/attendance?moduleId=${module.id}`}
+                      className="text-sm font-medium text-primary-600 hover:text-primary-700"
+                    >
+                      Attendance
+                    </Link>
+                    <Link 
+                      to={`/lecturer/modules/${module.id}/results`}
+                      className="text-sm font-medium text-rose-600 hover:text-rose-700"
+                    >
+                      Results
+                    </Link>
+                  </div>
                   <Link 
                     to={`/lecturer/modules/${module.id}`}
                     className="flex items-center text-sm font-medium text-gray-700 hover:text-gray-900"
