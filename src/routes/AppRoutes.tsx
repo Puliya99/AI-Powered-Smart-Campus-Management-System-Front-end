@@ -3,14 +3,12 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import ProtectedRoute from './ProtectedRoute'
 import PublicRoute from './PublicRoute'
 
-
 // Lazy load pages for better performance
 const Login = React.lazy(() => import('../pages/auth/Login'))
 const Register = React.lazy(() => import('../pages/auth/Register'))
 const ForgotPassword = React.lazy(() => import('../pages/auth/ForgotPassword'))
 const ResetPassword = React.lazy(() => import('../pages/auth/ResetPassword'))
 const NotFound = React.lazy(() => import('../pages/NotFound'))
-
 
 // Admin pages
 const AdminDashboard = React.lazy(() => import('../pages/admin/AdminDashboard'))
@@ -30,6 +28,9 @@ const ProfilePage = React.lazy(() => import('../pages/common/ProfilePage'))
 const StudentDashboard = React.lazy(
   () => import('../pages/student/StudentDashboard')
 )
+const StudentCoursesPage = React.lazy(
+  () => import('../pages/student/StudentCoursesPage')
+)
 const PaymentsPage = React.lazy(() => import('../pages/admin/PaymentsPage'))
 
 // Lecturer pages
@@ -39,9 +40,38 @@ const LecturerDashboard = React.lazy(
 const LecturerClassesPage = React.lazy(
   () => import('../pages/lecturer/LecturerClassesPage')
 )
-const AttendancePage = React.lazy(
-  () => import('../pages/admin/AttendancePage')
+const LecturerModuleDetailsPage = React.lazy(
+  () => import('../pages/lecturer/ModuleDetailsPage')
 )
+const LectureMaterialsPage = React.lazy(
+  () => import('../pages/common/LectureMaterialsPage')
+)
+const AttendancePage = React.lazy(() => import('../pages/admin/AttendancePage'))
+const OnlineClassesPage = React.lazy(
+  () => import('../pages/lecturer/OnlineClassesPage')
+)
+const VideoRoom = React.lazy(() => import('../pages/common/VideoRoom'))
+
+// Quiz pages
+const LecturerQuizzesPage = React.lazy(() => import('../pages/lecturer/QuizzesPage'))
+const CreateQuizPage = React.lazy(() => import('../pages/lecturer/CreateQuizPage'))
+const EditQuizPage = React.lazy(() => import('../pages/lecturer/EditQuizPage'))
+const QuizResultsSummaryPage = React.lazy(() => import('../pages/lecturer/QuizResultsSummaryPage'))
+const StudentQuizzesPage = React.lazy(() => import('../pages/student/QuizzesPage'))
+const QuizAttemptPage = React.lazy(() => import('../pages/student/QuizAttemptPage'))
+const QuizResultPage = React.lazy(() => import('../pages/student/QuizResultPage'))
+const StudentResultsPage = React.lazy(() => import('../pages/student/StudentResultsPage'))
+
+// Assignment pages
+const LecturerAssignmentsPage = React.lazy(() => import('../pages/lecturer/AssignmentsPage'))
+const CreateAssignmentPage = React.lazy(() => import('../pages/lecturer/CreateAssignmentPage'))
+const EditAssignmentPage = React.lazy(() => import('../pages/lecturer/EditAssignmentPage'))
+const AssignmentSubmissionsPage = React.lazy(() => import('../pages/lecturer/AssignmentSubmissionsPage'))
+const StudentAssignmentsPage = React.lazy(() => import('../pages/student/AssignmentsPage'))
+const ModuleResultsPage = React.lazy(() => import('../pages/lecturer/ModuleResultsPage'))
+const LecturePerformancePage = React.lazy(() => import('../pages/lecturer/LecturePerformancePage'))
+const LecturerSettingsPage = React.lazy(() => import('../pages/lecturer/LecturerSettingsPage'))
+const AdminPerformancePage = React.lazy(() => import('../pages/admin/AdminPerformancePage'))
 
 // Staff pages
 const StaffDashboard = React.lazy(() => import('../pages/staff/StaffDashboard'))
@@ -223,6 +253,14 @@ const AppRoutes: React.FC = () => {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="performance"
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN']}>
+                <AdminPerformancePage />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Add more admin routes */}
         </Route>
@@ -246,10 +284,90 @@ const AppRoutes: React.FC = () => {
             }
           />
           <Route
+            path="courses"
+            element={
+              <ProtectedRoute allowedRoles={['STUDENT']}>
+                <StudentCoursesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="profile"
             element={
               <ProtectedRoute allowedRoles={['STUDENT']}>
                 <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="results"
+            element={
+              <ProtectedRoute allowedRoles={['STUDENT']}>
+                <StudentResultsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="modules/:moduleId/materials"
+            element={
+              <ProtectedRoute allowedRoles={['STUDENT']}>
+                <LectureMaterialsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="modules/:moduleId/quizzes"
+            element={
+              <ProtectedRoute allowedRoles={['STUDENT']}>
+                <StudentQuizzesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="quizzes"
+            element={
+              <ProtectedRoute allowedRoles={['STUDENT']}>
+                <StudentQuizzesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="quizzes/:quizId/attempt"
+            element={
+              <ProtectedRoute allowedRoles={['STUDENT']}>
+                <QuizAttemptPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="quizzes/attempts/:attemptId/result"
+            element={
+              <ProtectedRoute allowedRoles={['STUDENT']}>
+                <QuizResultPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="modules/:moduleId/assignments"
+            element={
+              <ProtectedRoute allowedRoles={['STUDENT']}>
+                <StudentAssignmentsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="assignments"
+            element={
+              <ProtectedRoute allowedRoles={['STUDENT']}>
+                <StudentAssignmentsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="materials"
+            element={
+              <ProtectedRoute allowedRoles={['STUDENT']}>
+                <LectureMaterialsPage />
               </ProtectedRoute>
             }
           />
@@ -283,10 +401,138 @@ const AppRoutes: React.FC = () => {
             }
           />
           <Route
+            path="modules/:id"
+            element={
+              <ProtectedRoute allowedRoles={['LECTURER']}>
+                <LecturerModuleDetailsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="modules/:moduleId/materials"
+            element={
+              <ProtectedRoute allowedRoles={['LECTURER']}>
+                <LectureMaterialsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="modules/:moduleId/quizzes"
+            element={
+              <ProtectedRoute allowedRoles={['LECTURER']}>
+                <LecturerQuizzesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="modules/:moduleId/quizzes/create"
+            element={
+              <ProtectedRoute allowedRoles={['LECTURER']}>
+                <CreateQuizPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="quizzes/:quizId/edit"
+            element={
+              <ProtectedRoute allowedRoles={['LECTURER']}>
+                <EditQuizPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="quizzes/:quizId/results"
+            element={
+              <ProtectedRoute allowedRoles={['LECTURER']}>
+                <QuizResultsSummaryPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="modules/:moduleId/assignments"
+            element={
+              <ProtectedRoute allowedRoles={['LECTURER']}>
+                <LecturerAssignmentsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="assignments"
+            element={
+              <ProtectedRoute allowedRoles={['LECTURER']}>
+                <LecturerAssignmentsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="modules/:moduleId/assignments/create"
+            element={
+              <ProtectedRoute allowedRoles={['LECTURER']}>
+                <CreateAssignmentPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="modules/:moduleId/results"
+            element={
+              <ProtectedRoute allowedRoles={['LECTURER']}>
+                <ModuleResultsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="results"
+            element={
+              <ProtectedRoute allowedRoles={['LECTURER']}>
+                <ModuleResultsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="assignments/:assignmentId/edit"
+            element={
+              <ProtectedRoute allowedRoles={['LECTURER']}>
+                <EditAssignmentPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="assignments/:assignmentId/submissions"
+            element={
+              <ProtectedRoute allowedRoles={['LECTURER']}>
+                <AssignmentSubmissionsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="materials"
+            element={
+              <ProtectedRoute allowedRoles={['LECTURER']}>
+                <LectureMaterialsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="quizzes"
+            element={
+              <ProtectedRoute allowedRoles={['LECTURER']}>
+                <LecturerQuizzesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="attendance"
             element={
               <ProtectedRoute allowedRoles={['LECTURER']}>
                 <AttendancePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="schedule"
+            element={
+              <ProtectedRoute allowedRoles={['LECTURER']}>
+                <SchedulePage />
               </ProtectedRoute>
             }
           />
@@ -298,8 +544,41 @@ const AppRoutes: React.FC = () => {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="performance"
+            element={
+              <ProtectedRoute allowedRoles={['LECTURER']}>
+                <LecturePerformancePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="online-classes"
+            element={
+              <ProtectedRoute allowedRoles={['LECTURER']}>
+                <OnlineClassesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="settings"
+            element={
+              <ProtectedRoute allowedRoles={['LECTURER']}>
+                <LecturerSettingsPage />
+              </ProtectedRoute>
+            }
+          />
           {/* Add more lecturer routes */}
         </Route>
+
+        <Route
+          path="/video/room/:meetingCode"
+          element={
+            <ProtectedRoute allowedRoles={['LECTURER', 'STUDENT']}>
+              <VideoRoom />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Staff Routes - Only accessible by USER (staff) */}
         <Route path="/user">
