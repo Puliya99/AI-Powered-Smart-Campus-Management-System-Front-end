@@ -16,6 +16,7 @@ import BatchModal from '../../components/admin/Batches/BatchModal'
 import BatchViewModal from '../../components/admin/Batches/BatchViewModal'
 import axiosInstance from '../../services/api/axios.config'
 import toast from 'react-hot-toast'
+import { useAuth } from '../../context/AuthContext'
 
 interface Batch {
   id: string
@@ -37,6 +38,7 @@ interface Batch {
 }
 
 const BatchesPage: React.FC = () => {
+  const { user } = useAuth()
   const [batches, setBatches] = useState<Batch[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
@@ -235,18 +237,20 @@ const BatchesPage: React.FC = () => {
 
             <div className="flex gap-4">
               {/* Center Filter */}
-              <select
-                value={filters.centerId}
-                onChange={(e) => handleFilterChange('centerId', e.target.value)}
-                className="w-full md:w-48 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-              >
-                <option value="">All Centers</option>
-                {centers.map((center) => (
-                  <option key={center.id} value={center.id}>
-                    {center.centerName}
-                  </option>
-                ))}
-              </select>
+              {user?.role === 'ADMIN' && (
+                <select
+                  value={filters.centerId}
+                  onChange={(e) => handleFilterChange('centerId', e.target.value)}
+                  className="w-full md:w-48 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                >
+                  <option value="">All Centers</option>
+                  {centers.map((center) => (
+                    <option key={center.id} value={center.id}>
+                      {center.centerName}
+                    </option>
+                  ))}
+                </select>
+              )}
 
               {/* Status Filter */}
               <select
