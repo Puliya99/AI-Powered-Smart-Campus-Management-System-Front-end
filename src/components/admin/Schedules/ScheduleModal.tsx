@@ -20,6 +20,7 @@ interface FormData {
   endTime: string;
   lectureHall: string;
   status: string;
+  type: string;
 }
 
 interface Module {
@@ -70,6 +71,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
     endTime: '',
     lectureHall: '',
     status: 'SCHEDULED',
+    type: 'PHYSICAL',
   });
 
   useEffect(() => {
@@ -90,6 +92,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
         endTime: schedule.endTime || '',
         lectureHall: schedule.lectureHall || '',
         status: schedule.status || 'SCHEDULED',
+        type: schedule.type || 'PHYSICAL',
       });
     } else {
       setFormData({
@@ -102,6 +105,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
         endTime: '',
         lectureHall: '',
         status: 'SCHEDULED',
+        type: 'PHYSICAL',
       });
     }
     setConflicts([]);
@@ -423,6 +427,23 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
                         <option value="COMPLETED">Completed</option>
                         <option value="CANCELLED">Cancelled</option>
                         <option value="RESCHEDULED">Rescheduled</option>
+                      </select>
+                    </div>
+
+                    {/* Type */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Class Type <span className="text-red-500">*</span>
+                      </label>
+                      <select
+                        name="type"
+                        value={formData.type}
+                        onChange={handleChange}
+                        required
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      >
+                        <option value="PHYSICAL">Physical</option>
+                        <option value="ONLINE">Online</option>
                       </select>
                     </div>
                   </div>
