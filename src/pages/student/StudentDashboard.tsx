@@ -7,7 +7,8 @@ import {
   Award, 
   Clock, 
   CheckCircle,
-  CreditCard
+  CreditCard,
+  Video
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import DashboardLayout from '../../components/common/Layout/DashboardLayout'
@@ -185,6 +186,10 @@ const StudentDashboard: React.FC = () => {
             <Link to="/student/courses" className="flex flex-col items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
               <BookOpen className="h-6 w-6 text-orange-600 mb-2" />
               <span className="text-sm font-medium">Courses</span>
+            </Link>
+            <Link to="/student/online-classes" className="flex flex-col items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+              <Video className="h-6 w-6 text-red-600 mb-2" />
+              <span className="text-sm font-medium">Online Classes</span>
             </Link>
             <Link to="/student/results" className="flex flex-col items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
               <Award className="h-6 w-6 text-yellow-600 mb-2" />
