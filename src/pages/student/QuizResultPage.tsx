@@ -34,15 +34,97 @@ const QuizResultPage: React.FC = () => {
     );
   }
 
-  if (!attempt) return null;
+  if (!attempt || !attempt.quiz) return null;
 
-  const scorePercentage = (attempt.score / attempt.quiz.totalMarks) * 100;
+  if (attempt.isResultsPending) {
+    return (
+      <DashboardLayout>
+        <div className="max-w-4xl mx-auto space-y-6">
+          <div className="flex items-center justify-between">
+            <Link 
+              to={attempt.quiz.module ? `/student/modules/${attempt.quiz.module.id}/quizzes` : '/student/quizzes'} 
+              className="flex items-center text-gray-500 hover:text-primary-600"
+            >
+              <ArrowLeft className="h-4 w-4 mr-1" /> Back to Quizzes
+            </Link>
+            <h1 className="text-2xl font-bold">Results Pending</h1>
+            <div className="w-10"></div>
+          </div>
+
+          <div className="bg-white p-12 rounded-2xl border border-gray-200 shadow-sm text-center space-y-6">
+            <div className="inline-flex items-center justify-center p-6 bg-blue-50 rounded-full mb-2">
+              <Clock className="h-16 w-16 text-primary-600" />
+            </div>
+            <div>
+              <h2 className="text-3xl font-bold text-gray-900 mb-2">{attempt.quiz.title}</h2>
+              <p className="text-xl text-gray-600 font-medium">Your submission has been received!</p>
+            </div>
+            
+            <div className="max-w-md mx-auto p-6 bg-gray-50 rounded-xl border border-gray-200">
+              <p className="text-gray-700">
+                To maintain academic integrity, results are only released once the allocated time for this quiz has expired for all students.
+              </p>
+            </div>
+
+            <p className="text-gray-500">
+              Please check back later to view your score and feedback.
+            </p>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  if (attempt.status === 'CANCELLED') {
+    return (
+      <DashboardLayout>
+        <div className="max-w-4xl mx-auto space-y-6">
+          <div className="flex items-center justify-between">
+            <Link 
+              to={attempt.quiz.module ? `/student/modules/${attempt.quiz.module.id}/quizzes` : '/student/quizzes'} 
+              className="flex items-center text-gray-500 hover:text-primary-600"
+            >
+              <ArrowLeft className="h-4 w-4 mr-1" /> Back to Quizzes
+            </Link>
+            <h1 className="text-2xl font-bold">Attempt Cancelled</h1>
+            <div className="w-10"></div>
+          </div>
+
+          <div className="bg-white p-12 rounded-2xl border-2 border-red-100 shadow-sm text-center space-y-6">
+            <div className="inline-flex items-center justify-center p-6 bg-red-50 rounded-full mb-2">
+              <XCircle className="h-16 w-16 text-red-600" />
+            </div>
+            <div>
+              <h2 className="text-3xl font-bold text-gray-900 mb-2">{attempt.quiz.title}</h2>
+              <p className="text-xl text-red-600 font-bold uppercase tracking-wide">Security Violation Detected</p>
+            </div>
+            
+            <div className="max-w-md mx-auto p-6 bg-gray-50 rounded-xl border border-gray-200">
+              <p className="text-gray-700 font-medium mb-2">Reason for cancellation:</p>
+              <p className="text-red-700 italic">"{attempt.reason || 'Multiple security violations reported by AI monitoring system.'}"</p>
+            </div>
+
+            <p className="text-gray-500 max-w-lg mx-auto">
+              If you believe this was an error, please contact your module lecturer to discuss a possible restart of your attempt.
+            </p>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  const scorePercentage = attempt.quiz.totalMarks > 0 
+    ? (attempt.score / attempt.quiz.totalMarks) * 100 
+    : 0;
 
   return (
     <DashboardLayout>
       <div className="max-w-4xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
-          <Link to={`/student/modules/${attempt.quiz.module.id}/quizzes`} className="flex items-center text-gray-500 hover:text-primary-600">
+          <Link 
+            to={attempt.quiz.module ? `/student/modules/${attempt.quiz.module.id}/quizzes` : '/student/quizzes'} 
+            className="flex items-center text-gray-500 hover:text-primary-600"
+          >
             <ArrowLeft className="h-4 w-4 mr-1" /> Back to Quizzes
           </Link>
           <h1 className="text-2xl font-bold">Quiz Results</h1>
