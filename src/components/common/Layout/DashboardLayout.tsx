@@ -60,6 +60,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         { name: 'Payments', href: '/admin/payments', icon: DollarSign },
         { name: 'Reports', href: '/admin/reports', icon: FileText },
         { name: 'Performance', href: '/admin/performance', icon: Award },
+        { name: 'Feedback', href: '/admin/feedback', icon: MessageSquare },
         { name: 'Settings', href: '/admin/settings', icon: Settings },
       ],
       student: [
@@ -71,7 +72,11 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         { name: 'My Courses', href: '/student/courses', icon: BookOpen },
         { name: 'Schedule', href: '/student/schedule', icon: Calendar },
         { name: 'Materials', href: '/student/materials', icon: FileText },
-        { name: 'Online Classes', href: '/student/online-classes', icon: Video },
+        {
+          name: 'Online Classes',
+          href: '/student/online-classes',
+          icon: Video,
+        },
         { name: 'Online Tests', href: '/student/quizzes', icon: ClipboardList },
         { name: 'Assignments', href: '/student/assignments', icon: FileText },
         { name: 'Results', href: '/student/results', icon: Award },
@@ -92,11 +97,20 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
           icon: ClipboardList,
         },
         { name: 'Materials', href: '/lecturer/materials', icon: FileText },
-        { name: 'Online Classes', href: '/lecturer/online-classes', icon: Video },
-        { name: 'Online Tests', href: '/lecturer/quizzes', icon: ClipboardList },
+        {
+          name: 'Online Classes',
+          href: '/lecturer/online-classes',
+          icon: Video,
+        },
+        {
+          name: 'Online Tests',
+          href: '/lecturer/quizzes',
+          icon: ClipboardList,
+        },
         { name: 'Assignments', href: '/lecturer/assignments', icon: FileText },
         { name: 'Results', href: '/lecturer/results', icon: Award },
         { name: 'Performance', href: '/lecturer/performance', icon: Award },
+        { name: 'Feedback', href: '/lecturer/feedback', icon: MessageSquare },
       ],
       user: [
         { name: 'Dashboard', href: '/user/dashboard', icon: LayoutDashboard },
@@ -105,6 +119,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         { name: 'Documents', href: '/user/documents', icon: FileText },
         { name: 'Reports', href: '/user/reports', icon: FileText },
         { name: 'Users', href: '/user/users', icon: Users },
+        { name: 'Feedback', href: '/user/feedback', icon: MessageSquare },
         { name: 'Settings', href: '/user/settings', icon: Settings },
       ],
     }
