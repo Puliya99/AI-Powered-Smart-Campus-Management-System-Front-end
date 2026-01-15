@@ -65,6 +65,8 @@ const QuizAttemptPage = React.lazy(() => import('../pages/student/QuizAttemptPag
 const QuizResultPage = React.lazy(() => import('../pages/student/QuizResultPage'))
 const StudentResultsPage = React.lazy(() => import('../pages/student/StudentResultsPage'))
 const StudentPaymentsPage = React.lazy(() => import('../pages/student/StudentPaymentsPage'))
+const StudentFeedbackPage = React.lazy(() => import('../pages/student/StudentFeedbackPage'))
+const FeedbackManagementPage = React.lazy(() => import('../pages/admin/FeedbackManagementPage'))
 
 // Assignment pages
 const LecturerAssignmentsPage = React.lazy(() => import('../pages/lecturer/AssignmentsPage'))
@@ -266,6 +268,14 @@ const AppRoutes: React.FC = () => {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="feedback"
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN']}>
+                <FeedbackManagementPage />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Add more admin routes */}
         </Route>
@@ -397,6 +407,14 @@ const AppRoutes: React.FC = () => {
             element={
               <ProtectedRoute allowedRoles={['STUDENT']}>
                 <StudentPaymentsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="feedback"
+            element={
+              <ProtectedRoute allowedRoles={['STUDENT']}>
+                <StudentFeedbackPage />
               </ProtectedRoute>
             }
           />
@@ -597,6 +615,14 @@ const AppRoutes: React.FC = () => {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="feedback"
+            element={
+              <ProtectedRoute allowedRoles={['LECTURER']}>
+                <FeedbackManagementPage />
+              </ProtectedRoute>
+            }
+          />
           {/* Add more lecturer routes */}
         </Route>
 
@@ -664,6 +690,14 @@ const AppRoutes: React.FC = () => {
             element={
               <ProtectedRoute allowedRoles={['USER']}>
                 <SettingsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="feedback"
+            element={
+              <ProtectedRoute allowedRoles={['USER']}>
+                <FeedbackManagementPage />
               </ProtectedRoute>
             }
           />
