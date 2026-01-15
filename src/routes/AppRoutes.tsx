@@ -66,6 +66,7 @@ const QuizResultPage = React.lazy(() => import('../pages/student/QuizResultPage'
 const StudentResultsPage = React.lazy(() => import('../pages/student/StudentResultsPage'))
 const StudentPaymentsPage = React.lazy(() => import('../pages/student/StudentPaymentsPage'))
 const StudentFeedbackPage = React.lazy(() => import('../pages/student/StudentFeedbackPage'))
+const StudentSettingsPage = React.lazy(() => import('../pages/student/StudentSettingsPage'))
 const FeedbackManagementPage = React.lazy(() => import('../pages/admin/FeedbackManagementPage'))
 
 // Assignment pages
@@ -415,6 +416,14 @@ const AppRoutes: React.FC = () => {
             element={
               <ProtectedRoute allowedRoles={['STUDENT']}>
                 <StudentFeedbackPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="settings"
+            element={
+              <ProtectedRoute allowedRoles={['STUDENT']}>
+                <StudentSettingsPage />
               </ProtectedRoute>
             }
           />

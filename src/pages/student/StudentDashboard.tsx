@@ -175,10 +175,6 @@ const StudentDashboard: React.FC = () => {
               <FileText className="h-6 w-6 text-blue-600 mb-2" />
               <span className="text-sm font-medium">Assignments</span>
             </Link>
-            <Link to="/student/attendance" className="flex flex-col items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-              <CheckCircle className="h-6 w-6 text-green-600 mb-2" />
-              <span className="text-sm font-medium">Attendance</span>
-            </Link>
             <Link to="/student/payments" className="flex flex-col items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
               <CreditCard className="h-6 w-6 text-purple-600 mb-2" />
               <span className="text-sm font-medium">Payments</span>
