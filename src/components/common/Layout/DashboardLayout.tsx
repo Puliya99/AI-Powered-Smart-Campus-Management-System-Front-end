@@ -82,6 +82,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
           icon: LayoutDashboard,
         },
         { name: 'My Classes', href: '/lecturer/classes', icon: BookOpen },
+        { name: 'Schedule', href: '/lecturer/schedule', icon: Calendar },
         {
           name: 'Attendance',
           href: '/lecturer/attendance',
