@@ -4,11 +4,12 @@ import { Camera, CameraOff, AlertTriangle } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 interface FaceDetectionCameraProps {
-  onViolation: (type: 'NO_FACE' | 'MULTIPLE_FACES' | 'CAMERA_DISABLED', details?: string) => void;
+  onViolation: (type: 'NO_FACE' | 'MULTIPLE_FACES' | 'CAMERA_DISABLED' | 'NONE', details?: string, shouldCancel?: boolean) => void;
   isActive: boolean;
+  isCameraOff?: boolean;
 }
 
-const FaceDetectionCamera: React.FC<FaceDetectionCameraProps> = ({ onViolation, isActive }) => {
+const FaceDetectionCamera: React.FC<FaceDetectionCameraProps> = ({ onViolation, isActive, isCameraOff = false }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [modelsLoaded, setModelsLoaded] = useState(false);
   const [cameraError, setCameraError] = useState(false);
@@ -16,6 +17,8 @@ const FaceDetectionCamera: React.FC<FaceDetectionCameraProps> = ({ onViolation, 
   
   const noFaceTimer = useRef<NodeJS.Timeout | null>(null);
   const noFaceCount = useRef(0);
+  const multipleFacesCount = useRef(0);
+  const cameraOffCount = useRef(0);
 
   useEffect(() => {
     const loadModels = async () => {
@@ -35,12 +38,46 @@ const FaceDetectionCamera: React.FC<FaceDetectionCameraProps> = ({ onViolation, 
 
   useEffect(() => {
     if (modelsLoaded && isActive && !cameraError) {
-      startVideo();
+      if (isCameraOff) {
+        stopVideo();
+        // Start counting for CAMERA_DISABLED violation if not already warning
+        // but we'll handle this in a separate interval or effect to follow the 10s rule
+      } else {
+        startVideo();
+        cameraOffCount.current = 0; // Reset if camera is back on
+      }
     } else {
       stopVideo();
     }
     return () => stopVideo();
-  }, [modelsLoaded, isActive, cameraError]);
+  }, [modelsLoaded, isActive, cameraError, isCameraOff]);
+
+  // Separate interval for Camera Off check to allow the same 10s grace period logic
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (isActive && isCameraOff && !cameraError) {
+      interval = setInterval(() => {
+        cameraOffCount.current += 1;
+        if (cameraOffCount.current === 1) {
+          onViolation('CAMERA_DISABLED', 'Camera was manually turned off');
+          toast.error('Camera must be ON during the quiz!', { duration: 3000 });
+        }
+        if (cameraOffCount.current >= 10) {
+          onViolation('CAMERA_DISABLED', 'Camera remained off for 10 seconds', true);
+          cameraOffCount.current = 0;
+        }
+      }, 1000);
+    } else {
+      cameraOffCount.current = 0;
+      // Trigger clear check
+      if (isActive && modelsLoaded && !cameraError) {
+         if (noFaceCount.current === 0 && multipleFacesCount.current === 0) {
+           onViolation('NONE');
+         }
+      }
+    }
+    return () => clearInterval(interval);
+  }, [isActive, isCameraOff, cameraError, onViolation, modelsLoaded]);
 
   const startVideo = async () => {
     try {
@@ -52,7 +89,7 @@ const FaceDetectionCamera: React.FC<FaceDetectionCameraProps> = ({ onViolation, 
     } catch (err) {
       console.error('Error accessing webcam:', err);
       setCameraError(true);
-      onViolation('CAMERA_DISABLED', 'Could not access webcam');
+      onViolation('CAMERA_DISABLED', 'Could not access webcam', true); // Critical if hardware error
       toast.error('Webcam access is required for this quiz');
     }
   };
@@ -76,21 +113,41 @@ const FaceDetectionCamera: React.FC<FaceDetectionCameraProps> = ({ onViolation, 
             new faceapi.TinyFaceDetectorOptions()
           );
 
+          // Handle NO_FACE
           if (detections.length === 0) {
             noFaceCount.current += 1;
-            if (noFaceCount.current === 5) { // ~5 seconds (interval is 1s)
+            if (noFaceCount.current === 1) {
+               onViolation('NO_FACE', 'No face detected');
+            }
+            if (noFaceCount.current === 5) { // ~5 seconds
               toast.error('Face not detected! Please stay in front of the camera.', { duration: 3000 });
-              onViolation('NO_FACE', 'No face detected for 5 seconds');
             }
             if (noFaceCount.current >= 10) {
-               onViolation('NO_FACE', 'No face detected for 10 seconds');
+               onViolation('NO_FACE', 'No face detected for 10 seconds', true);
+               noFaceCount.current = 0;
             }
-          } else if (detections.length > 1) {
-            noFaceCount.current = 0;
-            onViolation('MULTIPLE_FACES', `${detections.length} faces detected`);
-            toast.error('Multiple faces detected!', { duration: 3000 });
           } else {
             noFaceCount.current = 0;
+          }
+
+          // Handle MULTIPLE_FACES
+          if (detections.length > 1) {
+            multipleFacesCount.current += 1;
+            if (multipleFacesCount.current === 1) {
+              onViolation('MULTIPLE_FACES', `${detections.length} faces detected`);
+              toast.error('Multiple faces detected!', { duration: 3000 });
+            }
+            if (multipleFacesCount.current >= 10) {
+              onViolation('MULTIPLE_FACES', 'Multiple faces detected for 10 seconds', true);
+              multipleFacesCount.current = 0;
+            }
+          } else {
+            multipleFacesCount.current = 0;
+          }
+
+          // Trigger clear if all counts are back to 0
+          if (noFaceCount.current === 0 && multipleFacesCount.current === 0 && cameraOffCount.current === 0) {
+            onViolation('NONE');
           }
         }
       }, 1000);
@@ -100,24 +157,31 @@ const FaceDetectionCamera: React.FC<FaceDetectionCameraProps> = ({ onViolation, 
 
   return (
     <div className="fixed bottom-4 right-4 w-48 h-36 bg-gray-900 rounded-lg overflow-hidden border-2 border-primary-500 shadow-2xl z-50">
-      {!cameraError ? (
-        <video
-          ref={videoRef}
-          autoPlay
-          muted
-          playsInline
-          className="w-full h-full object-cover mirror"
-        />
+      {!isCameraOff ? (
+        !cameraError ? (
+          <video
+            ref={videoRef}
+            autoPlay
+            muted
+            playsInline
+            className="w-full h-full object-cover mirror"
+          />
+        ) : (
+          <div className="w-full h-full flex flex-col items-center justify-center bg-gray-800 text-red-500 p-2 text-center">
+            <CameraOff className="w-8 h-8 mb-2" />
+            <span className="text-[10px] font-bold uppercase tracking-wider">Camera Required</span>
+          </div>
+        )
       ) : (
-        <div className="w-full h-full flex flex-col items-center justify-center bg-gray-800 text-red-500 p-2 text-center">
+        <div className="w-full h-full flex flex-col items-center justify-center bg-gray-800 text-gray-400 p-2 text-center">
           <CameraOff className="w-8 h-8 mb-2" />
-          <span className="text-[10px] font-bold uppercase tracking-wider">Camera Required</span>
+          <span className="text-[10px] font-bold uppercase tracking-wider">Camera Off</span>
         </div>
       )}
       
       <div className="absolute top-2 left-2 flex items-center bg-black bg-opacity-50 px-1.5 py-0.5 rounded text-[10px] text-white">
-        <div className={`w-1.5 h-1.5 rounded-full mr-1 ${detectionRunning ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`} />
-        MONITORING
+        <div className={`w-1.5 h-1.5 rounded-full mr-1 ${detectionRunning && !isCameraOff ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`} />
+        {isCameraOff ? 'PAUSED' : 'MONITORING'}
       </div>
 
       {!modelsLoaded && !cameraError && (
