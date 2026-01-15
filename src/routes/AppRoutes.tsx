@@ -71,6 +71,7 @@ const CreateAssignmentPage = React.lazy(() => import('../pages/lecturer/CreateAs
 const EditAssignmentPage = React.lazy(() => import('../pages/lecturer/EditAssignmentPage'))
 const AssignmentSubmissionsPage = React.lazy(() => import('../pages/lecturer/AssignmentSubmissionsPage'))
 const StudentAssignmentsPage = React.lazy(() => import('../pages/student/AssignmentsPage'))
+const StudentOnlineClassesPage = React.lazy(() => import('../pages/student/StudentOnlineClassesPage'))
 const ModuleResultsPage = React.lazy(() => import('../pages/lecturer/ModuleResultsPage'))
 const LecturePerformancePage = React.lazy(() => import('../pages/lecturer/LecturePerformancePage'))
 const LecturerSettingsPage = React.lazy(() => import('../pages/lecturer/LecturerSettingsPage'))
@@ -379,6 +380,14 @@ const AppRoutes: React.FC = () => {
             element={
               <ProtectedRoute allowedRoles={['STUDENT']}>
                 <LectureMaterialsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="online-classes"
+            element={
+              <ProtectedRoute allowedRoles={['STUDENT']}>
+                <StudentOnlineClassesPage />
               </ProtectedRoute>
             }
           />
