@@ -15,7 +15,9 @@ import {
   Video,
   Layout,
   BarChart2,
+  Filter,
 } from 'lucide-react'
+import CalendarView from '../../components/student/Schedule/CalendarView'
 
 interface Module {
   id: string
@@ -51,6 +53,7 @@ const ModuleDetailsPage: React.FC = () => {
   const [module, setModule] = useState<Module | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [view, setView] = useState<'list' | 'calendar'>('list')
 
   useEffect(() => {
     const fetchModuleDetails = async () => {
@@ -121,11 +124,35 @@ const ModuleDetailsPage: React.FC = () => {
               {module.credits} Credits
             </p>
           </div>
+
+          <div className="flex items-center space-x-2 bg-white rounded-lg p-1 shadow-sm border border-gray-200">
+            <button
+              onClick={() => setView('list')}
+              className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+                view === 'list'
+                  ? 'bg-primary-600 text-white'
+                  : 'text-gray-600 hover:bg-gray-100'
+              }`}
+            >
+              List View
+            </button>
+            <button
+              onClick={() => setView('calendar')}
+              className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+                view === 'calendar'
+                  ? 'bg-primary-600 text-white'
+                  : 'text-gray-600 hover:bg-gray-100'
+              }`}
+            >
+              Calendar View
+            </button>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left Column - Module Info & Description */}
-          <div className="lg:col-span-2 space-y-6">
+        {view === 'list' ? (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Left Column - Module Info & Description */}
+            <div className="lg:col-span-2 space-y-6">
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
               <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                 <BookOpen className="h-5 w-5 mr-2 text-indigo-500" />
@@ -351,7 +378,30 @@ const ModuleDetailsPage: React.FC = () => {
               </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <CalendarView
+            events={[
+              ...module.schedules.map((s) => ({
+                id: s.id,
+                date: s.date,
+                title: `${module.moduleName} (${s.batch.batchNumber})`,
+                type: 'class' as const,
+                moduleCode: module.moduleCode,
+                time: `${s.startTime.substring(0, 5)} - ${s.endTime.substring(
+                  0,
+                  5
+                )}`,
+              })),
+              ...module.assignments.map((a) => ({
+                id: a.id,
+                date: a.dueDate,
+                title: `Due: ${a.title}`,
+                type: 'assignment' as const,
+                moduleCode: module.moduleCode,
+              })),
+            ]}
+          />
+        )}
       </div>
     </DashboardLayout>
   )
