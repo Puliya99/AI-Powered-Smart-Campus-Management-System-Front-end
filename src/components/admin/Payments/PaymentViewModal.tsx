@@ -13,25 +13,33 @@ import {
   Banknote,
   Globe,
   FileText,
+  Download,
   CheckCircle,
   AlertCircle,
 } from 'lucide-react'
 import axiosInstance from '../../../services/api/axios.config'
 import toast from 'react-hot-toast'
 
+import { useAuth } from '../../../context/AuthContext'
+
 interface PaymentViewModalProps {
   isOpen: boolean
   onClose: () => void
   paymentId: string | null
+  onSuccess?: () => void
 }
 
 const PaymentViewModal: React.FC<PaymentViewModalProps> = ({
   isOpen,
   onClose,
   paymentId,
+  onSuccess,
 }) => {
+  const { user: currentUser } = useAuth()
   const [loading, setLoading] = useState(false)
+  const [processing, setProcessing] = useState(false)
   const [payment, setPayment] = useState<any>(null)
+  const [approvalRemarks, setApprovalRemarks] = useState('')
 
   useEffect(() => {
     if (isOpen && paymentId) {
@@ -86,6 +94,10 @@ const PaymentViewModal: React.FC<PaymentViewModalProps> = ({
     switch (status) {
       case 'PAID':
         return 'bg-green-100 text-green-800'
+      case 'PENDING':
+        return 'bg-yellow-100 text-yellow-800'
+      case 'REJECTED':
+        return 'bg-red-100 text-red-800'
       case 'PARTIAL':
         return 'bg-blue-100 text-blue-800'
       case 'OVERDUE':
@@ -94,6 +106,44 @@ const PaymentViewModal: React.FC<PaymentViewModalProps> = ({
         return 'bg-gray-100 text-gray-800'
       default:
         return 'bg-gray-100 text-gray-800'
+    }
+  }
+
+  const handleApprove = async () => {
+    try {
+      setProcessing(true)
+      await axiosInstance.post(`/payments/${paymentId}/approve`, {
+        status: 'PAID',
+        remarks: approvalRemarks,
+      })
+      toast.success('Payment approved successfully')
+      if (onSuccess) onSuccess()
+      onClose()
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to approve payment')
+    } finally {
+      setProcessing(false)
+    }
+  }
+
+  const handleReject = async () => {
+    if (!approvalRemarks) {
+      toast.error('Please provide a reason for rejection in the remarks field')
+      return
+    }
+    try {
+      setProcessing(true)
+      await axiosInstance.post(`/payments/${paymentId}/approve`, {
+        status: 'REJECTED',
+        remarks: approvalRemarks,
+      })
+      toast.success('Payment rejected')
+      if (onSuccess) onSuccess()
+      onClose()
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to reject payment')
+    } finally {
+      setProcessing(false)
     }
   }
 
@@ -268,6 +318,63 @@ const PaymentViewModal: React.FC<PaymentViewModalProps> = ({
                     </div>
                   )}
                 </div>
+
+                {/* Receipt Download */}
+                {payment.receiptUrl && (
+                  <div className="pt-4 border-t">
+                    <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wider flex items-center mb-2">
+                      <FileText className="w-4 h-4 mr-2" /> Payment Receipt
+                    </h4>
+                    <a
+                      href={`http://localhost:5000${payment.receiptUrl}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center px-4 py-2 bg-primary-50 text-primary-700 rounded-lg hover:bg-primary-100 transition-colors border border-primary-200 group"
+                    >
+                      <Download className="w-4 h-4 mr-2 group-hover:animate-bounce" />
+                      Download Uploaded Receipt
+                    </a>
+                  </div>
+                )}
+
+                {/* Admin Approval Actions */}
+                {currentUser?.role === 'ADMIN' && payment.status === 'PENDING' && (
+                  <div className="pt-6 border-t space-y-4">
+                    <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wider flex items-center">
+                      <CheckCircle className="w-4 h-4 mr-2" /> Approval Actions
+                    </h4>
+                    <div className="bg-yellow-50 border border-yellow-100 rounded-lg p-4">
+                      <label className="block text-xs font-bold text-yellow-800 uppercase mb-2">
+                        Approval/Rejection Remarks
+                      </label>
+                      <textarea
+                        className="w-full px-3 py-2 border border-yellow-200 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
+                        rows={2}
+                        placeholder="Add a reason for approval or rejection..."
+                        value={approvalRemarks}
+                        onChange={(e) => setApprovalRemarks(e.target.value)}
+                      />
+                      <div className="mt-4 flex space-x-3">
+                        <button
+                          onClick={handleApprove}
+                          disabled={processing}
+                          className="flex-1 flex justify-center items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors text-sm font-bold disabled:opacity-50"
+                        >
+                          {processing ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <CheckCircle className="w-4 h-4 mr-2" />}
+                          Approve Payment
+                        </button>
+                        <button
+                          onClick={handleReject}
+                          disabled={processing}
+                          className="flex-1 flex justify-center items-center px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors text-sm font-bold disabled:opacity-50"
+                        >
+                          {processing ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <AlertCircle className="w-4 h-4 mr-2" />}
+                          Reject Payment
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             ) : (
               <div className="text-center py-20">
