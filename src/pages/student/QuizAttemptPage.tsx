@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Clock, Send, AlertTriangle, CheckCircle, ChevronLeft, ChevronRight, Camera } from 'lucide-react';
+import { Clock, Send, AlertTriangle, CheckCircle, ChevronLeft, ChevronRight, Camera, CameraOff } from 'lucide-react';
 import toast from 'react-hot-toast';
 import axiosInstance from '../../services/api/axios.config';
 import FaceDetectionCamera from '../../components/student/Quiz/FaceDetectionCamera';
@@ -34,13 +34,17 @@ const QuizAttemptPage: React.FC = () => {
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [isCancelled, setIsCancelled] = useState(false);
+  const [isCameraOff, setIsCameraOff] = useState(false);
+  const [violationWarning, setViolationWarning] = useState<{ message: string; countdown: number } | null>(null);
 
   const timerRef = useRef<NodeJS.Timeout>();
+  const warningTimerRef = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
     startQuiz();
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
+      if (warningTimerRef.current) clearInterval(warningTimerRef.current);
     };
   }, [quizId]);
 
@@ -49,15 +53,38 @@ const QuizAttemptPage: React.FC = () => {
       setLoading(true);
       // First get quiz details
       const quizResponse = await axiosInstance.get(`/quizzes/${quizId}`);
-      setQuiz(quizResponse.data.data.quiz);
+      const quizData = quizResponse.data.data.quiz;
+      setQuiz(quizData);
 
       // Then start attempt
       const attemptResponse = await axiosInstance.post(`/quizzes/${quizId}/start`);
-      setAttempt(attemptResponse.data.data.attempt);
+      const attemptData = attemptResponse.data.data.attempt;
+      setAttempt(attemptData);
 
-      // Set timer
-      const duration = quizResponse.data.data.quiz.durationMinutes * 60;
-      setTimeLeft(duration);
+      // Restore existing answers if any
+      if (attemptData.answers && attemptData.answers.length > 0) {
+        const existingAnswers: Record<string, string> = {};
+        attemptData.answers.forEach((ans: any) => {
+          if (ans.question && ans.selectedOption) {
+            existingAnswers[ans.question.id] = ans.selectedOption;
+          }
+        });
+        setAnswers(existingAnswers);
+      }
+
+      // Set timer based on start time and duration
+      const startTime = new Date(attemptData.startTime).getTime();
+      const now = new Date().getTime();
+      const elapsedSeconds = Math.floor((now - startTime) / 1000);
+      const totalDurationSeconds = quizData.durationMinutes * 60;
+      const remainingSeconds = Math.max(0, totalDurationSeconds - elapsedSeconds);
+
+      setTimeLeft(remainingSeconds);
+      
+      if (remainingSeconds <= 0) {
+        autoSubmit();
+        return;
+      }
       
       timerRef.current = setInterval(() => {
         setTimeLeft((prev) => {
@@ -82,10 +109,40 @@ const QuizAttemptPage: React.FC = () => {
     setAnswers({ ...answers, [questionId]: option });
   };
 
-  const handleViolation = async (type: string, details?: string) => {
+  const handleViolation = async (type: string, details?: string, shouldCancel = false) => {
     if (submitting || isCancelled) return;
 
-    const shouldCancel = type === 'CAMERA_DISABLED' || (type === 'NO_FACE' && details?.includes('10 seconds')) || type === 'MULTIPLE_FACES';
+    if (type === 'NONE') {
+      setViolationWarning(null);
+      if (warningTimerRef.current) clearInterval(warningTimerRef.current);
+      return;
+    }
+
+    // If it's just a warning (shouldCancel is false), show local countdown
+    if (!shouldCancel) {
+      if (warningTimerRef.current) clearInterval(warningTimerRef.current);
+      
+      let message = "Security violation detected!";
+      if (type === 'NO_FACE') message = "Face not detected!";
+      else if (type === 'MULTIPLE_FACES') message = "Multiple faces detected!";
+      else if (type === 'CAMERA_DISABLED') message = "Camera is OFF!";
+
+      setViolationWarning({ message, countdown: 10 });
+      
+      warningTimerRef.current = setInterval(() => {
+        setViolationWarning(prev => {
+          if (!prev || prev.countdown <= 1) {
+            clearInterval(warningTimerRef.current);
+            return null;
+          }
+          return { ...prev, countdown: prev.countdown - 1 };
+        });
+      }, 1000);
+    } else {
+      // Clear warning if we are cancelling
+      setViolationWarning(null);
+      if (warningTimerRef.current) clearInterval(warningTimerRef.current);
+    }
 
     try {
       const response = await axiosInstance.post(`/quizzes/attempts/${attempt.id}/violations`, {
@@ -94,22 +151,33 @@ const QuizAttemptPage: React.FC = () => {
         shouldCancel
       });
 
-      if (response.data.data.cancelled) {
+      const { cancelled, warning, message } = response.data.data;
+
+      if (cancelled) {
         setIsCancelled(true);
         if (timerRef.current) clearInterval(timerRef.current);
-        toast.error(`Exam Cancelled: ${details || type}`, { duration: 5000 });
+        toast.error(`Exam Cancelled: ${message || details || type}`, { duration: 10000 });
+      } else if (warning) {
+        // We already show our custom overlay, but toast is good too
+        toast.error(message, { duration: 4000 });
       }
     } catch (error) {
       console.error('Failed to report violation:', error);
     }
   };
 
+  // Clear warning when correction is detected (FaceDetectionCamera resets count)
+  // Actually FaceDetectionCamera doesn't tell us when it's corrected, 
+  // but it stops calling handleViolation. 
+  // We can add a "CLEAR_VIOLATION" or just detect it in FaceDetectionCamera.
+  // Let's refine FaceDetectionCamera to call onViolation with type 'NONE' when corrected.
+
   const autoSubmit = () => {
     toast.error('Time is up! Auto-submitting your answers...');
-    submitQuiz();
+    submitQuiz(true);
   };
 
-  const submitQuiz = async () => {
+  const submitQuiz = async (isFinal = false) => {
     if (submitting) return;
     setSubmitting(true);
     
@@ -123,8 +191,20 @@ const QuizAttemptPage: React.FC = () => {
         answers: formattedAnswers,
       });
 
-      toast.success('Quiz submitted successfully!');
-      navigate(`/student/quizzes/attempts/${attempt.id}/result`);
+      if (isFinal) {
+        toast.success('Quiz submitted successfully!');
+        
+        // If time is still remaining, don't show results yet, just go back to list
+        if (timeLeft > 10) {
+          toast('Results will be available once the quiz time is up.', { icon: 'ℹ️' });
+          navigate(quiz?.module ? `/student/modules/${(quiz as any).module.id}/quizzes` : '/student/quizzes');
+        } else {
+          navigate(`/student/quizzes/attempts/${attempt.id}/result`);
+        }
+      } else {
+        toast.success('Quiz progress saved!');
+        navigate('/student/quizzes');
+      }
     } catch (error) {
       toast.error('Failed to submit quiz');
     } finally {
@@ -189,16 +269,30 @@ const QuizAttemptPage: React.FC = () => {
           {formatTime(timeLeft)}
         </div>
 
-        <button
-          onClick={() => {
-            if (window.confirm('Are you sure you want to submit?')) submitQuiz();
-          }}
-          disabled={submitting}
-          className="bg-primary-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-primary-700 transition flex items-center"
-        >
-          <Send className="h-4 w-4 mr-2" />
-          {submitting ? 'Submitting...' : 'Finish'}
-        </button>
+        <div className="flex items-center space-x-3">
+          <button
+            onClick={() => setIsCameraOff(!isCameraOff)}
+            className={`p-2 rounded-lg transition-colors ${
+              isCameraOff 
+                ? 'bg-red-100 text-red-600 hover:bg-red-200' 
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            }`}
+            title={isCameraOff ? "Turn Camera On" : "Turn Camera Off"}
+          >
+            {isCameraOff ? <CameraOff className="h-5 w-5" /> : <Camera className="h-5 w-5" />}
+          </button>
+
+          <button
+            onClick={() => {
+              if (window.confirm('Are you sure you want to save and exit?')) submitQuiz();
+            }}
+            disabled={submitting}
+            className="bg-primary-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-primary-700 transition flex items-center"
+          >
+            <Send className="h-4 w-4 mr-2" />
+            {submitting ? 'Saving...' : 'Save & Exit'}
+          </button>
+        </div>
       </header>
 
       <main className="flex-1 max-w-4xl mx-auto w-full p-6">
@@ -286,10 +380,32 @@ const QuizAttemptPage: React.FC = () => {
         </div>
       </main>
 
+      {/* Violation Overlay */}
+      {violationWarning && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-red-600 bg-opacity-90 animate-pulse">
+          <div className="text-center text-white p-8">
+            <AlertTriangle className="w-24 h-24 mx-auto mb-6 animate-bounce" />
+            <h2 className="text-4xl font-black mb-4 uppercase tracking-tighter">
+              {violationWarning.message}
+            </h2>
+            <p className="text-2xl font-bold mb-8">
+              Correction required immediately!
+            </p>
+            <div className="text-6xl font-black bg-white text-red-600 w-24 h-24 rounded-full flex items-center justify-center mx-auto shadow-2xl">
+              {violationWarning.countdown}
+            </div>
+            <p className="mt-8 text-xl font-medium opacity-80">
+              The quiz will be cancelled in {violationWarning.countdown} seconds.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Face Detection Camera */}
       <FaceDetectionCamera 
         isActive={!submitting && !isCancelled && !!attempt} 
         onViolation={handleViolation} 
+        isCameraOff={isCameraOff}
       />
     </div>
   );
