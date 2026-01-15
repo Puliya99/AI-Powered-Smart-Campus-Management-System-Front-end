@@ -33,6 +33,7 @@ interface Payment {
   outstanding: number
   status: string
   remarks: string | null
+  receiptUrl: string | null
   student: {
     id: string
     user: {
@@ -167,6 +168,10 @@ const PaymentsPage: React.FC = () => {
     switch (status) {
       case 'PAID':
         return 'bg-green-100 text-green-800'
+      case 'PENDING':
+        return 'bg-yellow-100 text-yellow-800'
+      case 'REJECTED':
+        return 'bg-red-100 text-red-800'
       case 'PARTIAL':
         return 'bg-blue-100 text-blue-800'
       case 'OVERDUE':
@@ -309,6 +314,8 @@ const PaymentsPage: React.FC = () => {
             >
               <option value="">All Status</option>
               <option value="PAID">Paid</option>
+              <option value="PENDING">Pending</option>
+              <option value="REJECTED">Rejected</option>
               <option value="PARTIAL">Partial</option>
               <option value="OVERDUE">Overdue</option>
               <option value="UNPAID">Unpaid</option>
@@ -417,7 +424,7 @@ const PaymentsPage: React.FC = () => {
                           {formatDate(payment.paymentDate)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          <div className="flex space-x-2">
+                          <div className="flex space-x-2 items-center">
                             <button
                               onClick={() => {
                                 setSelectedPayment(payment)
@@ -428,6 +435,19 @@ const PaymentsPage: React.FC = () => {
                             >
                               <Eye className="w-5 h-5" />
                             </button>
+
+                            {payment.receiptUrl && (
+                              <a
+                                href={`http://localhost:5000${payment.receiptUrl}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-green-600 hover:text-green-900"
+                                title="Download Receipt"
+                              >
+                                <Download className="w-5 h-5" />
+                              </a>
+                            )}
+
                             <button
                               onClick={() => {
                                 setSelectedPayment(payment)
@@ -547,6 +567,10 @@ const PaymentsPage: React.FC = () => {
           setSelectedPayment(null)
         }}
         paymentId={selectedPayment?.id || null}
+        onSuccess={() => {
+          fetchPayments()
+          fetchStats()
+        }}
       />
     </DashboardLayout>
   )
