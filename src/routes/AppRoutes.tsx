@@ -22,6 +22,7 @@ const CentersPage = React.lazy(() => import('../pages/admin/CentersPage'))
 const ReportsPage = React.lazy(() => import('../pages/admin/ReportsPage'))
 const SettingsPage = React.lazy(() => import('../pages/admin/SettingsPage'))
 const UsersPage = React.lazy(() => import('../pages/admin/UsersPage'))
+const EnrollmentsPage = React.lazy(() => import('../pages/admin/EnrollmentsPage'))
 const ProfilePage = React.lazy(() => import('../pages/common/ProfilePage'))
 
 // Student pages
@@ -202,14 +203,6 @@ const AppRoutes: React.FC = () => {
             element={
               <ProtectedRoute allowedRoles={['ADMIN']}>
                 <SchedulePage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="attendance"
-            element={
-              <ProtectedRoute allowedRoles={['ADMIN']}>
-                <AttendancePage />
               </ProtectedRoute>
             }
           />
@@ -671,10 +664,66 @@ const AppRoutes: React.FC = () => {
             }
           />
           <Route
-            path="users"
+            path="lecturers"
             element={
               <ProtectedRoute allowedRoles={['USER']}>
-                <UsersPage />
+                <LecturerPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="enrollment"
+            element={
+              <ProtectedRoute allowedRoles={['USER']}>
+                <EnrollmentsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="programs"
+            element={
+              <ProtectedRoute allowedRoles={['USER']}>
+                <ProgramsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="modules"
+            element={
+              <ProtectedRoute allowedRoles={['USER']}>
+                <ModulesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="batches"
+            element={
+              <ProtectedRoute allowedRoles={['USER']}>
+                <BatchPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="schedule"
+            element={
+              <ProtectedRoute allowedRoles={['USER']}>
+                <SchedulePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="centers"
+            element={
+              <ProtectedRoute allowedRoles={['USER']}>
+                <CentersPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="payments"
+            element={
+              <ProtectedRoute allowedRoles={['USER']}>
+                <PaymentsPage />
               </ProtectedRoute>
             }
           />
