@@ -24,6 +24,7 @@ const SettingsPage = React.lazy(() => import('../pages/admin/SettingsPage'))
 const UsersPage = React.lazy(() => import('../pages/admin/UsersPage'))
 const EnrollmentsPage = React.lazy(() => import('../pages/admin/EnrollmentsPage'))
 const ProfilePage = React.lazy(() => import('../pages/common/ProfilePage'))
+const NotificationsPage = React.lazy(() => import('../pages/common/NotificationsPage'))
 
 // Student pages
 const StudentDashboard = React.lazy(
@@ -270,6 +271,14 @@ const AppRoutes: React.FC = () => {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="notifications"
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN', 'USER']}>
+                <NotificationsPage />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Add more admin routes */}
         </Route>
@@ -409,6 +418,14 @@ const AppRoutes: React.FC = () => {
             element={
               <ProtectedRoute allowedRoles={['STUDENT']}>
                 <StudentFeedbackPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="notifications"
+            element={
+              <ProtectedRoute allowedRoles={['STUDENT']}>
+                <NotificationsPage />
               </ProtectedRoute>
             }
           />
@@ -618,6 +635,14 @@ const AppRoutes: React.FC = () => {
             }
           />
           <Route
+            path="notifications"
+            element={
+              <ProtectedRoute allowedRoles={['LECTURER']}>
+                <NotificationsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="feedback"
             element={
               <ProtectedRoute allowedRoles={['LECTURER']}>
@@ -756,6 +781,14 @@ const AppRoutes: React.FC = () => {
             element={
               <ProtectedRoute allowedRoles={['USER']}>
                 <FeedbackManagementPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="notifications"
+            element={
+              <ProtectedRoute allowedRoles={['USER']}>
+                <NotificationsPage />
               </ProtectedRoute>
             }
           />
