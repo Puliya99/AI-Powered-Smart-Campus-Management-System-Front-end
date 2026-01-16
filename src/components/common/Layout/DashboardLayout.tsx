@@ -23,6 +23,7 @@ import {
   MessageSquare,
   Building2,
   Video,
+  UserCheck,
 } from 'lucide-react'
 
 interface DashboardLayoutProps {
@@ -56,7 +57,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         { name: 'Modules', href: '/admin/modules', icon: FileText },
         { name: 'Batches', href: '/admin/batches', icon: Users },
         { name: 'Schedule', href: '/admin/schedule', icon: Calendar },
-        { name: 'Attendance', href: '/admin/attendance', icon: ClipboardList },
         { name: 'Payments', href: '/admin/payments', icon: DollarSign },
         { name: 'Reports', href: '/admin/reports', icon: FileText },
         { name: 'Performance', href: '/admin/performance', icon: Award },
@@ -115,10 +115,15 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       user: [
         { name: 'Dashboard', href: '/user/dashboard', icon: LayoutDashboard },
         { name: 'Students', href: '/user/students', icon: Users },
+        { name: 'Lecturers', href: '/user/lecturers', icon: UserCircle },
         { name: 'Enrollment', href: '/user/enrollment', icon: ClipboardList },
-        { name: 'Documents', href: '/user/documents', icon: FileText },
+        { name: 'Programs', href: '/admin/programs', icon: BookOpen },
+        { name: 'Modules', href: '/admin/modules', icon: FileText },
+        { name: 'Batches', href: '/admin/batches', icon: Users },
+        { name: 'Centers', href: '/admin/centers', icon: Building2 },
+        { name: 'Schedule', href: '/admin/schedule', icon: Calendar },
+        { name: 'Payments', href: '/admin/payments', icon: DollarSign },
         { name: 'Reports', href: '/user/reports', icon: FileText },
-        { name: 'Users', href: '/user/users', icon: Users },
         { name: 'Feedback', href: '/user/feedback', icon: MessageSquare },
         { name: 'Settings', href: '/user/settings', icon: Settings },
       ],
