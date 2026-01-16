@@ -24,6 +24,7 @@ const SettingsPage = React.lazy(() => import('../pages/admin/SettingsPage'))
 const UsersPage = React.lazy(() => import('../pages/admin/UsersPage'))
 const EnrollmentsPage = React.lazy(() => import('../pages/admin/EnrollmentsPage'))
 const ProfilePage = React.lazy(() => import('../pages/common/ProfilePage'))
+const NotificationsPage = React.lazy(() => import('../pages/common/NotificationsPage'))
 
 // Student pages
 const StudentDashboard = React.lazy(
@@ -161,7 +162,7 @@ const AppRoutes: React.FC = () => {
           <Route
             path="students"
             element={
-              <ProtectedRoute allowedRoles={['ADMIN']}>
+              <ProtectedRoute allowedRoles={['ADMIN', 'USER']}>
                 <StudentsPage />
               </ProtectedRoute>
             }
@@ -169,7 +170,7 @@ const AppRoutes: React.FC = () => {
           <Route
             path="programs"
             element={
-              <ProtectedRoute allowedRoles={['ADMIN']}>
+              <ProtectedRoute allowedRoles={['ADMIN', 'USER']}>
                 <ProgramsPage />
               </ProtectedRoute>
             }
@@ -177,7 +178,7 @@ const AppRoutes: React.FC = () => {
           <Route
             path="modules"
             element={
-              <ProtectedRoute allowedRoles={['ADMIN']}>
+              <ProtectedRoute allowedRoles={['ADMIN', 'USER']}>
                 <ModulesPage />
               </ProtectedRoute>
             }
@@ -185,7 +186,7 @@ const AppRoutes: React.FC = () => {
           <Route
             path="lecturers"
             element={
-              <ProtectedRoute allowedRoles={['ADMIN']}>
+              <ProtectedRoute allowedRoles={['ADMIN', 'USER']}>
                 <LecturerPage />
               </ProtectedRoute>
             }
@@ -193,7 +194,7 @@ const AppRoutes: React.FC = () => {
           <Route
             path="batches"
             element={
-              <ProtectedRoute allowedRoles={['ADMIN']}>
+              <ProtectedRoute allowedRoles={['ADMIN', 'USER']}>
                 <BatchPage />
               </ProtectedRoute>
             }
@@ -201,7 +202,7 @@ const AppRoutes: React.FC = () => {
           <Route
             path="schedule"
             element={
-              <ProtectedRoute allowedRoles={['ADMIN']}>
+              <ProtectedRoute allowedRoles={['ADMIN', 'USER']}>
                 <SchedulePage />
               </ProtectedRoute>
             }
@@ -209,7 +210,7 @@ const AppRoutes: React.FC = () => {
           <Route
             path="centers"
             element={
-              <ProtectedRoute allowedRoles={['ADMIN']}>
+              <ProtectedRoute allowedRoles={['ADMIN', 'USER']}>
                 <CentersPage />
               </ProtectedRoute>
             }
@@ -217,7 +218,7 @@ const AppRoutes: React.FC = () => {
           <Route
             path="payments"
             element={
-              <ProtectedRoute allowedRoles={['ADMIN']}>
+              <ProtectedRoute allowedRoles={['ADMIN', 'USER']}>
                 <PaymentsPage />
               </ProtectedRoute>
             }
@@ -225,7 +226,7 @@ const AppRoutes: React.FC = () => {
           <Route
             path="reports"
             element={
-              <ProtectedRoute allowedRoles={['ADMIN']}>
+              <ProtectedRoute allowedRoles={['ADMIN', 'USER']}>
                 <ReportsPage />
               </ProtectedRoute>
             }
@@ -233,7 +234,7 @@ const AppRoutes: React.FC = () => {
           <Route
             path="settings"
             element={
-              <ProtectedRoute allowedRoles={['ADMIN']}>
+              <ProtectedRoute allowedRoles={['ADMIN', 'USER']}>
                 <SettingsPage />
               </ProtectedRoute>
             }
@@ -249,7 +250,7 @@ const AppRoutes: React.FC = () => {
           <Route
             path="profile"
             element={
-              <ProtectedRoute allowedRoles={['ADMIN']}>
+              <ProtectedRoute allowedRoles={['ADMIN', 'USER']}>
                 <ProfilePage />
               </ProtectedRoute>
             }
@@ -257,7 +258,7 @@ const AppRoutes: React.FC = () => {
           <Route
             path="performance"
             element={
-              <ProtectedRoute allowedRoles={['ADMIN']}>
+              <ProtectedRoute allowedRoles={['ADMIN', 'USER']}>
                 <AdminPerformancePage />
               </ProtectedRoute>
             }
@@ -265,8 +266,16 @@ const AppRoutes: React.FC = () => {
           <Route
             path="feedback"
             element={
-              <ProtectedRoute allowedRoles={['ADMIN']}>
+              <ProtectedRoute allowedRoles={['ADMIN', 'USER']}>
                 <FeedbackManagementPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="notifications"
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN', 'USER']}>
+                <NotificationsPage />
               </ProtectedRoute>
             }
           />
@@ -409,6 +418,14 @@ const AppRoutes: React.FC = () => {
             element={
               <ProtectedRoute allowedRoles={['STUDENT']}>
                 <StudentFeedbackPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="notifications"
+            element={
+              <ProtectedRoute allowedRoles={['STUDENT']}>
+                <NotificationsPage />
               </ProtectedRoute>
             }
           />
@@ -618,6 +635,14 @@ const AppRoutes: React.FC = () => {
             }
           />
           <Route
+            path="notifications"
+            element={
+              <ProtectedRoute allowedRoles={['LECTURER']}>
+                <NotificationsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="feedback"
             element={
               <ProtectedRoute allowedRoles={['LECTURER']}>
@@ -756,6 +781,14 @@ const AppRoutes: React.FC = () => {
             element={
               <ProtectedRoute allowedRoles={['USER']}>
                 <FeedbackManagementPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="notifications"
+            element={
+              <ProtectedRoute allowedRoles={['USER']}>
+                <NotificationsPage />
               </ProtectedRoute>
             }
           />

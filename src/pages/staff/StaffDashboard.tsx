@@ -89,12 +89,6 @@ const StaffDashboard: React.FC = () => {
       color: 'bg-green-500',
     },
     {
-      name: 'Verify Documents',
-      href: '/user/documents',
-      icon: ClipboardList,
-      color: 'bg-purple-500',
-    },
-    {
       name: 'Generate Reports',
       href: '/user/reports',
       icon: FileText,

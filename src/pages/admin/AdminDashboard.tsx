@@ -5,6 +5,15 @@ import DashboardLayout from '../../components/common/Layout/DashboardLayout'
 import axiosInstance from '../../services/api/axios.config'
 
 const AdminDashboard: React.FC = () => {
+  const colorClasses: Record<string, string> = {
+    blue: 'bg-blue-100 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400',
+    green:
+      'bg-green-100 text-green-600 dark:bg-green-900/20 dark:text-green-400',
+    purple:
+      'bg-purple-100 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400',
+    red: 'bg-red-100 text-red-600 dark:bg-red-900/20 dark:text-red-400',
+  }
+
   const [dashboardData, setDashboardData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
 
@@ -74,8 +83,10 @@ const AdminDashboard: React.FC = () => {
       <div className="space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-          <p className="text-gray-600 mt-1">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            Admin Dashboard
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">
             Welcome back! Here's what's happening today.
           </p>
         </div>
@@ -85,22 +96,24 @@ const AdminDashboard: React.FC = () => {
           {statCards.map((stat) => (
             <div
               key={stat.name}
-              className="bg-white overflow-hidden shadow rounded-lg hover:shadow-lg transition-shadow"
+              className="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg hover:shadow-lg transition-all"
             >
               <div className="p-5">
                 <div className="flex items-center">
                   <div
-                    className={`flex-shrink-0 bg-${stat.color}-100 rounded-md p-3`}
+                    className={`flex-shrink-0 rounded-md p-3 ${
+                      colorClasses[stat.color]
+                    }`}
                   >
-                    <stat.icon className={`h-6 w-6 text-${stat.color}-600`} />
+                    <stat.icon className="h-6 w-6" />
                   </div>
                   <div className="ml-5 w-0 flex-1">
                     <dl>
-                      <dt className="text-sm font-medium text-gray-500 truncate">
+                      <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
                         {stat.name}
                       </dt>
                       <dd className="flex items-baseline">
-                        <div className="text-2xl font-semibold text-gray-900">
+                        <div className="text-2xl font-semibold text-gray-900 dark:text-white">
                           {stat.value}
                         </div>
                         <div
