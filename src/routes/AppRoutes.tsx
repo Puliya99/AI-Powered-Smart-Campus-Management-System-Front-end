@@ -22,6 +22,7 @@ const CentersPage = React.lazy(() => import('../pages/admin/CentersPage'))
 const ReportsPage = React.lazy(() => import('../pages/admin/ReportsPage'))
 const SettingsPage = React.lazy(() => import('../pages/admin/SettingsPage'))
 const UsersPage = React.lazy(() => import('../pages/admin/UsersPage'))
+const EnrollmentsPage = React.lazy(() => import('../pages/admin/EnrollmentsPage'))
 const ProfilePage = React.lazy(() => import('../pages/common/ProfilePage'))
 
 // Student pages
@@ -30,6 +31,9 @@ const StudentDashboard = React.lazy(
 )
 const StudentCoursesPage = React.lazy(
   () => import('../pages/student/StudentCoursesPage')
+)
+const StudentSchedulePage = React.lazy(
+  () => import('../pages/student/StudentSchedulePage')
 )
 const PaymentsPage = React.lazy(() => import('../pages/admin/PaymentsPage'))
 
@@ -61,6 +65,10 @@ const StudentQuizzesPage = React.lazy(() => import('../pages/student/QuizzesPage
 const QuizAttemptPage = React.lazy(() => import('../pages/student/QuizAttemptPage'))
 const QuizResultPage = React.lazy(() => import('../pages/student/QuizResultPage'))
 const StudentResultsPage = React.lazy(() => import('../pages/student/StudentResultsPage'))
+const StudentPaymentsPage = React.lazy(() => import('../pages/student/StudentPaymentsPage'))
+const StudentFeedbackPage = React.lazy(() => import('../pages/student/StudentFeedbackPage'))
+const StudentSettingsPage = React.lazy(() => import('../pages/student/StudentSettingsPage'))
+const FeedbackManagementPage = React.lazy(() => import('../pages/admin/FeedbackManagementPage'))
 
 // Assignment pages
 const LecturerAssignmentsPage = React.lazy(() => import('../pages/lecturer/AssignmentsPage'))
@@ -68,6 +76,7 @@ const CreateAssignmentPage = React.lazy(() => import('../pages/lecturer/CreateAs
 const EditAssignmentPage = React.lazy(() => import('../pages/lecturer/EditAssignmentPage'))
 const AssignmentSubmissionsPage = React.lazy(() => import('../pages/lecturer/AssignmentSubmissionsPage'))
 const StudentAssignmentsPage = React.lazy(() => import('../pages/student/AssignmentsPage'))
+const StudentOnlineClassesPage = React.lazy(() => import('../pages/student/StudentOnlineClassesPage'))
 const ModuleResultsPage = React.lazy(() => import('../pages/lecturer/ModuleResultsPage'))
 const LecturePerformancePage = React.lazy(() => import('../pages/lecturer/LecturePerformancePage'))
 const LecturerSettingsPage = React.lazy(() => import('../pages/lecturer/LecturerSettingsPage'))
@@ -198,14 +207,6 @@ const AppRoutes: React.FC = () => {
             }
           />
           <Route
-            path="attendance"
-            element={
-              <ProtectedRoute allowedRoles={['ADMIN']}>
-                <AttendancePage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
             path="centers"
             element={
               <ProtectedRoute allowedRoles={['ADMIN']}>
@@ -261,6 +262,14 @@ const AppRoutes: React.FC = () => {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="feedback"
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN']}>
+                <FeedbackManagementPage />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Add more admin routes */}
         </Route>
@@ -288,6 +297,14 @@ const AppRoutes: React.FC = () => {
             element={
               <ProtectedRoute allowedRoles={['STUDENT']}>
                 <StudentCoursesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="schedule"
+            element={
+              <ProtectedRoute allowedRoles={['STUDENT']}>
+                <StudentSchedulePage />
               </ProtectedRoute>
             }
           />
@@ -368,6 +385,38 @@ const AppRoutes: React.FC = () => {
             element={
               <ProtectedRoute allowedRoles={['STUDENT']}>
                 <LectureMaterialsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="online-classes"
+            element={
+              <ProtectedRoute allowedRoles={['STUDENT']}>
+                <StudentOnlineClassesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="payments"
+            element={
+              <ProtectedRoute allowedRoles={['STUDENT']}>
+                <StudentPaymentsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="feedback"
+            element={
+              <ProtectedRoute allowedRoles={['STUDENT']}>
+                <StudentFeedbackPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="settings"
+            element={
+              <ProtectedRoute allowedRoles={['STUDENT']}>
+                <StudentSettingsPage />
               </ProtectedRoute>
             }
           />
@@ -568,6 +617,14 @@ const AppRoutes: React.FC = () => {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="feedback"
+            element={
+              <ProtectedRoute allowedRoles={['LECTURER']}>
+                <FeedbackManagementPage />
+              </ProtectedRoute>
+            }
+          />
           {/* Add more lecturer routes */}
         </Route>
 
@@ -607,10 +664,66 @@ const AppRoutes: React.FC = () => {
             }
           />
           <Route
-            path="users"
+            path="lecturers"
             element={
               <ProtectedRoute allowedRoles={['USER']}>
-                <UsersPage />
+                <LecturerPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="enrollment"
+            element={
+              <ProtectedRoute allowedRoles={['USER']}>
+                <EnrollmentsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="programs"
+            element={
+              <ProtectedRoute allowedRoles={['USER']}>
+                <ProgramsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="modules"
+            element={
+              <ProtectedRoute allowedRoles={['USER']}>
+                <ModulesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="batches"
+            element={
+              <ProtectedRoute allowedRoles={['USER']}>
+                <BatchPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="schedule"
+            element={
+              <ProtectedRoute allowedRoles={['USER']}>
+                <SchedulePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="centers"
+            element={
+              <ProtectedRoute allowedRoles={['USER']}>
+                <CentersPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="payments"
+            element={
+              <ProtectedRoute allowedRoles={['USER']}>
+                <PaymentsPage />
               </ProtectedRoute>
             }
           />
@@ -635,6 +748,14 @@ const AppRoutes: React.FC = () => {
             element={
               <ProtectedRoute allowedRoles={['USER']}>
                 <SettingsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="feedback"
+            element={
+              <ProtectedRoute allowedRoles={['USER']}>
+                <FeedbackManagementPage />
               </ProtectedRoute>
             }
           />

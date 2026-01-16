@@ -8,6 +8,7 @@ import {
   FileText,
   HelpCircle,
   ClipboardList,
+  Users,
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import DashboardLayout from '../../components/common/Layout/DashboardLayout'
@@ -17,17 +18,20 @@ const StudentCoursesPage: React.FC = () => {
   const [courses, setCourses] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
+  const [semesterFilter, setSemesterFilter] = useState('')
 
   useEffect(() => {
     fetchEnrolledCourses()
-  }, [])
+  }, [semesterFilter])
 
   const fetchEnrolledCourses = async () => {
     try {
-      const response = await axiosInstance.get('/dashboard/student')
-      // Assuming the student dashboard data contains enrolled modules/courses
-      // If there's a specific endpoint for student courses, use that instead.
-      setCourses(response.data.data.enrolledModules || [])
+      const params = new URLSearchParams()
+      if (semesterFilter) {
+        params.append('semester', semesterFilter)
+      }
+      const response = await axiosInstance.get(`/students/my-courses?${params.toString()}`)
+      setCourses(response.data.data.courses || [])
     } catch (error) {
       console.error('Failed to fetch enrolled courses:', error)
     } finally {
@@ -81,17 +85,32 @@ const StudentCoursesPage: React.FC = () => {
             </p>
           </div>
 
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Search className="h-5 w-5 text-gray-400" />
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Search className="h-5 w-5 text-gray-400" />
+              </div>
+              <input
+                type="text"
+                placeholder="Search courses..."
+                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
             </div>
-            <input
-              type="text"
-              placeholder="Search courses..."
-              className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+
+            <select
+              className="block w-full md:w-48 pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm rounded-md"
+              value={semesterFilter}
+              onChange={(e) => setSemesterFilter(e.target.value)}
+            >
+              <option value="">All Semesters</option>
+              {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
+                <option key={num} value={num.toString()}>
+                  Semester {num}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 
@@ -151,6 +170,12 @@ const StudentCoursesPage: React.FC = () => {
                       <Clock className="h-4 w-4 mr-2" />
                       <span>{course.credits} Credits</span>
                     </div>
+                    {course.lecturer && (
+                      <div className="flex items-center text-sm text-gray-600 mt-2">
+                        <Users className="h-4 w-4 mr-2" />
+                        <span>{course.lecturer.name}</span>
+                      </div>
+                    )}
                   </div>
                 </div>
 

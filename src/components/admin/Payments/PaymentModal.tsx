@@ -96,6 +96,29 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
     }
   }, [payment])
 
+  useEffect(() => {
+    if (formData.studentId && formData.programId && !payment) {
+      fetchOutstanding()
+    }
+  }, [formData.studentId, formData.programId])
+
+  const fetchOutstanding = async () => {
+    try {
+      const response = await axiosInstance.get('/payments/outstanding', {
+        params: {
+          studentId: formData.studentId,
+          programId: formData.programId,
+        },
+      })
+      setFormData((prev) => ({
+        ...prev,
+        outstanding: response.data.data.outstanding.toString(),
+      }))
+    } catch (error) {
+      console.error('Failed to fetch outstanding amount:', error)
+    }
+  }
+
   const fetchDropdownData = async () => {
     try {
       setLoadingData(true)
@@ -308,6 +331,31 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
                         placeholder="0.00"
                       />
                     </div>
+                  </div>
+
+                  {/* Outstanding */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Outstanding (LKR)
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <DollarSign className="h-5 w-5 text-gray-400" />
+                      </div>
+                      <input
+                        type="number"
+                        name="outstanding"
+                        value={formData.outstanding}
+                        onChange={handleChange}
+                        min="0"
+                        step="0.01"
+                        className="w-full pl-12 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-gray-50"
+                        placeholder="0.00"
+                      />
+                    </div>
+                    <p className="mt-1 text-xs text-gray-500">
+                      Auto-loaded based on student's previous payments and program fee.
+                    </p>
                   </div>
 
                   {/* Payment Method */}

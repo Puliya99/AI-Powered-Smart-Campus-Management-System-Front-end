@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Users, BarChart2, ArrowLeft, CheckCircle, Clock } from 'lucide-react';
+import { Users, BarChart2, ArrowLeft, CheckCircle, Clock, RefreshCw } from 'lucide-react';
+import toast from 'react-hot-toast';
 import axiosInstance from '../../services/api/axios.config';
 import DashboardLayout from '../../components/common/Layout/DashboardLayout';
 
@@ -41,6 +42,20 @@ const QuizResultsSummaryPage: React.FC = () => {
       console.error('Failed to fetch data:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleRestart = async (attemptId: string) => {
+    if (!window.confirm('Are you sure you want to restart this student\'s quiz? All their previous answers will be deleted and they will be able to start fresh.')) {
+      return;
+    }
+
+    try {
+      await axiosInstance.post(`/quizzes/attempts/${attemptId}/restart`);
+      toast.success('Quiz restarted successfully');
+      fetchData();
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to restart quiz');
     }
   };
 
@@ -111,6 +126,7 @@ const QuizResultsSummaryPage: React.FC = () => {
                   <th className="px-6 py-3">Score</th>
                   <th className="px-6 py-3">Status</th>
                   <th className="px-6 py-3">Submitted At</th>
+                  <th className="px-6 py-3">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
@@ -137,6 +153,10 @@ const QuizResultsSummaryPage: React.FC = () => {
                               {attempt.reason}
                             </span>
                           </div>
+                        ) : attempt.status === 'IN_PROGRESS' ? (
+                          <span className="px-2 py-1 rounded-full text-[10px] font-bold bg-blue-100 text-blue-700 w-fit">
+                            IN PROGRESS
+                          </span>
                         ) : (
                           <span className={`px-2 py-1 rounded-full text-[10px] font-bold ${percentage >= 50 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                             {percentage.toFixed(1)}%
@@ -146,8 +166,18 @@ const QuizResultsSummaryPage: React.FC = () => {
                       <td className="px-6 py-4 text-gray-500 text-sm">
                         <div className="flex items-center">
                           <Clock className="h-3 w-3 mr-1" />
-                          {new Date(attempt.submittedTime).toLocaleString()}
+                          {attempt.submittedTime ? new Date(attempt.submittedTime).toLocaleString() : 'N/A'}
                         </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <button
+                          onClick={() => handleRestart(attempt.id)}
+                          className="flex items-center text-xs text-primary-600 hover:text-primary-700 font-bold bg-primary-50 px-3 py-1.5 rounded-lg transition"
+                          title="Restart Quiz Attempt"
+                        >
+                          <RefreshCw className="h-3 w-3 mr-1" />
+                          Restart
+                        </button>
                       </td>
                     </tr>
                   );

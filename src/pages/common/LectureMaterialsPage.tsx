@@ -333,7 +333,7 @@ const LectureMaterialsPage: React.FC = () => {
                     </a>
                   ) : material.fileUrl ? (
                     <a
-                      href={material.fileUrl}
+                      href={`http://localhost:5000${material.fileUrl}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-primary-600 bg-white border border-primary-600 rounded-lg hover:bg-primary-50 transition-colors"

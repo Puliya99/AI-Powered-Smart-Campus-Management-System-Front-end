@@ -22,6 +22,8 @@ interface Quiz {
   durationMinutes: number;
   totalMarks: number;
   isPublished: boolean;
+  attemptStatus: 'IN_PROGRESS' | 'SUBMITTED' | 'TIMED_OUT' | null;
+  attemptId: string | null;
 }
 
 interface Module {
@@ -156,13 +158,26 @@ const StudentQuizzesPage: React.FC = () => {
                 </div>
                 
                 <div className="bg-gray-50 px-5 py-3 border-t">
-                  <Link
-                    to={`/student/quizzes/${quiz.id}/attempt`}
-                    className="flex items-center justify-center w-full px-4 py-2 bg-primary-600 text-white text-sm font-bold rounded-lg hover:bg-primary-700 transition"
-                  >
-                    <Play className="h-4 w-4 mr-2" />
-                    Start Quiz
-                  </Link>
+                  <div className="flex gap-2">
+                    {(quiz.attemptStatus === 'SUBMITTED' || quiz.attemptStatus === 'TIMED_OUT' || quiz.attemptStatus === 'CANCELLED') && quiz.attemptId && (
+                      <Link
+                        to={`/student/quizzes/attempts/${quiz.attemptId}/result`}
+                        className="flex-1 flex items-center justify-center px-4 py-2 bg-green-600 text-white text-sm font-bold rounded-lg hover:bg-green-700 transition"
+                      >
+                        <CheckCircle className="h-4 w-4 mr-2" />
+                        {quiz.attemptStatus === 'CANCELLED' ? 'Violation Info' : 'Results'}
+                      </Link>
+                    )}
+                    {quiz.attemptStatus !== 'SUBMITTED' && quiz.attemptStatus !== 'TIMED_OUT' && quiz.attemptStatus !== 'CANCELLED' && (
+                      <Link
+                        to={`/student/quizzes/${quiz.id}/attempt`}
+                        className="flex-1 flex items-center justify-center px-4 py-2 bg-primary-600 text-white text-sm font-bold rounded-lg hover:bg-primary-700 transition"
+                      >
+                        <Play className="h-4 w-4 mr-2" />
+                        {quiz.attemptStatus === 'IN_PROGRESS' ? 'Resume' : 'Start Quiz'}
+                      </Link>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}
