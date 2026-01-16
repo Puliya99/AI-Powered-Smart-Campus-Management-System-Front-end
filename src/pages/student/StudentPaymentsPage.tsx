@@ -42,6 +42,7 @@ const StudentPaymentsPage: React.FC = () => {
     totalPaid: 0,
     totalOutstanding: 0,
     totalProgramFees: 0,
+    nextPaymentDue: null as string | null,
   });
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -255,9 +256,7 @@ const StudentPaymentsPage: React.FC = () => {
   const stats = {
     totalPaid: summary.totalPaid,
     totalOutstanding: summary.totalOutstanding,
-    nextPayment: payments
-      .filter((p) => p.nextPaymentDate)
-      .sort((a, b) => new Date(a.nextPaymentDate!).getTime() - new Date(b.nextPaymentDate!).getTime())[0]?.nextPaymentDate,
+    nextPayment: summary.nextPaymentDue,
   };
 
   return (
