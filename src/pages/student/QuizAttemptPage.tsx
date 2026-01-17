@@ -20,6 +20,7 @@ interface Quiz {
   title: string;
   durationMinutes: number;
   questions: Question[];
+  module?: { id: string };
 }
 
 const QuizAttemptPage: React.FC = () => {
