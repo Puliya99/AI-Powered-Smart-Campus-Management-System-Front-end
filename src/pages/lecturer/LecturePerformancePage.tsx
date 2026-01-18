@@ -9,7 +9,9 @@ import {
   ChevronRight,
   ArrowLeft,
   PieChart as PieChartIcon,
-  Activity
+  Activity,
+  Brain,
+  Zap,
 } from 'lucide-react';
 import { 
   BarChart, 
@@ -36,6 +38,7 @@ const LecturePerformancePage: React.FC = () => {
   const [lecturerData, setLecturerData] = useState<any>(null);
   const [selectedModule, setSelectedModule] = useState<any>(null);
   const [moduleMetrics, setModuleMetrics] = useState<any>(null);
+  const [aiRiskStats, setAiRiskStats] = useState<any>(null);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -47,13 +50,18 @@ const LecturePerformancePage: React.FC = () => {
   const fetchLecturerPerformance = async (moduleIdParam?: string | null) => {
     try {
       setLoading(true);
-      const response = await axiosInstance.get('/performance/lecturer/me');
-      setLecturerData(response.data.data);
+      const [performanceRes, aiRiskRes] = await Promise.all([
+        axiosInstance.get('/performance/lecturer/me'),
+        axiosInstance.get('/performance/ai-predictions')
+      ]);
+      
+      setLecturerData(performanceRes.data.data);
+      setAiRiskStats(aiRiskRes.data.data.stats);
       
       if (moduleIdParam) {
         fetchModuleMetrics(moduleIdParam);
-      } else if (response.data.data.modules.length > 0) {
-        fetchModuleMetrics(response.data.data.modules[0].moduleId);
+      } else if (performanceRes.data.data.modules.length > 0) {
+        fetchModuleMetrics(performanceRes.data.data.modules[0].moduleId);
       }
     } catch (error) {
       console.error('Failed to fetch lecturer performance:', error);
@@ -91,7 +99,7 @@ const LecturePerformancePage: React.FC = () => {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Lecture Performance</h1>
+            <h1 className="text-3xl font-bold text-gray-900">Performance Overview</h1>
             <p className="text-gray-600 mt-1">Analytics and insights into your teaching performance.</p>
           </div>
           <Activity className="h-10 w-10 text-primary-600 opacity-20" />
@@ -115,35 +123,32 @@ const LecturePerformancePage: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-            <div className="flex items-center justify-between mb-2">
-              <p className="text-sm font-medium text-gray-500 uppercase tracking-wider">Avg Attendance</p>
-              <Users className="h-5 w-5 text-green-600" />
+          {/* AI Risk Summary for Lecturer's Center */}
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-purple-100 bg-gradient-to-br from-white to-purple-50 md:col-span-2">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-2">
+                <Brain className="h-5 w-5 text-purple-600" />
+                <p className="text-sm font-bold text-gray-900 uppercase tracking-wider">AI Student Risk Summary (Your Center)</p>
+              </div>
+              <div className="flex items-center text-[10px] font-bold text-purple-700 bg-purple-100 px-2 py-0.5 rounded-full uppercase">
+                <Zap className="h-2 w-2 mr-1" />
+                Live Analysis
+              </div>
             </div>
-            <p className="text-3xl font-bold text-gray-900">
-              {moduleStats.length > 0 
-                ? (moduleStats.reduce((acc: any, m: any) => acc + m.attendanceRate, 0) / moduleStats.length).toFixed(1)
-                : '0'}%
-            </p>
-            <div className="mt-2 flex items-center text-xs text-gray-500">
-              <Activity className="h-3 w-3 text-blue-500 mr-1" />
-              <span>Student engagement rate</span>
-            </div>
-          </div>
-
-          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-            <div className="flex items-center justify-between mb-2">
-              <p className="text-sm font-medium text-gray-500 uppercase tracking-wider">Student Satisfaction</p>
-              <Star className="h-5 w-5 text-yellow-500" />
-            </div>
-            <p className="text-3xl font-bold text-gray-900">
-              {moduleStats.length > 0 
-                ? (moduleStats.reduce((acc: any, m: any) => acc + m.avgRating, 0) / moduleStats.length).toFixed(1)
-                : '0'}/5
-            </p>
-            <div className="mt-2 flex items-center text-xs text-gray-500">
-              <Star className="h-3 w-3 text-yellow-500 mr-1" fill="currentColor" />
-              <span>Average feedback rating</span>
+            
+            <div className="grid grid-cols-3 gap-4">
+              <div className="text-center">
+                <p className="text-2xl font-bold text-red-600">{aiRiskStats?.highRisk || 0}</p>
+                <p className="text-[10px] text-gray-500 font-bold uppercase">High Risk</p>
+              </div>
+              <div className="text-center border-x border-purple-100">
+                <p className="text-2xl font-bold text-yellow-600">{aiRiskStats?.mediumRisk || 0}</p>
+                <p className="text-[10px] text-gray-500 font-bold uppercase">Medium Risk</p>
+              </div>
+              <div className="text-center">
+                <p className="text-2xl font-bold text-green-600">{aiRiskStats?.lowRisk || 0}</p>
+                <p className="text-[10px] text-gray-500 font-bold uppercase">Low Risk</p>
+              </div>
             </div>
           </div>
         </div>

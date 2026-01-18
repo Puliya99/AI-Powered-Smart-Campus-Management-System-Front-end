@@ -22,7 +22,7 @@ interface Quiz {
   durationMinutes: number;
   totalMarks: number;
   isPublished: boolean;
-  attemptStatus: 'IN_PROGRESS' | 'SUBMITTED' | 'TIMED_OUT' | null;
+  attemptStatus: 'IN_PROGRESS' | 'SUBMITTED' | 'TIMED_OUT' | 'CANCELLED' | null;
   attemptId: string | null;
 }
 

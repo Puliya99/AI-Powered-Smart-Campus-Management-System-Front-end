@@ -13,6 +13,7 @@ import {
   Mail,
   Phone,
   Calendar,
+  AlertTriangle,
 } from 'lucide-react'
 import DashboardLayout from '../../components/common/Layout/DashboardLayout'
 import StudentModal from '../../components/admin/Student/StudentModal'
@@ -36,6 +37,7 @@ interface Student {
     createdAt: string
   }
   enrollments: any[]
+  riskLevel?: string
 }
 
 const StudentsPage: React.FC = () => {
@@ -92,7 +94,23 @@ const StudentsPage: React.FC = () => {
       })
 
       const response = await axiosInstance.get(`/students?${params}`)
-      setStudents(response.data.data.students)
+      const studentsData = response.data.data.students;
+      
+      // Fetch latest risk level for each student
+      const studentsWithRisk = await Promise.all(studentsData.map(async (student: Student) => {
+        try {
+          const predictionRes = await axiosInstance.get(`/ai/predictions/student/${student.id}`);
+          const latestPrediction = predictionRes.data.data[0];
+          return {
+            ...student,
+            riskLevel: latestPrediction?.riskLevel
+          };
+        } catch (e) {
+          return student;
+        }
+      }));
+
+      setStudents(studentsWithRisk)
       setTotalPages(response.data.data.pagination.pages)
     } catch (error: any) {
       toast.error('Failed to fetch students')
@@ -299,6 +317,9 @@ const StudentsPage: React.FC = () => {
                         Status
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Risk
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Actions
                       </th>
                     </tr>
@@ -358,6 +379,24 @@ const StudentsPage: React.FC = () => {
                           >
                             {student.user.isActive ? 'Active' : 'Inactive'}
                           </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {student.riskLevel ? (
+                            <span
+                              className={`px-2 py-1 text-xs font-bold rounded-full flex items-center w-fit ${
+                                student.riskLevel === 'HIGH'
+                                  ? 'bg-red-100 text-red-800'
+                                  : student.riskLevel === 'MEDIUM'
+                                  ? 'bg-yellow-100 text-yellow-800'
+                                  : 'bg-green-100 text-green-800'
+                              }`}
+                            >
+                              {student.riskLevel === 'HIGH' && <AlertTriangle className="w-3 h-3 mr-1" />}
+                              {student.riskLevel}
+                            </span>
+                          ) : (
+                            <span className="text-xs text-gray-400">N/A</span>
+                          )}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                           <div className="flex space-x-2">

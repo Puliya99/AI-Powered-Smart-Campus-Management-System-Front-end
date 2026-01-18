@@ -777,6 +777,14 @@ const AppRoutes: React.FC = () => {
             }
           />
           <Route
+            path="performance"
+            element={
+              <ProtectedRoute allowedRoles={['USER']}>
+                <AdminPerformancePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="feedback"
             element={
               <ProtectedRoute allowedRoles={['USER']}>

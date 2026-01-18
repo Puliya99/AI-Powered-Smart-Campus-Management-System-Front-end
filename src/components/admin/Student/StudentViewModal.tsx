@@ -14,9 +14,14 @@ import {
   Loader2,
   Building,
   Hash,
+  Brain,
+  TrendingUp,
+  History,
 } from 'lucide-react'
 import axiosInstance from '../../../services/api/axios.config'
 import toast from 'react-hot-toast'
+import RiskMeter from '../../shared/AI/RiskMeter'
+import RiskDetailsCard from '../../shared/AI/RiskDetailsCard'
 
 interface StudentViewModalProps {
   isOpen: boolean
@@ -31,10 +36,13 @@ const StudentViewModal: React.FC<StudentViewModalProps> = ({
 }) => {
   const [loading, setLoading] = useState(false)
   const [student, setStudent] = useState<any>(null)
+  const [predictions, setPredictions] = useState<any[]>([])
+  const [loadingPredictions, setLoadingPredictions] = useState(false)
 
   useEffect(() => {
     if (isOpen && studentId) {
       fetchStudentDetails()
+      fetchPredictions()
     }
   }, [isOpen, studentId])
 
@@ -48,6 +56,18 @@ const StudentViewModal: React.FC<StudentViewModalProps> = ({
       onClose()
     } finally {
       setLoading(false)
+    }
+  }
+
+  const fetchPredictions = async () => {
+    try {
+      setLoadingPredictions(true)
+      const response = await axiosInstance.get(`/ai/predictions/student/${studentId}`)
+      setPredictions(response.data.data)
+    } catch (error: any) {
+      console.error('Failed to fetch predictions:', error)
+    } finally {
+      setLoadingPredictions(false)
     }
   }
 
@@ -244,6 +264,54 @@ const StudentViewModal: React.FC<StudentViewModalProps> = ({
                       </div>
                     ) : (
                       <p className="text-sm text-gray-500 italic">No enrollments found.</p>
+                    )}
+                  </div>
+
+                  {/* AI Risk Prediction - NEW */}
+                  <div className="space-y-4 md:col-span-2 pt-6 border-t">
+                    <h4 className="text-lg font-semibold text-gray-900 flex items-center justify-between">
+                      <div className="flex items-center">
+                        <Brain className="w-5 h-5 mr-2 text-purple-600" />
+                        AI Examination Risk Prediction
+                      </div>
+                      {predictions.length > 0 && (
+                        <span className="text-xs font-normal text-gray-500 flex items-center">
+                          <History className="w-3 h-3 mr-1" />
+                          Last updated: {new Date(predictions[0].createdAt).toLocaleDateString()}
+                        </span>
+                      )}
+                    </h4>
+
+                    {loadingPredictions ? (
+                      <div className="flex justify-center py-4">
+                        <Loader2 className="w-6 h-6 text-purple-600 animate-spin" />
+                      </div>
+                    ) : predictions.length > 0 ? (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="bg-white p-4 rounded-xl border border-purple-100 shadow-sm">
+                          <div className="flex items-center justify-between mb-4">
+                            <span className="text-sm font-medium text-gray-700">Current Risk Status</span>
+                            <TrendingUp className="w-4 h-4 text-purple-500" />
+                          </div>
+                          <RiskMeter 
+                            score={parseFloat(predictions[0].riskScore)} 
+                            level={predictions[0].riskLevel}
+                            size="lg"
+                          />
+                        </div>
+                        <RiskDetailsCard 
+                          reasons={predictions[0].factors?.reasons || []}
+                          recommendation={predictions[0].recommendation}
+                        />
+                      </div>
+                    ) : (
+                      <div className="bg-gray-50 rounded-xl p-6 text-center border border-dashed border-gray-300">
+                        <Brain className="w-8 h-8 mx-auto text-gray-400 mb-2 opacity-50" />
+                        <p className="text-sm text-gray-500">
+                          No AI risk prediction data available for this student yet. 
+                          Predictions are generated weekly or after significant academic updates.
+                        </p>
+                      </div>
                     )}
                   </div>
 

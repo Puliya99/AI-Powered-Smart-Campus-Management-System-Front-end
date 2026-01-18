@@ -7,7 +7,9 @@ import {
   TrendingDown, 
   Search, 
   FileText,
-  AlertCircle
+  AlertCircle,
+  Brain,
+  Zap,
 } from 'lucide-react';
 import axiosInstance from '../../services/api/axios.config';
 import DashboardLayout from '../../components/common/Layout/DashboardLayout';
@@ -30,10 +32,21 @@ const StudentResultsPage: React.FC = () => {
   const [results, setResults] = useState<Result[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [aiRiskStats, setAiRiskStats] = useState<any>(null);
 
   useEffect(() => {
     fetchResults();
+    fetchAiRiskData();
   }, []);
+
+  const fetchAiRiskData = async () => {
+    try {
+      const response = await axiosInstance.get('/performance/ai-predictions');
+      setAiRiskStats(response.data.data.stats);
+    } catch (error) {
+      console.error('Failed to fetch AI risk data:', error);
+    }
+  };
 
   const fetchResults = async () => {
     try {
@@ -80,7 +93,7 @@ const StudentResultsPage: React.FC = () => {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-4 md:grid-cols-2 gap-4">
           <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center">
             <div className="p-3 rounded-full bg-blue-50 mr-4">
               <BookOpen className="h-6 w-6 text-blue-600" />
@@ -99,22 +112,34 @@ const StudentResultsPage: React.FC = () => {
               <p className="text-2xl font-bold text-gray-900">{stats.avg}%</p>
             </div>
           </div>
-          <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center">
-            <div className="p-3 rounded-full bg-indigo-50 mr-4">
-              <Award className="h-6 w-6 text-indigo-600" />
+          
+          {/* AI Risk Summary Card */}
+          <div className="bg-white p-5 rounded-xl shadow-sm border border-purple-100 bg-gradient-to-br from-white to-purple-50 flex items-center md:col-span-2">
+            <div className="p-3 rounded-full bg-purple-100 mr-4">
+              <Brain className="h-6 w-6 text-purple-600" />
             </div>
-            <div>
-              <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">Modules Passed</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.passed}</p>
-            </div>
-          </div>
-          <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center">
-            <div className="p-3 rounded-full bg-red-50 mr-4">
-              <TrendingDown className="h-6 w-6 text-red-600" />
-            </div>
-            <div>
-              <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">Modules Failed</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.failed}</p>
+            <div className="flex-1">
+              <div className="flex justify-between items-center mb-1">
+                <p className="text-xs text-purple-600 uppercase font-bold tracking-wider">AI Center Risk Status</p>
+                <div className="flex items-center text-[8px] font-bold text-purple-700 bg-purple-200 px-1.5 py-0.5 rounded uppercase">
+                  <Zap className="h-2 w-2 mr-1" />
+                  Live
+                </div>
+              </div>
+              <div className="flex space-x-4">
+                <div className="text-center">
+                  <p className="text-lg font-bold text-red-600 leading-none">{aiRiskStats?.highRisk || 0}</p>
+                  <p className="text-[9px] text-gray-500 font-bold uppercase">High</p>
+                </div>
+                <div className="text-center border-x border-purple-100 px-4">
+                  <p className="text-lg font-bold text-yellow-600 leading-none">{aiRiskStats?.mediumRisk || 0}</p>
+                  <p className="text-[9px] text-gray-500 font-bold uppercase">Med</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-lg font-bold text-green-600 leading-none">{aiRiskStats?.lowRisk || 0}</p>
+                  <p className="text-[9px] text-gray-500 font-bold uppercase">Low</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
