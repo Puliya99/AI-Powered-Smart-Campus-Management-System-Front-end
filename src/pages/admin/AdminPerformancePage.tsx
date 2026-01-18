@@ -36,24 +36,72 @@ const AdminPerformancePage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [lecturersPerformance, setLecturersPerformance] = useState<any[]>([]);
   const [batchRiskStats, setBatchRiskStats] = useState<any>(null);
+  const [batches, setBatches] = useState<any[]>([]);
+  const [selectedBatch, setSelectedBatch] = useState('');
+  const [batchPerformance, setBatchPerformance] = useState<any>(null);
+  const [loadingBatch, setLoadingBatch] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [centers, setCenters] = useState<any[]>([]);
   const [selectedCenter, setSelectedCenter] = useState('');
 
   useEffect(() => {
     fetchCenters();
+    fetchBatches();
   }, []);
 
   useEffect(() => {
     fetchPerformanceData();
+    fetchAiRiskData();
   }, [selectedCenter]);
+
+  useEffect(() => {
+    if (selectedBatch) {
+      fetchBatchPerformance();
+    } else {
+      setBatchPerformance(null);
+    }
+  }, [selectedBatch]);
 
   const fetchCenters = async () => {
     try {
-      const response = await axiosInstance.get('/centers');
+      const response = await axiosInstance.get('/centers/dropdown');
       setCenters(response.data.data.centers || []);
     } catch (error) {
       console.error('Failed to fetch centers:', error);
+    }
+  };
+
+  const fetchBatches = async () => {
+    try {
+      const response = await axiosInstance.get('/batches/dropdown');
+      setBatches(response.data.data.batches || []);
+    } catch (error) {
+      console.error('Failed to fetch batches:', error);
+    }
+  };
+
+  const fetchAiRiskData = async () => {
+    try {
+      const url = selectedCenter 
+        ? `/performance/ai-predictions?centerId=${selectedCenter}` 
+        : '/performance/ai-predictions';
+      const response = await axiosInstance.get(url);
+      setBatchRiskStats(response.data.data.stats);
+    } catch (error) {
+      console.error('Failed to fetch AI risk data:', error);
+    }
+  };
+
+  const fetchBatchPerformance = async () => {
+    try {
+      setLoadingBatch(true);
+      const response = await axiosInstance.get(`/performance/batch/${selectedBatch}`);
+      setBatchPerformance(response.data.data);
+    } catch (error) {
+      console.error('Failed to fetch batch performance:', error);
+      toast.error('Failed to load batch performance');
+    } finally {
+      setLoadingBatch(false);
     }
   };
 
@@ -65,16 +113,6 @@ const AdminPerformancePage: React.FC = () => {
         : '/performance/admin/all-lecturers';
       const response = await axiosInstance.get(url);
       setLecturersPerformance(response.data.data);
-      
-      // Fetch batch risk data (mock or real if exists)
-      // For now, let's calculate it from all students if we were in a real scenario
-      // But since we want a "Batch Risk Overview", let's provide some aggregate data
-      setBatchRiskStats({
-        highRisk: 12,
-        mediumRisk: 25,
-        lowRisk: 143,
-        totalPredicted: 180
-      });
     } catch (error) {
       console.error('Failed to fetch performance data:', error);
       toast.error('Failed to load performance metrics');
@@ -113,13 +151,30 @@ const AdminPerformancePage: React.FC = () => {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Lecturer Performance Overview</h1>
-            <p className="text-gray-600 mt-1">System-wide teaching quality and engagement metrics.</p>
+            <h1 className="text-3xl font-bold text-gray-900">Performance Overview</h1>
+            <p className="text-gray-600 mt-1">System-wide quality, engagement and AI risk metrics.</p>
           </div>
-          <Activity className="h-10 w-10 text-primary-600 opacity-20" />
+          <div className="flex space-x-4">
+            {user?.role === 'ADMIN' && (
+              <div className="flex items-center space-x-2">
+                <Filter className="h-5 w-5 text-gray-400" />
+                <select
+                  value={selectedCenter}
+                  onChange={(e) => setSelectedCenter(e.target.value)}
+                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 bg-white"
+                >
+                  <option value="">All Centers</option>
+                  {centers.map(center => (
+                    <option key={center.id} value={center.id}>{center.centerName}</option>
+                  ))}
+                </select>
+              </div>
+            )}
+            <Activity className="h-10 w-10 text-primary-600 opacity-20" />
+          </div>
         </div>
 
-        {/* AI Batch Risk Overview - NEW */}
+        {/* AI Batch Risk Overview */}
         {batchRiskStats && (
           <div className="bg-white p-6 rounded-2xl shadow-sm border border-purple-100 bg-gradient-to-r from-white to-purple-50">
             <div className="flex items-center justify-between mb-6">
@@ -134,21 +189,21 @@ const AdminPerformancePage: React.FC = () => {
               </div>
               <div className="flex items-center text-xs font-bold text-purple-700 bg-purple-100 px-3 py-1 rounded-full uppercase tracking-wider">
                 <Zap className="h-3 w-3 mr-1" />
-                Live Analysis
+                Live Center Analysis
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
                 <p className="text-sm text-gray-500 font-medium">Total Predicted</p>
-                <p className="text-2xl font-bold text-gray-900">{batchRiskStats.totalPredicted}</p>
+                <p className="text-2xl font-bold text-gray-900">{batchRiskStats.highRisk + batchRiskStats.mediumRisk + batchRiskStats.lowRisk}</p>
               </div>
               <div className="bg-red-50 p-4 rounded-xl border border-red-100 shadow-sm">
                 <p className="text-sm text-red-600 font-medium">High Risk Students</p>
                 <div className="flex items-center justify-between">
                   <p className="text-2xl font-bold text-red-700">{batchRiskStats.highRisk}</p>
                   <span className="text-xs font-bold bg-red-200 text-red-800 px-2 py-0.5 rounded">
-                    {Math.round((batchRiskStats.highRisk / batchRiskStats.totalPredicted) * 100)}%
+                    {Math.round((batchRiskStats.highRisk / (batchRiskStats.highRisk + batchRiskStats.mediumRisk + batchRiskStats.lowRisk || 1)) * 100)}%
                   </span>
                 </div>
               </div>
@@ -157,7 +212,7 @@ const AdminPerformancePage: React.FC = () => {
                 <div className="flex items-center justify-between">
                   <p className="text-2xl font-bold text-yellow-700">{batchRiskStats.mediumRisk}</p>
                   <span className="text-xs font-bold bg-yellow-200 text-yellow-800 px-2 py-0.5 rounded">
-                    {Math.round((batchRiskStats.mediumRisk / batchRiskStats.totalPredicted) * 100)}%
+                    {Math.round((batchRiskStats.mediumRisk / (batchRiskStats.highRisk + batchRiskStats.mediumRisk + batchRiskStats.lowRisk || 1)) * 100)}%
                   </span>
                 </div>
               </div>
@@ -166,7 +221,7 @@ const AdminPerformancePage: React.FC = () => {
                 <div className="flex items-center justify-between">
                   <p className="text-2xl font-bold text-green-700">{batchRiskStats.lowRisk}</p>
                   <span className="text-xs font-bold bg-green-200 text-green-800 px-2 py-0.5 rounded">
-                    {Math.round((batchRiskStats.lowRisk / batchRiskStats.totalPredicted) * 100)}%
+                    {Math.round((batchRiskStats.lowRisk / (batchRiskStats.highRisk + batchRiskStats.mediumRisk + batchRiskStats.lowRisk || 1)) * 100)}%
                   </span>
                 </div>
               </div>
@@ -180,6 +235,88 @@ const AdminPerformancePage: React.FC = () => {
             </div>
           </div>
         )}
+
+        {/* Batch Performance Section */}
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-lg font-bold text-gray-900 flex items-center">
+              <Users className="h-5 w-5 mr-2 text-primary-600" />
+              Batch Performance Analysis
+            </h3>
+            <div className="flex items-center space-x-2">
+              <Filter className="h-4 w-4 text-gray-400" />
+              <select
+                value={selectedBatch}
+                onChange={(e) => setSelectedBatch(e.target.value)}
+                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 bg-white text-sm"
+              >
+                <option value="">Select a Batch</option>
+                {batches.map(batch => (
+                  <option key={batch.id} value={batch.id}>{batch.batchNumber}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {loadingBatch ? (
+            <div className="flex justify-center py-12">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+            </div>
+          ) : batchPerformance ? (
+            <div className="space-y-6">
+              <div className="bg-primary-50 p-4 rounded-xl border border-primary-100 flex justify-between items-center">
+                <div>
+                  <p className="text-xs text-primary-600 font-bold uppercase tracking-wider">Active Batch</p>
+                  <h4 className="text-xl font-bold text-primary-900">{batchPerformance.batchNumber}</h4>
+                  <p className="text-sm text-primary-700">{batchPerformance.programName}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-xs text-primary-600 font-bold uppercase tracking-wider">Modules Tracked</p>
+                  <p className="text-2xl font-bold text-primary-900">{batchPerformance.metrics.length}</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {batchPerformance.metrics.map((m: any) => (
+                  <div key={m.moduleId} className="p-4 rounded-xl border border-gray-100 hover:border-primary-200 transition-colors shadow-sm">
+                    <h5 className="font-bold text-gray-900 mb-3">{m.moduleCode}: {m.moduleName}</h5>
+                    <div className="space-y-3">
+                      <div>
+                        <div className="flex justify-between text-xs mb-1">
+                          <span className="text-gray-500">Average Marks</span>
+                          <span className="font-bold text-gray-900">{m.avgMarks}%</span>
+                        </div>
+                        <div className="w-full bg-gray-100 rounded-full h-1.5">
+                          <div 
+                            className={`h-1.5 rounded-full ${m.avgMarks > 70 ? 'bg-green-500' : m.avgMarks > 40 ? 'bg-yellow-500' : 'bg-red-500'}`} 
+                            style={{ width: `${m.avgMarks}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                      <div>
+                        <div className="flex justify-between text-xs mb-1">
+                          <span className="text-gray-500">Attendance Rate</span>
+                          <span className="font-bold text-gray-900">{m.attendanceRate}%</span>
+                        </div>
+                        <div className="w-full bg-gray-100 rounded-full h-1.5">
+                          <div 
+                            className="bg-blue-500 h-1.5 rounded-full" 
+                            style={{ width: `${m.attendanceRate}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className="text-center py-12 bg-gray-50 rounded-xl border border-dashed border-gray-300">
+              <BarChart2 className="h-12 w-12 text-gray-400 mx-auto mb-3 opacity-20" />
+              <p className="text-gray-500">Select a batch to view detailed performance metrics</p>
+            </div>
+          )}
+        </div>
 
         {/* Global Stats Bar Charts */}
         {!noData ? (
