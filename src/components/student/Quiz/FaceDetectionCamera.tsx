@@ -82,8 +82,17 @@ const FaceDetectionCamera: React.FC<FaceDetectionCameraProps> = ({ onViolation, 
   const startVideo = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 320, height: 240 } });
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
+      const videoElement = videoRef.current;
+      if (videoElement) {
+        videoElement.srcObject = stream;
+        await new Promise<void>((resolve) => {
+          if (videoElement.readyState >= 2) {
+            resolve();
+            return;
+          }
+          videoElement.onloadedmetadata = () => resolve();
+        });
+        await videoElement.play();
         setDetectionRunning(true);
       }
     } catch (err) {
