@@ -163,7 +163,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         { name: 'Assignments', href: '/lecturer/assignments', icon: FileText },
         { name: 'Results', href: '/lecturer/results', icon: Award },
         { name: 'Performance', href: '/lecturer/performance', icon: Award },
-        { name: 'Feedback', href: '/lecturer/feedback', icon: MessageSquare },
       ],
       user: [
         { name: 'Dashboard', href: '/user/dashboard', icon: LayoutDashboard },
@@ -177,6 +176,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         { name: 'Schedule', href: '/user/schedule', icon: Calendar },
         { name: 'Payments', href: '/user/payments', icon: DollarSign },
         { name: 'Reports', href: '/user/reports', icon: FileText },
+        { name: 'Performance', href: '/user/performance', icon: Award },
         { name: 'Feedback', href: '/user/feedback', icon: MessageSquare },
       ],
     }
