@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Clock, Send, AlertTriangle, CheckCircle, ChevronLeft, ChevronRight, Camera, CameraOff } from 'lucide-react';
 import toast from 'react-hot-toast';
+import axios from 'axios';
 import axiosInstance from '../../services/api/axios.config';
 import FaceDetectionCamera from '../../components/student/Quiz/FaceDetectionCamera';
 
@@ -35,6 +36,7 @@ const QuizAttemptPage: React.FC = () => {
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [isCancelled, setIsCancelled] = useState(false);
+  const [isFinished, setIsFinished] = useState(false);
   const [isCameraOff, setIsCameraOff] = useState(false);
   const [violationWarning, setViolationWarning] = useState<{ message: string; countdown: number } | null>(null);
 
@@ -111,7 +113,7 @@ const QuizAttemptPage: React.FC = () => {
   };
 
   const handleViolation = async (type: string, details?: string, shouldCancel = false) => {
-    if (submitting || isCancelled) return;
+    if (submitting || isCancelled || isFinished || !attempt) return;
 
     if (type === 'NONE') {
       setViolationWarning(null);
@@ -163,6 +165,15 @@ const QuizAttemptPage: React.FC = () => {
         toast.error(message, { duration: 4000 });
       }
     } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const message = error.response?.data?.message;
+        if (message === 'Attempt is already finished') {
+          setIsFinished(true);
+          setViolationWarning(null);
+          if (warningTimerRef.current) clearInterval(warningTimerRef.current);
+          return;
+        }
+      }
       console.error('Failed to report violation:', error);
     }
   };
@@ -188,9 +199,11 @@ const QuizAttemptPage: React.FC = () => {
         selectedOption,
       }));
 
-      const response = await axiosInstance.post(`/quizzes/attempts/${attempt.id}/submit`, {
+      await axiosInstance.post(`/quizzes/attempts/${attempt.id}/submit`, {
         answers: formattedAnswers,
       });
+
+      setIsFinished(true);
 
       if (isFinal) {
         toast.success('Quiz submitted successfully!');
@@ -404,7 +417,7 @@ const QuizAttemptPage: React.FC = () => {
 
       {/* Face Detection Camera */}
       <FaceDetectionCamera 
-        isActive={!submitting && !isCancelled && !!attempt} 
+        isActive={!submitting && !isCancelled && !isFinished && !!attempt} 
         onViolation={handleViolation} 
         isCameraOff={isCameraOff}
       />

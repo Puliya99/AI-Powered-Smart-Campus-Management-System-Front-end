@@ -14,11 +14,13 @@ const FaceDetectionCamera: React.FC<FaceDetectionCameraProps> = ({ onViolation, 
   const [modelsLoaded, setModelsLoaded] = useState(false);
   const [cameraError, setCameraError] = useState(false);
   const [detectionRunning, setDetectionRunning] = useState(false);
+  const [noFaceWarning, setNoFaceWarning] = useState(false);
+  const [multipleFacesWarning, setMultipleFacesWarning] = useState(false);
+  const [cameraOffWarning, setCameraOffWarning] = useState(false);
   
   const noFaceTimer = useRef<NodeJS.Timeout | null>(null);
-  const noFaceCount = useRef(0);
-  const multipleFacesCount = useRef(0);
-  const cameraOffCount = useRef(0);
+  const multipleFacesTimer = useRef<NodeJS.Timeout | null>(null);
+  const cameraOffTimer = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const loadModels = async () => {
@@ -40,11 +42,8 @@ const FaceDetectionCamera: React.FC<FaceDetectionCameraProps> = ({ onViolation, 
     if (modelsLoaded && isActive && !cameraError) {
       if (isCameraOff) {
         stopVideo();
-        // Start counting for CAMERA_DISABLED violation if not already warning
-        // but we'll handle this in a separate interval or effect to follow the 10s rule
       } else {
         startVideo();
-        cameraOffCount.current = 0; // Reset if camera is back on
       }
     } else {
       stopVideo();
@@ -52,32 +51,39 @@ const FaceDetectionCamera: React.FC<FaceDetectionCameraProps> = ({ onViolation, 
     return () => stopVideo();
   }, [modelsLoaded, isActive, cameraError, isCameraOff]);
 
-  // Separate interval for Camera Off check to allow the same 10s grace period logic
   useEffect(() => {
-    let interval: NodeJS.Timeout;
     if (isActive && isCameraOff && !cameraError) {
-      interval = setInterval(() => {
-        cameraOffCount.current += 1;
-        if (cameraOffCount.current === 1) {
-          onViolation('CAMERA_DISABLED', 'Camera was manually turned off');
-          toast.error('Camera must be ON during the quiz!', { duration: 3000 });
-        }
-        if (cameraOffCount.current >= 10) {
+      if (!cameraOffWarning) {
+        setCameraOffWarning(true);
+        onViolation('CAMERA_DISABLED', 'Camera was manually turned off');
+        toast.error('Camera must be ON during the quiz!', { duration: 3000 });
+      }
+      if (!cameraOffTimer.current) {
+        cameraOffTimer.current = setTimeout(() => {
           onViolation('CAMERA_DISABLED', 'Camera remained off for 10 seconds', true);
-          cameraOffCount.current = 0;
-        }
-      }, 1000);
+          setCameraOffWarning(false);
+          cameraOffTimer.current = null;
+        }, 10000);
+      }
     } else {
-      cameraOffCount.current = 0;
-      // Trigger clear check
-      if (isActive && modelsLoaded && !cameraError) {
-         if (noFaceCount.current === 0 && multipleFacesCount.current === 0) {
-           onViolation('NONE');
-         }
+      if (cameraOffTimer.current) {
+        clearTimeout(cameraOffTimer.current);
+        cameraOffTimer.current = null;
+      }
+      if (cameraOffWarning) {
+        setCameraOffWarning(false);
+      }
+      if (isActive && modelsLoaded && !cameraError && !noFaceWarning && !multipleFacesWarning) {
+        onViolation('NONE');
       }
     }
-    return () => clearInterval(interval);
-  }, [isActive, isCameraOff, cameraError, onViolation, modelsLoaded]);
+    return () => {
+      if (cameraOffTimer.current) {
+        clearTimeout(cameraOffTimer.current);
+        cameraOffTimer.current = null;
+      }
+    };
+  }, [isActive, isCameraOff, cameraError, onViolation, modelsLoaded, cameraOffWarning, noFaceWarning, multipleFacesWarning]);
 
   const startVideo = async () => {
     try {
@@ -115,45 +121,89 @@ const FaceDetectionCamera: React.FC<FaceDetectionCameraProps> = ({ onViolation, 
 
           // Handle NO_FACE
           if (detections.length === 0) {
-            noFaceCount.current += 1;
-            if (noFaceCount.current === 1) {
-               onViolation('NO_FACE', 'No face detected');
-            }
-            if (noFaceCount.current === 5) { // ~5 seconds
+            if (!noFaceWarning) {
+              setNoFaceWarning(true);
+              onViolation('NO_FACE', 'No face detected');
               toast.error('Face not detected! Please stay in front of the camera.', { duration: 3000 });
             }
-            if (noFaceCount.current >= 10) {
-               onViolation('NO_FACE', 'No face detected for 10 seconds', true);
-               noFaceCount.current = 0;
+            if (!noFaceTimer.current) {
+              noFaceTimer.current = setTimeout(() => {
+                onViolation('NO_FACE', 'No face detected for 10 seconds', true);
+                setNoFaceWarning(false);
+                noFaceTimer.current = null;
+              }, 10000);
+            }
+            if (multipleFacesWarning) {
+              setMultipleFacesWarning(false);
+            }
+            if (multipleFacesTimer.current) {
+              clearTimeout(multipleFacesTimer.current);
+              multipleFacesTimer.current = null;
             }
           } else {
-            noFaceCount.current = 0;
+            if (noFaceTimer.current) {
+              clearTimeout(noFaceTimer.current);
+              noFaceTimer.current = null;
+            }
+            if (noFaceWarning) {
+              setNoFaceWarning(false);
+            }
           }
 
           // Handle MULTIPLE_FACES
           if (detections.length > 1) {
-            multipleFacesCount.current += 1;
-            if (multipleFacesCount.current === 1) {
+            if (!multipleFacesWarning) {
+              setMultipleFacesWarning(true);
               onViolation('MULTIPLE_FACES', `${detections.length} faces detected`);
               toast.error('Multiple faces detected!', { duration: 3000 });
             }
-            if (multipleFacesCount.current >= 10) {
-              onViolation('MULTIPLE_FACES', 'Multiple faces detected for 10 seconds', true);
-              multipleFacesCount.current = 0;
+            if (!multipleFacesTimer.current) {
+              multipleFacesTimer.current = setTimeout(() => {
+                onViolation('MULTIPLE_FACES', 'Multiple faces detected for 10 seconds', true);
+                setMultipleFacesWarning(false);
+                multipleFacesTimer.current = null;
+              }, 10000);
+            }
+            if (noFaceWarning) {
+              setNoFaceWarning(false);
+            }
+            if (noFaceTimer.current) {
+              clearTimeout(noFaceTimer.current);
+              noFaceTimer.current = null;
             }
           } else {
-            multipleFacesCount.current = 0;
+            if (multipleFacesTimer.current) {
+              clearTimeout(multipleFacesTimer.current);
+              multipleFacesTimer.current = null;
+            }
+            if (multipleFacesWarning) {
+              setMultipleFacesWarning(false);
+            }
           }
 
           // Trigger clear if all counts are back to 0
-          if (noFaceCount.current === 0 && multipleFacesCount.current === 0 && cameraOffCount.current === 0) {
+          if (!noFaceWarning && !multipleFacesWarning && !cameraOffWarning) {
             onViolation('NONE');
           }
         }
       }, 1000);
     }
     return () => clearInterval(interval);
-  }, [detectionRunning, isActive, onViolation]);
+  }, [detectionRunning, isActive, onViolation, noFaceWarning, multipleFacesWarning, cameraOffWarning]);
+
+  useEffect(() => {
+    return () => {
+      if (noFaceTimer.current) {
+        clearTimeout(noFaceTimer.current);
+      }
+      if (multipleFacesTimer.current) {
+        clearTimeout(multipleFacesTimer.current);
+      }
+      if (cameraOffTimer.current) {
+        clearTimeout(cameraOffTimer.current);
+      }
+    };
+  }, []);
 
   return (
     <div className="fixed bottom-4 right-4 w-48 h-36 bg-gray-900 rounded-lg overflow-hidden border-2 border-primary-500 shadow-2xl z-50">
@@ -190,7 +240,7 @@ const FaceDetectionCamera: React.FC<FaceDetectionCameraProps> = ({ onViolation, 
         </div>
       )}
 
-      {noFaceCount.current >= 5 && (
+      {noFaceWarning && (
         <div className="absolute inset-0 flex items-center justify-center bg-red-500 bg-opacity-30 pointer-events-none">
           <AlertTriangle className="w-12 h-12 text-red-600 animate-bounce" />
         </div>
