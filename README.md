@@ -129,8 +129,9 @@ One of the core innovations of this system is the **Anti-Cheating Module** for o
 ---
 
 ## 🧪 Testing
+- **Execution:** Run tests using `npm test`.
+- **Framework:** Vitest + React Testing Library.
 - **Directory:** `src/tests/` contains test files for components, services, and utils.
-- **TODO:** Configure a test runner (e.g., Vitest or Jest) in `package.json` to execute these tests.
 
 ---
 
@@ -155,6 +156,5 @@ Academic / Educational Use Only.
 ---
 
 ### TODOs
-- [ ] Configure Vitest/Jest for automated testing.
 - [ ] Complete CI/CD pipeline integration.
 - [ ] Enhance offline data synchronization for PWA.
