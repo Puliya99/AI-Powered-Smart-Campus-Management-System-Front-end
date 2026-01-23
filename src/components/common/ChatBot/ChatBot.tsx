@@ -28,6 +28,8 @@ const ChatBot: React.FC<ChatBotProps> = ({ courseId }) => {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const isFallbackResponse = (answer: string) =>
+    /trouble connecting to my ai brain/i.test(answer);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -54,12 +56,16 @@ const ChatBot: React.FC<ChatBotProps> = ({ courseId }) => {
 
     try {
       const response = await aiService.askQuestion(courseId, input);
+      const shouldHideCitations = isFallbackResponse(response.answer);
+      if (shouldHideCitations) {
+        toast.error('AI assistant is temporarily unavailable. Please try again soon.');
+      }
       
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
         type: 'bot',
         content: response.answer,
-        citations: response.citations,
+        citations: shouldHideCitations ? undefined : response.citations,
         timestamp: new Date(),
       };
 
