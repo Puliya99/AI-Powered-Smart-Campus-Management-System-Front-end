@@ -18,17 +18,23 @@ export interface ChatResponse {
 
 export const aiService = {
   processMaterial: async (materialId: string) => {
-    const response = await axiosInstance.post(`/ai/materials/${materialId}/process`);
+    const response = await axiosInstance.post(`/ai/materials/${materialId}/process`, {}, {
+      timeout: 120000 // Increase timeout to 120 seconds for processing materials
+    });
     return response.data;
   },
 
   askQuestion: async (courseId: string, question: string): Promise<ChatResponse> => {
-    const response = await axiosInstance.post('/ai/chat/ask', { courseId, question });
+    const response = await axiosInstance.post('/ai/chat/ask', { courseId, question }, {
+      timeout: 60000 // Increase timeout to 60 seconds for AI chat
+    });
     return response.data.data;
   },
 
   predictExamRisk: async (studentId: string, moduleId: string) => {
-    const response = await axiosInstance.post('/ai/predict-exam-risk', { studentId, moduleId });
+    const response = await axiosInstance.post('/ai/predict-exam-risk', { studentId, moduleId }, {
+      timeout: 60000 // Increase timeout to 60 seconds for exam risk prediction
+    });
     return response.data;
   }
 };
