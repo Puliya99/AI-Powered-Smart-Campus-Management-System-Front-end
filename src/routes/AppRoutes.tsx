@@ -83,6 +83,15 @@ const LecturePerformancePage = React.lazy(() => import('../pages/lecturer/Lectur
 const LecturerSettingsPage = React.lazy(() => import('../pages/lecturer/LecturerSettingsPage'))
 const AdminPerformancePage = React.lazy(() => import('../pages/admin/AdminPerformancePage'))
 
+// Kiosk page (public)
+const KioskAttendancePage = React.lazy(() => import('../pages/common/KioskAttendancePage'))
+
+// Student attendance page
+const StudentAttendancePage = React.lazy(() => import('../pages/student/AttendancePage'))
+
+// Admin fingerprint management
+const FingerprintManagementPage = React.lazy(() => import('../pages/admin/FingerprintManagementPage'))
+
 // Staff pages
 const StaffDashboard = React.lazy(() => import('../pages/staff/StaffDashboard'))
 
@@ -140,6 +149,9 @@ const AppRoutes: React.FC = () => {
             </PublicRoute>
           }
         />
+
+        {/* Kiosk Route - Public, no auth required */}
+        <Route path="/kiosk" element={<KioskAttendancePage />} />
 
         {/* Admin Routes - Only accessible by ADMIN */}
         <Route path="/admin">
@@ -268,6 +280,14 @@ const AppRoutes: React.FC = () => {
             element={
               <ProtectedRoute allowedRoles={['ADMIN', 'USER']}>
                 <FeedbackManagementPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="fingerprint"
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN']}>
+                <FingerprintManagementPage />
               </ProtectedRoute>
             }
           />
@@ -589,7 +609,7 @@ const AppRoutes: React.FC = () => {
           <Route
             path="attendance"
             element={
-              <ProtectedRoute allowedRoles={['LECTURER']}>
+              <ProtectedRoute allowedRoles={['LECTURER', 'STUDENT']}>
                 <AttendancePage />
               </ProtectedRoute>
             }
@@ -733,6 +753,14 @@ const AppRoutes: React.FC = () => {
             element={
               <ProtectedRoute allowedRoles={['USER']}>
                 <SchedulePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="attendance"
+            element={
+              <ProtectedRoute allowedRoles={['USER']}>
+                <StudentAttendancePage />
               </ProtectedRoute>
             }
           />
