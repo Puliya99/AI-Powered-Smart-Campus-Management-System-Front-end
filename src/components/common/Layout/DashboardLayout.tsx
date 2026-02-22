@@ -114,6 +114,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         { name: 'Payments', href: '/admin/payments', icon: DollarSign },
         { name: 'Reports', href: '/admin/reports', icon: FileText },
         { name: 'Performance', href: '/admin/performance', icon: Award },
+        { name: 'Fingerprint', href: '/admin/fingerprint', icon: UserCheck },
         { name: 'Feedback', href: '/admin/feedback', icon: MessageSquare },
       ],
       student: [
@@ -174,6 +175,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         { name: 'Batches', href: '/user/batches', icon: Users },
         { name: 'Centers', href: '/user/centers', icon: Building2 },
         { name: 'Schedule', href: '/user/schedule', icon: Calendar },
+        { name: 'Attendance', href: '/user/attendance', icon: ClipboardList },
         { name: 'Payments', href: '/user/payments', icon: DollarSign },
         { name: 'Reports', href: '/user/reports', icon: FileText },
         { name: 'Performance', href: '/user/performance', icon: Award },

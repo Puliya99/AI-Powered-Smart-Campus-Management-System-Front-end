@@ -17,6 +17,7 @@ import DashboardLayout from '../../components/common/Layout/DashboardLayout'
 import axiosInstance from '../../services/api/axios.config'
 import RiskDetailsCard from '../../components/shared/AI/RiskDetailsCard'
 import { useAuth } from '../../context/AuthContext'
+import ChatBot from '../../components/common/ChatBot/ChatBot'
 
 const StudentDashboard: React.FC = () => {
   const { user } = useAuth()
@@ -299,6 +300,8 @@ const StudentDashboard: React.FC = () => {
           </div>
         </div>
       </div>
+      {/* RAG Chatbot */}
+      <ChatBot courseId={dashboardData?.upcomingClasses?.[0]?.module?.id} />
     </DashboardLayout>
   )
 }

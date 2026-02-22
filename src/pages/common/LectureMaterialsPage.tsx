@@ -20,6 +20,9 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import MaterialModal from '../../components/lecturer/Materials/MaterialModal';
+import ChatBot from '../../components/common/ChatBot/ChatBot';
+import aiService from '../../services/api/ai.service';
+import { Brain, Sparkles, Loader2 } from 'lucide-react';
 
 interface Material {
   id: string;
@@ -48,6 +51,7 @@ const LectureMaterialsPage: React.FC = () => {
   const [materials, setMaterials] = useState<Material[]>([]);
   const [module, setModule] = useState<Module | null>(null);
   const [loading, setLoading] = useState(true);
+  const [processingId, setProcessingId] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [availableModules, setAvailableModules] = useState<Module[]>([]);
   const navigate = useNavigate();
@@ -117,6 +121,18 @@ const LectureMaterialsPage: React.FC = () => {
       fetchMaterials();
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Failed to delete material');
+    }
+  };
+
+  const handleProcessAI = async (id: string) => {
+    try {
+      setProcessingId(id);
+      await aiService.processMaterial(id);
+      toast.success('Material processed for AI Assistant');
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to process material');
+    } finally {
+      setProcessingId(null);
     }
   };
 
@@ -287,14 +303,34 @@ const LectureMaterialsPage: React.FC = () => {
                     <div className="p-2 bg-gray-50 rounded-lg">
                       {getIcon(material.type)}
                     </div>
-                    {isLecturer && (
-                      <button
-                        onClick={() => handleDelete(material.id)}
-                        className="text-gray-400 hover:text-red-500 transition-colors"
-                      >
-                        <Trash2 className="h-5 w-5" />
-                      </button>
-                    )}
+                    <div className="flex items-center space-x-1">
+                      {isLecturer && (
+                        <>
+                          <button
+                            onClick={() => handleProcessAI(material.id)}
+                            disabled={processingId === material.id}
+                            title="Process for AI Assistant"
+                            className={`p-1.5 rounded-lg transition-colors ${
+                              processingId === material.id 
+                                ? 'bg-indigo-50 text-indigo-400' 
+                                : 'text-gray-400 hover:text-indigo-600 hover:bg-indigo-50'
+                            }`}
+                          >
+                            {processingId === material.id ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              <Sparkles className="h-4 w-4" />
+                            )}
+                          </button>
+                          <button
+                            onClick={() => handleDelete(material.id)}
+                            className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </>
+                      )}
+                    </div>
                   </div>
 
                   <div className="mt-4">
@@ -380,6 +416,8 @@ const LectureMaterialsPage: React.FC = () => {
           </div>
         )}
       </div>
+
+      <ChatBot courseId={moduleId} />
 
       {showModal && (
         <MaterialModal
