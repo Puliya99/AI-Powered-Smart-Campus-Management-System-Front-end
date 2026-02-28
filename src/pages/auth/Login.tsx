@@ -165,19 +165,6 @@ const Login: React.FC = () => {
               )}
             </button>
           </form>
-
-          {/* Register link */}
-          <div className="text-center mt-6">
-            <p className="text-base text-gray-600">
-              Don't have an account?{' '}
-              <Link
-                to="/register"
-                className="font-semibold text-primary-600 hover:text-primary-500 transition"
-              >
-                Create one now
-              </Link>
-            </p>
-          </div>
         </div>
       </div>
 

@@ -13,8 +13,10 @@ import {
 } from 'lucide-react'
 import DashboardLayout from '../../components/common/Layout/DashboardLayout'
 import LecturerModal from '../../components/admin/Lecturer/LecturerModal'
+import LecturerViewModal from '../../components/admin/Lecturer/LecturerViewModal'
 import axiosInstance from '../../services/api/axios.config'
 import toast from 'react-hot-toast'
+import { useAuth } from '../../context/AuthContext'
 
 interface Lecturer {
   id: string
@@ -37,12 +39,14 @@ interface Lecturer {
 }
 
 const LecturersPage: React.FC = () => {
+  const { user } = useAuth()
   const [lecturers, setLecturers] = useState<Lecturer[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [showAddModal, setShowAddModal] = useState(false)
+  const [showViewModal, setShowViewModal] = useState(false)
   const [selectedLecturer, setSelectedLecturer] = useState<Lecturer | null>(
     null
   )
@@ -55,12 +59,27 @@ const LecturersPage: React.FC = () => {
   const [filters, setFilters] = useState({
     isActive: '',
     specialization: '',
+    centerId: '',
   })
+  const [centers, setCenters] = useState<any[]>([])
 
   useEffect(() => {
     fetchLecturers()
     fetchStats()
   }, [currentPage, searchTerm, filters])
+
+  useEffect(() => {
+    fetchCenters()
+  }, [])
+
+  const fetchCenters = async () => {
+    try {
+      const response = await axiosInstance.get('/centers/dropdown')
+      setCenters(response.data.data.centers)
+    } catch (error) {
+      console.error('Failed to fetch centers', error)
+    }
+  }
 
   const fetchLecturers = async () => {
     try {
@@ -73,6 +92,7 @@ const LecturersPage: React.FC = () => {
         ...(filters.specialization && {
           specialization: filters.specialization,
         }),
+        ...(filters.centerId && { centerId: filters.centerId }),
       })
 
       const response = await axiosInstance.get(`/lecturers?${params}`)
@@ -188,20 +208,36 @@ const LecturersPage: React.FC = () => {
 
         {/* Search and Filters */}
         <div className="bg-white p-4 rounded-lg shadow">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             {/* Search */}
-            <div className="md:col-span-2">
+            <div className="md:col-span-1">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
                   type="text"
-                  placeholder="Search by name, email, or specialization..."
+                  placeholder="Search lecturers..."
                   value={searchTerm}
                   onChange={handleSearch}
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 />
               </div>
             </div>
+
+            {/* Center Filter */}
+            {user?.role === 'ADMIN' && (
+              <select
+                value={filters.centerId}
+                onChange={(e) => handleFilterChange('centerId', e.target.value)}
+                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+              >
+                <option value="">All Centers</option>
+                {centers.map((center) => (
+                  <option key={center.id} value={center.id}>
+                    {center.centerName}
+                  </option>
+                ))}
+              </select>
+            )}
 
             {/* Status Filter */}
             <select
@@ -213,6 +249,17 @@ const LecturersPage: React.FC = () => {
               <option value="true">Active</option>
               <option value="false">Inactive</option>
             </select>
+
+            {/* Specialization Filter */}
+            <input
+              type="text"
+              placeholder="Filter by specialization..."
+              value={filters.specialization}
+              onChange={(e) =>
+                handleFilterChange('specialization', e.target.value)
+              }
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+            />
           </div>
         </div>
 
@@ -311,6 +358,16 @@ const LecturersPage: React.FC = () => {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                           <div className="flex space-x-2">
+                            <button
+                              onClick={() => {
+                                setSelectedLecturer(lecturer)
+                                setShowViewModal(true)
+                              }}
+                              className="text-green-600 hover:text-green-900"
+                              title="View"
+                            >
+                              <Eye className="w-5 h-5" />
+                            </button>
                             <button
                               onClick={() => {
                                 setSelectedLecturer(lecturer)
@@ -420,6 +477,15 @@ const LecturersPage: React.FC = () => {
           fetchLecturers()
           fetchStats()
         }}
+      />
+      {/* View Lecturer Modal */}
+      <LecturerViewModal
+        isOpen={showViewModal}
+        onClose={() => {
+          setShowViewModal(false)
+          setSelectedLecturer(null)
+        }}
+        lecturerId={selectedLecturer?.id || null}
       />
     </DashboardLayout>
   )

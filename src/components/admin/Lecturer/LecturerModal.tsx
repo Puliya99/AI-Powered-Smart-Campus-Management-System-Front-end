@@ -28,6 +28,7 @@ interface FormData {
   // Lecturer fields
   specialization: string
   qualification: string
+  centerId: string
 }
 
 const LecturerModal: React.FC<LecturerModalProps> = ({
@@ -37,6 +38,7 @@ const LecturerModal: React.FC<LecturerModalProps> = ({
   onSuccess,
 }) => {
   const [loading, setLoading] = useState(false)
+  const [centers, setCenters] = useState<any[]>([])
   const [formData, setFormData] = useState<FormData>({
     username: '',
     email: '',
@@ -52,7 +54,21 @@ const LecturerModal: React.FC<LecturerModalProps> = ({
     homeNumber: '',
     specialization: '',
     qualification: '',
+    centerId: '',
   })
+
+  useEffect(() => {
+    fetchCenters()
+  }, [])
+
+  const fetchCenters = async () => {
+    try {
+      const response = await axiosInstance.get('/centers/dropdown')
+      setCenters(response.data.data.centers)
+    } catch (error) {
+      console.error('Failed to fetch centers', error)
+    }
+  }
 
   useEffect(() => {
     if (lecturer) {
@@ -71,6 +87,7 @@ const LecturerModal: React.FC<LecturerModalProps> = ({
         homeNumber: lecturer.user.homeNumber || '',
         specialization: lecturer.specialization || '',
         qualification: lecturer.qualification || '',
+        centerId: lecturer.user.center?.id || '',
       })
     } else {
       setFormData({
@@ -88,6 +105,7 @@ const LecturerModal: React.FC<LecturerModalProps> = ({
         homeNumber: '',
         specialization: '',
         qualification: '',
+        centerId: '',
       })
     }
   }, [lecturer])
@@ -159,6 +177,7 @@ const LecturerModal: React.FC<LecturerModalProps> = ({
             address: formData.address,
             mobileNumber: formData.mobileNumber,
             homeNumber: formData.homeNumber,
+            centerId: formData.centerId,
           },
           specialization: formData.specialization,
           qualification: formData.qualification,
@@ -437,6 +456,27 @@ const LecturerModal: React.FC<LecturerModalProps> = ({
                   <h4 className="text-lg font-semibold text-gray-900 mb-4 border-b pb-2">
                     Professional Information
                   </h4>
+                </div>
+
+                {/* Center */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Center <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    name="centerId"
+                    value={formData.centerId}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  >
+                    <option value="">Select Center</option>
+                    {centers.map((center) => (
+                      <option key={center.id} value={center.id}>
+                        {center.centerName}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
                 {/* Specialization */}
