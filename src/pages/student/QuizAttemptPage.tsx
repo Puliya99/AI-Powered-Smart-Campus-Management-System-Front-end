@@ -39,6 +39,8 @@ const QuizAttemptPage: React.FC = () => {
   const [isFinished, setIsFinished] = useState(false);
   const [isCameraOff, setIsCameraOff] = useState(false);
   const [violationWarning, setViolationWarning] = useState<{ message: string; countdown: number } | null>(null);
+  const [tabSwitchCount, setTabSwitchCount] = useState(0);
+  const [violationScore, setViolationScore] = useState(0);
 
   const timerRef = useRef<NodeJS.Timeout>();
   const warningTimerRef = useRef<NodeJS.Timeout>();
@@ -50,6 +52,43 @@ const QuizAttemptPage: React.FC = () => {
       if (warningTimerRef.current) clearInterval(warningTimerRef.current);
     };
   }, [quizId]);
+
+  // Tab Switch / Window Blur Detection
+  useEffect(() => {
+    if (submitting || isCancelled || isFinished || !attempt) return;
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        setTabSwitchCount(prev => {
+          const newCount = prev + 1;
+          // Auto-cancel after 3 tab switches
+          const shouldCancel = newCount >= 3;
+          handleViolation('TAB_SWITCH', `Tab switched (${newCount} time${newCount > 1 ? 's' : ''})`, shouldCancel);
+          return newCount;
+        });
+      }
+    };
+
+    const handleWindowBlur = () => {
+      if (!document.hidden) {
+        // Window lost focus but tab didn't switch (e.g., clicked outside browser)
+        setTabSwitchCount(prev => {
+          const newCount = prev + 1;
+          const shouldCancel = newCount >= 3;
+          handleViolation('TAB_SWITCH', `Window lost focus (${newCount} time${newCount > 1 ? 's' : ''})`, shouldCancel);
+          return newCount;
+        });
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('blur', handleWindowBlur);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('blur', handleWindowBlur);
+    };
+  }, [submitting, isCancelled, isFinished, attempt]);
 
   const startQuiz = async () => {
     try {
@@ -124,11 +163,15 @@ const QuizAttemptPage: React.FC = () => {
     // If it's just a warning (shouldCancel is false), show local countdown
     if (!shouldCancel) {
       if (warningTimerRef.current) clearInterval(warningTimerRef.current);
-      
+
       let message = "Security violation detected!";
       if (type === 'NO_FACE') message = "Face not detected!";
       else if (type === 'MULTIPLE_FACES') message = "Multiple faces detected!";
       else if (type === 'CAMERA_DISABLED') message = "Camera is OFF!";
+      else if (type === 'TAB_SWITCH') message = "Tab switch detected!";
+      else if (type === 'CHEATING_OBJECT') message = "Suspicious object detected!";
+      else if (type === 'LOOKING_AWAY') message = "Looking away from screen!";
+      else if (type === 'HEAD_POSE') message = "Suspicious head movement!";
 
       setViolationWarning({ message, countdown: 10 });
       
@@ -154,14 +197,17 @@ const QuizAttemptPage: React.FC = () => {
         shouldCancel
       });
 
-      const { cancelled, warning, message } = response.data.data;
+      const { cancelled, warning, message, totalScore } = response.data.data;
+
+      if (totalScore !== undefined) {
+        setViolationScore(totalScore);
+      }
 
       if (cancelled) {
         setIsCancelled(true);
         if (timerRef.current) clearInterval(timerRef.current);
-        toast.error(`Exam Cancelled: ${message || details || type}`, { duration: 10000 });
+        toast.error(`Exam Auto-Submitted: ${message || details || type}`, { duration: 10000 });
       } else if (warning) {
-        // We already show our custom overlay, but toast is good too
         toast.error(message, { duration: 4000 });
       }
     } catch (error) {
@@ -252,9 +298,12 @@ const QuizAttemptPage: React.FC = () => {
           <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <AlertTriangle className="h-10 w-10 text-red-600" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Attempt Cancelled</h1>
-          <p className="text-gray-600 mb-8">
-            Your quiz attempt has been automatically cancelled due to a security violation. This incident has been logged and reported to your lecturer.
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Exam Auto-Submitted</h1>
+          <p className="text-gray-600 mb-4">
+            Your quiz attempt has been automatically submitted due to security violations exceeding the allowed threshold (Score: {violationScore}/5).
+          </p>
+          <p className="text-sm text-gray-500 mb-8">
+            This incident has been logged and reported to your lecturer. Contact your lecturer if you believe this was an error.
           </p>
           <button
             onClick={() => navigate('/student/quizzes')}
@@ -284,11 +333,23 @@ const QuizAttemptPage: React.FC = () => {
         </div>
 
         <div className="flex items-center space-x-3">
+          {/* Violation Score Badge */}
+          {violationScore > 0 && (
+            <div className={`flex items-center px-3 py-1.5 rounded-lg text-sm font-bold ${
+              violationScore >= 4 ? 'bg-red-100 text-red-700 animate-pulse' :
+              violationScore >= 2 ? 'bg-yellow-100 text-yellow-700' :
+              'bg-orange-50 text-orange-600'
+            }`}>
+              <AlertTriangle className="h-4 w-4 mr-1" />
+              {violationScore}/5
+            </div>
+          )}
+
           <button
             onClick={() => setIsCameraOff(!isCameraOff)}
             className={`p-2 rounded-lg transition-colors ${
-              isCameraOff 
-                ? 'bg-red-100 text-red-600 hover:bg-red-200' 
+              isCameraOff
+                ? 'bg-red-100 text-red-600 hover:bg-red-200'
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
             title={isCameraOff ? "Turn Camera On" : "Turn Camera Off"}
@@ -408,8 +469,11 @@ const QuizAttemptPage: React.FC = () => {
             <div className="text-6xl font-black bg-white text-red-600 w-24 h-24 rounded-full flex items-center justify-center mx-auto shadow-2xl">
               {violationWarning.countdown}
             </div>
-            <p className="mt-8 text-xl font-medium opacity-80">
-              The quiz will be cancelled in {violationWarning.countdown} seconds.
+            <p className="mt-4 text-lg font-bold opacity-90">
+              Violation Score: {violationScore}/5
+            </p>
+            <p className="mt-4 text-xl font-medium opacity-80">
+              The exam will be auto-submitted if violations continue.
             </p>
           </div>
         </div>
