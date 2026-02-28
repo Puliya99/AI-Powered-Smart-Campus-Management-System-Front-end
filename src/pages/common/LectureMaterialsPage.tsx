@@ -304,31 +304,29 @@ const LectureMaterialsPage: React.FC = () => {
                       {getIcon(material.type)}
                     </div>
                     <div className="flex items-center space-x-1">
+                      <button
+                        onClick={() => handleProcessAI(material.id)}
+                        disabled={processingId === material.id}
+                        title="Process for AI Assistant"
+                        className={`p-1.5 rounded-lg transition-colors ${
+                          processingId === material.id
+                            ? 'bg-indigo-50 text-indigo-400'
+                            : 'text-gray-400 hover:text-indigo-600 hover:bg-indigo-50'
+                        }`}
+                      >
+                        {processingId === material.id ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <Sparkles className="h-4 w-4" />
+                        )}
+                      </button>
                       {isLecturer && (
-                        <>
-                          <button
-                            onClick={() => handleProcessAI(material.id)}
-                            disabled={processingId === material.id}
-                            title="Process for AI Assistant"
-                            className={`p-1.5 rounded-lg transition-colors ${
-                              processingId === material.id 
-                                ? 'bg-indigo-50 text-indigo-400' 
-                                : 'text-gray-400 hover:text-indigo-600 hover:bg-indigo-50'
-                            }`}
-                          >
-                            {processingId === material.id ? (
-                              <Loader2 className="h-4 w-4 animate-spin" />
-                            ) : (
-                              <Sparkles className="h-4 w-4" />
-                            )}
-                          </button>
-                          <button
-                            onClick={() => handleDelete(material.id)}
-                            className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </button>
-                        </>
+                        <button
+                          onClick={() => handleDelete(material.id)}
+                          className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
                       )}
                     </div>
                   </div>
