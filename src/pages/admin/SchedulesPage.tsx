@@ -11,6 +11,7 @@ import {
   User,
   BookOpen,
   Filter,
+  Star,
 } from 'lucide-react'
 import DashboardLayout from '../../components/common/Layout/DashboardLayout'
 import ScheduleModal from '../../components/admin/Schedules/ScheduleModal'
@@ -21,6 +22,9 @@ import { useAuth } from '../../context/AuthContext'
 
 interface Schedule {
   id: string
+  category: string
+  title: string | null
+  description: string | null
   date: string
   startTime: string
   endTime: string
@@ -31,18 +35,18 @@ interface Schedule {
     id: string
     moduleCode: string
     moduleName: string
-  }
+  } | null
   batch: {
     id: string
     batchNumber: string
-  }
+  } | null
   lecturer: {
     id: string
     user: {
       firstName: string
       lastName: string
     }
-  }
+  } | null
   center: {
     id: string
     centerName: string
@@ -50,6 +54,16 @@ interface Schedule {
   stats?: {
     attendanceCount: number
   }
+}
+
+const CATEGORY_LABELS: Record<string, string> = {
+  CLASS: 'Class',
+  SEMINAR: 'Seminar',
+  WORKSHOP: 'Workshop',
+  EXAM: 'Exam',
+  SPORTS_DAY: 'Sports Day',
+  GUEST_LECTURE: 'Guest Lecture',
+  OTHER: 'Other',
 }
 
 const SchedulesPage: React.FC = () => {
@@ -70,9 +84,11 @@ const SchedulesPage: React.FC = () => {
     scheduledCount: 0,
     completedCount: 0,
     todaySchedules: 0,
+    eventCount: 0,
   })
   const [filters, setFilters] = useState({
     status: '',
+    category: '',
     startDate: '',
     endDate: '',
     centerId: '',
@@ -104,6 +120,7 @@ const SchedulesPage: React.FC = () => {
         limit: '12',
         ...(searchTerm && { search: searchTerm }),
         ...(filters.status && { status: filters.status }),
+        ...(filters.category && { category: filters.category }),
         ...(filters.startDate && { startDate: filters.startDate }),
         ...(filters.endDate && { endDate: filters.endDate }),
         ...(filters.centerId && { centerId: filters.centerId }),
@@ -180,6 +197,27 @@ const SchedulesPage: React.FC = () => {
     }
   }
 
+  const getCategoryColor = (category: string) => {
+    switch (category) {
+      case 'CLASS':
+        return 'bg-primary-100 text-primary-800'
+      case 'SEMINAR':
+        return 'bg-indigo-100 text-indigo-800'
+      case 'WORKSHOP':
+        return 'bg-teal-100 text-teal-800'
+      case 'EXAM':
+        return 'bg-red-100 text-red-800'
+      case 'SPORTS_DAY':
+        return 'bg-orange-100 text-orange-800'
+      case 'GUEST_LECTURE':
+        return 'bg-cyan-100 text-cyan-800'
+      case 'OTHER':
+        return 'bg-gray-100 text-gray-800'
+      default:
+        return 'bg-gray-100 text-gray-800'
+    }
+  }
+
   const formatDate = (date: string) => {
     return new Date(date).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -192,6 +230,20 @@ const SchedulesPage: React.FC = () => {
     return time.substring(0, 5)
   }
 
+  const getScheduleDisplayName = (schedule: Schedule) => {
+    if (schedule.category !== 'CLASS' && schedule.title) {
+      return schedule.title
+    }
+    return schedule.module?.moduleName || schedule.title || 'Untitled'
+  }
+
+  const getScheduleSubtitle = (schedule: Schedule) => {
+    if (schedule.category !== 'CLASS') {
+      return schedule.description || ''
+    }
+    return schedule.batch?.batchNumber || ''
+  }
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
@@ -200,7 +252,7 @@ const SchedulesPage: React.FC = () => {
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Schedules</h1>
             <p className="text-gray-600 mt-1">
-              {user?.role === 'LECTURER' ? 'View your class schedules' : 'Manage class schedules and timetables'}
+              {user?.role === 'LECTURER' ? 'View your class schedules' : 'Manage class schedules, events, and timetables'}
             </p>
           </div>
           {(user?.role === 'ADMIN' || user?.role === 'USER') && (
@@ -215,11 +267,11 @@ const SchedulesPage: React.FC = () => {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <div className="bg-white p-5 rounded-lg shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Total Schedules</p>
+                <p className="text-sm text-gray-600">Total</p>
                 <p className="text-2xl font-bold">{stats.totalSchedules}</p>
               </div>
               <Calendar className="w-10 h-10 text-blue-500" />
@@ -258,18 +310,29 @@ const SchedulesPage: React.FC = () => {
               <Clock className="w-10 h-10 text-purple-500" />
             </div>
           </div>
+          <div className="bg-white p-5 rounded-lg shadow">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600">Events</p>
+                <p className="text-2xl font-bold text-orange-600">
+                  {stats.eventCount || 0}
+                </p>
+              </div>
+              <Star className="w-10 h-10 text-orange-500" />
+            </div>
+          </div>
         </div>
 
         {/* Search and Filters */}
         <div className="bg-white p-4 rounded-lg shadow">
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
             {/* Search */}
             <div className="md:col-span-2">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
                   type="text"
-                  placeholder="Search by module, batch, or hall..."
+                  placeholder="Search by module, batch, hall, or event..."
                   value={searchTerm}
                   onChange={handleSearch}
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
@@ -292,6 +355,20 @@ const SchedulesPage: React.FC = () => {
                 ))}
               </select>
             )}
+
+            {/* Category Filter */}
+            <select
+              value={filters.category}
+              onChange={(e) => handleFilterChange('category', e.target.value)}
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+            >
+              <option value="">All Categories</option>
+              {Object.entries(CATEGORY_LABELS).map(([value, label]) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
+            </select>
 
             {/* Status Filter */}
             <select
@@ -338,10 +415,19 @@ const SchedulesPage: React.FC = () => {
                   >
                     {/* Schedule Header */}
                     <div className="mb-4">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-100 text-primary-800">
-                          {schedule.module.moduleCode}
+                      <div className="flex items-center justify-between mb-2 flex-wrap gap-1">
+                        <span
+                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getCategoryColor(
+                            schedule.category || 'CLASS'
+                          )}`}
+                        >
+                          {CATEGORY_LABELS[schedule.category] || 'Class'}
                         </span>
+                        {schedule.module && (
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-100 text-primary-800">
+                            {schedule.module.moduleCode}
+                          </span>
+                        )}
                         <span
                           className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getTypeColor(
                             schedule.type || 'PHYSICAL'
@@ -358,39 +444,49 @@ const SchedulesPage: React.FC = () => {
                         </span>
                       </div>
                       <h3 className="text-lg font-bold text-gray-900 mb-1">
-                        {schedule.module.moduleName}
+                        {getScheduleDisplayName(schedule)}
                       </h3>
-                      <p className="text-sm text-gray-600">
-                        {schedule.batch.batchNumber}
-                      </p>
+                      {getScheduleSubtitle(schedule) && (
+                        <p className="text-sm text-gray-600 line-clamp-2">
+                          {getScheduleSubtitle(schedule)}
+                        </p>
+                      )}
                     </div>
 
                     {/* Schedule Details */}
                     <div className="space-y-2 mb-4">
                       <div className="flex items-center text-sm text-gray-600">
-                        <Calendar className="w-4 h-4 mr-2" />
+                        <Calendar className="w-4 h-4 mr-2 flex-shrink-0" />
                         <span>{formatDate(schedule.date)}</span>
                       </div>
                       <div className="flex items-center text-sm text-gray-600">
-                        <Clock className="w-4 h-4 mr-2" />
+                        <Clock className="w-4 h-4 mr-2 flex-shrink-0" />
                         <span>
                           {formatTime(schedule.startTime)} -{' '}
                           {formatTime(schedule.endTime)}
                         </span>
                       </div>
+                      {schedule.lecturer && (
+                        <div className="flex items-center text-sm text-gray-600">
+                          <User className="w-4 h-4 mr-2 flex-shrink-0" />
+                          <span>
+                            {schedule.lecturer.user.firstName}{' '}
+                            {schedule.lecturer.user.lastName}
+                          </span>
+                        </div>
+                      )}
                       <div className="flex items-center text-sm text-gray-600">
-                        <User className="w-4 h-4 mr-2" />
-                        <span>
-                          {schedule.lecturer.user.firstName}{' '}
-                          {schedule.lecturer.user.lastName}
-                        </span>
-                      </div>
-                      <div className="flex items-center text-sm text-gray-600">
-                        <MapPin className="w-4 h-4 mr-2" />
+                        <MapPin className="w-4 h-4 mr-2 flex-shrink-0" />
                         <span>
                           {schedule.lectureHall} - {schedule.center.centerName}
                         </span>
                       </div>
+                      {schedule.batch && (
+                        <div className="flex items-center text-sm text-gray-600">
+                          <BookOpen className="w-4 h-4 mr-2 flex-shrink-0" />
+                          <span>{schedule.batch.batchNumber}</span>
+                        </div>
+                      )}
                     </div>
 
                     {/* Stats */}
