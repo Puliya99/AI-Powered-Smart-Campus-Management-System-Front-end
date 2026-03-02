@@ -42,7 +42,6 @@ Built with **React 18**, **TypeScript**, **Vite**, and **Tailwind CSS**, configu
 | Push/Analytics | Firebase 12.7 |
 | Biometric Auth | @simplewebauthn/browser 13.2 |
 | Icons | Lucide React, React Icons |
-| Dates | date-fns 2.30 |
 
 ---
 
@@ -75,7 +74,7 @@ Update the values as needed (see [Environment Variables](#environment-variables)
 npm run dev
 ```
 
-The application will be available at `http://localhost:5173`.
+The application will be available at `http://localhost:3000`.
 
 ---
 
@@ -83,10 +82,10 @@ The application will be available at `http://localhost:5173`.
 
 | Script | Description |
 |---|---|
-| `npm run dev` | Start the Vite development server |
+| `npm run dev` | Start the Vite development server (port 3000) |
 | `npm run build` | Compile TypeScript and build for production (`dist/`) |
 | `npm run preview` | Preview the production build locally |
-| `npm run test` | Run tests using Vitest |
+| `npm test` | Run tests using Vitest |
 | `npm run lint` | Run ESLint for code quality checks |
 | `npm run lint:fix` | Run ESLint and auto-fix issues |
 
@@ -94,25 +93,63 @@ The application will be available at `http://localhost:5173`.
 
 ## Environment Variables
 
-Defined in `.env.local` (see `.env.example` for the full list):
+Defined in `.env.local` (see `.env.example` for the full template):
+
+### API Configuration
 
 | Variable | Description | Default |
 |---|---|---|
 | `VITE_API_URL` | Backend API base URL | `http://localhost:5000/api/v1` |
 | `VITE_API_TIMEOUT` | Request timeout (ms) | `30000` |
+| `VITE_AI_SERVICE_URL` | AI module URL (YOLOv8 proctoring) | `http://localhost:8001` |
 | `VITE_ENV` | Environment | `development` |
+
+### Feature Flags
+
+| Variable | Description | Default |
+|---|---|---|
 | `VITE_ENABLE_CHATBOT` | Enable AI chatbot | `true` |
 | `VITE_ENABLE_NOTIFICATIONS` | Enable notifications | `true` |
 | `VITE_ENABLE_AI_PREDICTIONS` | Enable AI risk predictions | `true` |
-| `VITE_AI_SERVICE_URL` | AI module URL | `http://localhost:8000` |
+| `VITE_ENABLE_ANALYTICS` | Enable Google Analytics | `false` |
+
+### WebSocket
+
+| Variable | Description | Default |
+|---|---|---|
 | `VITE_WS_URL` | WebSocket URL | `ws://localhost:4000` |
+
+### File Uploads
+
+| Variable | Description | Default |
+|---|---|---|
 | `VITE_MAX_FILE_SIZE` | Max upload size (bytes) | `5242880` |
 | `VITE_ALLOWED_FILE_TYPES` | Allowed upload types | `.jpg,.jpeg,.png,.pdf,.doc,.docx` |
-| `VITE_ENABLE_ANALYTICS` | Enable Google Analytics | `false` |
+
+### Pagination
+
+| Variable | Description | Default |
+|---|---|---|
+| `VITE_DEFAULT_PAGE_SIZE` | Default page size | `10` |
+| `VITE_MAX_PAGE_SIZE` | Max page size | `100` |
+
+### Analytics
+
+| Variable | Description | Default |
+|---|---|---|
 | `VITE_GOOGLE_ANALYTICS_ID` | GA tracking ID | - |
+
+### Firebase
+
+| Variable | Description | Default |
+|---|---|---|
 | `VITE_apiKey` | Firebase API key | - |
 | `VITE_authDomain` | Firebase auth domain | - |
 | `VITE_projectId` | Firebase project ID | - |
+| `VITE_storageBucket` | Firebase storage bucket | - |
+| `VITE_messagingSenderId` | Firebase messaging sender ID | - |
+| `VITE_appId` | Firebase app ID | - |
+| `VITE_measurementId` | Firebase measurement ID | - |
 
 ---
 
@@ -133,9 +170,9 @@ src/
 │   └── PublicRoute.tsx       # Redirect authenticated users away from auth pages
 ├── pages/
 │   ├── auth/                # Login, Register, ForgotPassword, ResetPassword
-│   ├── admin/               # Full admin portal (17 pages)
-│   ├── student/             # Student portal (12 pages)
-│   ├── lecturer/            # Lecturer portal (13 pages)
+│   ├── admin/               # Admin portal (~20 pages)
+│   ├── student/             # Student portal (~19 pages)
+│   ├── lecturer/            # Lecturer portal (~20 pages)
 │   ├── staff/               # Staff dashboard
 │   └── common/              # Profile, Notifications, VideoRoom, LectureMaterials, Kiosk
 ├── components/
@@ -150,16 +187,10 @@ src/
 │   │   ├── axios.config.ts  # Axios instance with JWT interceptors
 │   │   └── ai.service.ts    # AI prediction & RAG chat calls
 │   ├── auth.service.ts      # Login, register, getCurrentUser
-│   ├── student.service.ts   # Student CRUD
-│   ├── lecturer.service.ts  # Lecturer CRUD
-│   ├── module.service.ts    # Module management
 │   ├── attendance.service.ts
-│   ├── assignment.service.ts
-│   ├── payment.service.ts
-│   ├── schedule.service.ts
 │   ├── notification.service.ts
 │   ├── webauthn.service.ts  # Passkey/biometric auth
-│   └── ...                  # batch, enrollment, feedback, report, result, etc.
+│   └── ...                  # student, lecturer, module, assignment, payment, etc.
 ├── store/
 │   ├── store.ts             # Zustand store configuration
 │   └── slices/              # auth, student, user, notification slices
@@ -168,9 +199,13 @@ src/
 ├── types/                   # TypeScript type definitions
 ├── enums/                   # Shared enum constants
 ├── utils/                   # Utility/helper functions
-├── assets/                  # Static assets (images, icons)
-└── styles/
-    └── index.css            # Global styles + Tailwind directives
+├── assets/                  # Static assets (images, icons, fonts)
+├── styles/
+│   └── index.css            # Global styles + Tailwind directives
+└── tests/
+    ├── components/          # Component tests
+    ├── services/            # Service tests
+    └── utils/               # Utility tests
 ```
 
 ---
@@ -215,6 +250,14 @@ All page components use `React.lazy()` for code splitting.
 - **Role-Based Access Control (RBAC)** - Users only access authorized modules
 - **Protected Routes** - Navigation guards prevent unauthorized access
 - **Client-side Face Processing** - TensorFlow.js processes webcam data locally; no video data leaves the browser
+
+---
+
+## Path Aliases
+
+The project configures 13 TypeScript/Vite path aliases for clean imports:
+
+`@components`, `@pages`, `@services`, `@hooks`, `@context`, `@store`, `@types`, `@enums`, `@utils`, `@routes`, `@assets`, `@styles`, `@config`
 
 ---
 
