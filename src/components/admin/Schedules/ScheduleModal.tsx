@@ -11,6 +11,9 @@ interface ScheduleModalProps {
 }
 
 interface FormData {
+  category: string;
+  title: string;
+  description: string;
   moduleId: string;
   batchId: string;
   lecturerId: string;
@@ -48,6 +51,16 @@ interface Center {
   centerName: string;
 }
 
+const CATEGORY_OPTIONS = [
+  { value: 'CLASS', label: 'Class' },
+  { value: 'SEMINAR', label: 'Seminar' },
+  { value: 'WORKSHOP', label: 'Workshop' },
+  { value: 'EXAM', label: 'Exam' },
+  { value: 'SPORTS_DAY', label: 'Sports Day' },
+  { value: 'GUEST_LECTURE', label: 'Guest Lecture' },
+  { value: 'OTHER', label: 'Other' },
+];
+
 const ScheduleModal: React.FC<ScheduleModalProps> = ({
   isOpen,
   onClose,
@@ -62,6 +75,9 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
   const [centers, setCenters] = useState<Center[]>([]);
   const [conflicts, setConflicts] = useState<any[]>([]);
   const [formData, setFormData] = useState<FormData>({
+    category: 'CLASS',
+    title: '',
+    description: '',
     moduleId: '',
     batchId: '',
     lecturerId: '',
@@ -74,6 +90,8 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
     type: 'PHYSICAL',
   });
 
+  const isEvent = formData.category !== 'CLASS';
+
   useEffect(() => {
     if (isOpen) {
       fetchDropdownData();
@@ -83,6 +101,9 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
   useEffect(() => {
     if (schedule) {
       setFormData({
+        category: schedule.category || 'CLASS',
+        title: schedule.title || '',
+        description: schedule.description || '',
         moduleId: schedule.module?.id || '',
         batchId: schedule.batch?.id || '',
         lecturerId: schedule.lecturer?.id || '',
@@ -96,6 +117,9 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
       });
     } else {
       setFormData({
+        category: 'CLASS',
+        title: '',
+        description: '',
         moduleId: '',
         batchId: '',
         lecturerId: '',
@@ -134,7 +158,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
     setFormData({
       ...formData,
@@ -144,17 +168,26 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
   };
 
   const validateForm = () => {
-    if (!formData.moduleId) {
-      toast.error('Please select a module');
-      return false;
-    }
-    if (!formData.batchId) {
-      toast.error('Please select a batch');
-      return false;
-    }
-    if (!formData.lecturerId) {
-      toast.error('Please select a lecturer');
-      return false;
+    if (!isEvent) {
+      // Class schedule requires module, batch, lecturer
+      if (!formData.moduleId) {
+        toast.error('Please select a module');
+        return false;
+      }
+      if (!formData.batchId) {
+        toast.error('Please select a batch');
+        return false;
+      }
+      if (!formData.lecturerId) {
+        toast.error('Please select a lecturer');
+        return false;
+      }
+    } else {
+      // Event schedule requires title
+      if (!formData.title.trim()) {
+        toast.error('Event title is required');
+        return false;
+      }
     }
     if (!formData.centerId) {
       toast.error('Please select a center');
@@ -173,7 +206,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
       return false;
     }
     if (!formData.lectureHall.trim()) {
-      toast.error('Lecture hall is required');
+      toast.error('Venue / Lecture hall is required');
       return false;
     }
     return true;
@@ -190,11 +223,37 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
     setConflicts([]);
 
     try {
+      const payload: any = {
+        category: formData.category,
+        centerId: formData.centerId,
+        date: formData.date,
+        startTime: formData.startTime,
+        endTime: formData.endTime,
+        lectureHall: formData.lectureHall,
+        status: formData.status,
+        type: formData.type,
+      };
+
+      if (isEvent) {
+        payload.title = formData.title;
+        payload.description = formData.description;
+        // Optional fields for events
+        if (formData.moduleId) payload.moduleId = formData.moduleId;
+        if (formData.batchId) payload.batchId = formData.batchId;
+        if (formData.lecturerId) payload.lecturerId = formData.lecturerId;
+      } else {
+        payload.moduleId = formData.moduleId;
+        payload.batchId = formData.batchId;
+        payload.lecturerId = formData.lecturerId;
+        if (formData.title) payload.title = formData.title;
+        if (formData.description) payload.description = formData.description;
+      }
+
       if (schedule) {
-        await axiosInstance.put(`/schedules/${schedule.id}`, formData);
+        await axiosInstance.put(`/schedules/${schedule.id}`, payload);
         toast.success('Schedule updated successfully');
       } else {
-        await axiosInstance.post('/schedules', formData);
+        await axiosInstance.post('/schedules', payload);
         toast.success('Schedule created successfully');
       }
 
@@ -257,10 +316,65 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
                           </h4>
                           <ul className="text-sm text-red-700 space-y-1">
                             {conflicts.map((conflict, index) => (
-                              <li key={index}>• {conflict.message}</li>
+                              <li key={index}>- {conflict.message}</li>
                             ))}
                           </ul>
                         </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Category Selector */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Schedule Category <span className="text-red-500">*</span>
+                    </label>
+                    <div className="flex flex-wrap gap-2">
+                      {CATEGORY_OPTIONS.map((opt) => (
+                        <button
+                          key={opt.value}
+                          type="button"
+                          onClick={() => setFormData({ ...formData, category: opt.value })}
+                          className={`px-4 py-2 rounded-lg text-sm font-medium border transition ${
+                            formData.category === opt.value
+                              ? 'bg-primary-600 text-white border-primary-600'
+                              : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                          }`}
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Event-specific fields */}
+                  {isEvent && (
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Event Title <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          name="title"
+                          value={formData.title}
+                          onChange={handleChange}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                          placeholder="e.g., Annual Science Workshop"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Description
+                        </label>
+                        <textarea
+                          name="description"
+                          value={formData.description}
+                          onChange={handleChange}
+                          rows={3}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                          placeholder="Event details..."
+                        />
                       </div>
                     </div>
                   )}
@@ -269,13 +383,14 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
                     {/* Module */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Module <span className="text-red-500">*</span>
+                        Module {!isEvent && <span className="text-red-500">*</span>}
+                        {isEvent && <span className="text-gray-400 text-xs ml-1">(Optional)</span>}
                       </label>
                       <select
                         name="moduleId"
                         value={formData.moduleId}
                         onChange={handleChange}
-                        required
+                        required={!isEvent}
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                       >
                         <option value="">Select module</option>
@@ -290,13 +405,14 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
                     {/* Batch */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Batch <span className="text-red-500">*</span>
+                        Batch {!isEvent && <span className="text-red-500">*</span>}
+                        {isEvent && <span className="text-gray-400 text-xs ml-1">(Optional)</span>}
                       </label>
                       <select
                         name="batchId"
                         value={formData.batchId}
                         onChange={handleChange}
-                        required
+                        required={!isEvent}
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                       >
                         <option value="">Select batch</option>
@@ -311,13 +427,14 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
                     {/* Lecturer */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Lecturer <span className="text-red-500">*</span>
+                        Lecturer {!isEvent && <span className="text-red-500">*</span>}
+                        {isEvent && <span className="text-gray-400 text-xs ml-1">(Optional)</span>}
                       </label>
                       <select
                         name="lecturerId"
                         value={formData.lecturerId}
                         onChange={handleChange}
-                        required
+                        required={!isEvent}
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                       >
                         <option value="">Select lecturer</option>
@@ -365,10 +482,10 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
                       />
                     </div>
 
-                    {/* Lecture Hall */}
+                    {/* Venue / Lecture Hall */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Lecture Hall <span className="text-red-500">*</span>
+                        {isEvent ? 'Venue' : 'Lecture Hall'} <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"
@@ -377,7 +494,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
                         onChange={handleChange}
                         required
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                        placeholder="e.g., Hall A, Room 101"
+                        placeholder={isEvent ? 'e.g., Main Auditorium' : 'e.g., Hall A, Room 101'}
                       />
                     </div>
 
@@ -433,7 +550,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
                     {/* Type */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Class Type <span className="text-red-500">*</span>
+                        Type <span className="text-red-500">*</span>
                       </label>
                       <select
                         name="type"
@@ -453,7 +570,17 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
                     <p className="text-sm text-blue-800">
                       <strong>Note:</strong> The system will automatically check for
                       conflicts with existing schedules (lecturer availability and
-                      lecture hall booking).
+                      venue booking).
+                      {isEvent && !formData.batchId && (
+                        <span className="block mt-1">
+                          Since no batch is selected, all users will be notified about this event via notification and email.
+                        </span>
+                      )}
+                      {isEvent && formData.batchId && (
+                        <span className="block mt-1">
+                          Students in the selected batch will be notified about this event via notification and email.
+                        </span>
+                      )}
                     </p>
                   </div>
                 </>

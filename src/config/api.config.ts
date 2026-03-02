@@ -1,11 +1,13 @@
 export const API_CONFIG = {
-  BASE_URL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1',
+  // logic: If the URL doesn't end with /api/v1, append it.
+  BASE_URL: (import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1').replace(/\/$/, '') + 
+            ((import.meta.env.VITE_API_URL || '').includes('/api/v1') ? '' : '/api/v1'),
+            
   TIMEOUT: parseInt(import.meta.env.VITE_API_TIMEOUT || '30000'),
   HEADERS: {
     'Content-Type': 'application/json',
   },
 }
-
 export const ENDPOINTS = {
   // Auth
   LOGIN: '/auth/login',
