@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import * as faceapi from '@vladmandic/face-api';
+import { FaceDetector, FilesetResolver } from '@mediapipe/tasks-vision';
 import { Camera, CameraOff, AlertTriangle, Smartphone, Eye, Users } from 'lucide-react';
 import toast from 'react-hot-toast';
 import axios from 'axios';
 
-type ViolationType = 'NO_FACE' | 'MULTIPLE_FACES' | 'CAMERA_DISABLED' | 'CHEATING_OBJECT' | 'LOOKING_AWAY' | 'HEAD_POSE' | 'TAB_SWITCH' | 'NONE';
+type ViolationType = 'NO_FACE' | 'MULTIPLE_FACES' | 'CAMERA_DISABLED' | 'CHEATING_OBJECT' | 'LOOKING_AWAY' | 'HEAD_POSE' | 'TAB_SWITCH' | 'SUSTAINED_NO_FACE' | 'SUSTAINED_GAZE_DEVIATION' | 'NONE';
 
 interface ViolationInfo {
   type: ViolationType;
@@ -17,6 +17,7 @@ interface FaceDetectionCameraProps {
   onViolationScore?: (score: number, violations: ViolationInfo[]) => void;
   isActive: boolean;
   isCameraOff?: boolean;
+  attemptId?: string;
 }
 
 const AI_SERVICE_URL = import.meta.env.VITE_AI_SERVICE_URL || 'http://localhost:8000';
@@ -28,7 +29,7 @@ const LOOKING_AWAY_GRACE_PERIOD = 5;   // 5 seconds before reporting
 const CAMERA_OFF_GRACE_PERIOD = 10;    // 10 seconds before cancel
 const OBJECT_DETECTION_INTERVAL = 5;   // Run YOLO every 5th analysis call
 
-const FaceDetectionCamera: React.FC<FaceDetectionCameraProps> = ({ onViolation, onViolationScore, isActive, isCameraOff = false }) => {
+const FaceDetectionCamera: React.FC<FaceDetectionCameraProps> = ({ onViolation, onViolationScore, isActive, isCameraOff = false, attemptId }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [modelsLoaded, setModelsLoaded] = useState(false);
   const [cameraError, setCameraError] = useState(false);
@@ -57,21 +58,55 @@ const FaceDetectionCamera: React.FC<FaceDetectionCameraProps> = ({ onViolation, 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const analysisFrameCount = useRef(0);
 
-  // Load face-api.js models (fallback for when AI service is down)
+  // MediaPipe WASM face detector for fallback
+  const mpFaceDetectorRef = useRef<FaceDetector | null>(null);
+
+  // Load MediaPipe WASM face detector (fallback for when AI service is down)
   useEffect(() => {
     const loadModels = async () => {
       try {
-        const MODEL_URL = '/models';
-        await Promise.all([
-          faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
-        ]);
+        const vision = await FilesetResolver.forVisionTasks(
+          'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm'
+        );
+        const detector = await FaceDetector.createFromOptions(vision, {
+          baseOptions: {
+            modelAssetPath: '/mediapipe/blaze_face_short_range.tflite',
+            delegate: 'GPU',
+          },
+          runningMode: 'IMAGE',
+          minDetectionConfidence: 0.5,
+        });
+        mpFaceDetectorRef.current = detector;
         setModelsLoaded(true);
+        console.log('MediaPipe WASM face detector loaded');
       } catch (error) {
-        console.error('Error loading face detection models:', error);
-        toast.error('Failed to load security models');
+        console.error('Error loading MediaPipe face detector:', error);
+        // Try CPU fallback
+        try {
+          const vision = await FilesetResolver.forVisionTasks(
+            'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm'
+          );
+          const detector = await FaceDetector.createFromOptions(vision, {
+            baseOptions: {
+              modelAssetPath: '/mediapipe/blaze_face_short_range.tflite',
+            },
+            runningMode: 'IMAGE',
+            minDetectionConfidence: 0.5,
+          });
+          mpFaceDetectorRef.current = detector;
+          setModelsLoaded(true);
+          console.log('MediaPipe WASM face detector loaded (CPU fallback)');
+        } catch (fallbackError) {
+          console.error('Failed to load MediaPipe face detector:', fallbackError);
+          toast.error('Failed to load security models');
+        }
       }
     };
     loadModels();
+
+    return () => {
+      mpFaceDetectorRef.current?.close();
+    };
   }, []);
 
   useEffect(() => {
@@ -182,6 +217,7 @@ const FaceDetectionCamera: React.FC<FaceDetectionCameraProps> = ({ onViolation, 
         image: base64Image,
         run_object_detection: runObjectDetection,
         confidence_threshold: 0.6,
+        attempt_id: attemptId || undefined,
       }, { timeout: 5000 });
 
       const data = response.data;
@@ -306,48 +342,70 @@ const FaceDetectionCamera: React.FC<FaceDetectionCameraProps> = ({ onViolation, 
         }
       }
 
+      // Handle temporal violations from server-side analysis
+      if (data.temporal_violations && data.temporal_violations.length > 0) {
+        for (const tv of data.temporal_violations) {
+          onViolation(tv.type as ViolationType, tv.details);
+        }
+      }
+
       // Clear all violations if everything is normal
       if (face_count === 1 && !looking_away && (!suspicious_objects || suspicious_objects.length === 0) && !cameraOffWarning) {
         onViolation('NONE');
       }
 
     } catch {
-      // AI service unavailable - fall back to face-api.js
+      // AI service unavailable - fall back to MediaPipe WASM
       await runFallbackDetection();
     }
   }, [detectionRunning, isActive, isCameraOff, onViolation, onViolationScore, captureFrameAsBase64, noFaceWarning, multipleFacesWarning, lookingAwayWarning, cheatingObjectWarning, cameraOffWarning]);
 
-  // Fallback detection using face-api.js when AI service is down
+  // Fallback detection using MediaPipe WASM when AI service is down
   const runFallbackDetection = useCallback(async () => {
-    if (!videoRef.current) return;
+    if (!videoRef.current || !mpFaceDetectorRef.current) return;
 
-    const detections = await faceapi.detectAllFaces(
-      videoRef.current,
-      new faceapi.TinyFaceDetectorOptions()
-    );
-
-    if (detections.length === 0) {
-      if (!noFaceWarning) {
-        setNoFaceWarning(true);
-        onViolation('NO_FACE', 'No face detected (fallback mode)');
-        toast.error('Face not detected!', { duration: 3000 });
+    try {
+      // Draw video to canvas for MediaPipe
+      if (!canvasRef.current) {
+        canvasRef.current = document.createElement('canvas');
       }
-    } else {
-      if (noFaceWarning) setNoFaceWarning(false);
-    }
+      const canvas = canvasRef.current;
+      canvas.width = videoRef.current.videoWidth || 640;
+      canvas.height = videoRef.current.videoHeight || 480;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+      ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
 
-    if (detections.length > 1) {
-      if (!multipleFacesWarning) {
-        setMultipleFacesWarning(true);
-        onViolation('MULTIPLE_FACES', `${detections.length} faces detected (fallback mode)`);
-        toast.error('Multiple faces detected!', { duration: 3000 });
+      // Convert canvas to ImageData for MediaPipe
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const result = mpFaceDetectorRef.current.detect(imageData);
+      const faceCount = result.detections.length;
+
+      if (faceCount === 0) {
+        if (!noFaceWarning) {
+          setNoFaceWarning(true);
+          onViolation('NO_FACE', 'No face detected (fallback mode)');
+          toast.error('Face not detected!', { duration: 3000 });
+        }
+      } else {
+        if (noFaceWarning) setNoFaceWarning(false);
       }
-    } else {
-      if (multipleFacesWarning) setMultipleFacesWarning(false);
-    }
 
-    if (detections.length === 1 && !cameraOffWarning) {
-      onViolation('NONE');
+      if (faceCount > 1) {
+        if (!multipleFacesWarning) {
+          setMultipleFacesWarning(true);
+          onViolation('MULTIPLE_FACES', `${faceCount} faces detected (fallback mode)`);
+          toast.error('Multiple faces detected!', { duration: 3000 });
+        }
+      } else {
+        if (multipleFacesWarning) setMultipleFacesWarning(false);
+      }
+
+      if (faceCount === 1 && !cameraOffWarning) {
+        onViolation('NONE');
+      }
+    } catch (err) {
+      console.error('MediaPipe fallback detection error:', err);
     }
   }, [onViolation, noFaceWarning, multipleFacesWarning, cameraOffWarning]);
 
