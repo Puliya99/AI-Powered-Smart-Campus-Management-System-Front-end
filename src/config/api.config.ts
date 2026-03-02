@@ -71,4 +71,10 @@ export const ENDPOINTS = {
   // Dashboard
   DASHBOARD_STATS: '/dashboard/stats',
   DASHBOARD_ANALYTICS: '/dashboard/analytics',
+
+  // Face Recognition
+  FACE_ENROLL: '/face/enroll',
+  FACE_VERIFY: '/face/verify',
+  FACE_CHECK: (studentId: string) => `/face/check/${studentId}`,
+  FACE_LIVENESS_CHECK: '/face/liveness-check',
 }
