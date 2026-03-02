@@ -92,6 +92,10 @@ const StudentAttendancePage = React.lazy(() => import('../pages/student/Attendan
 // Admin fingerprint management
 const FingerprintManagementPage = React.lazy(() => import('../pages/admin/FingerprintManagementPage'))
 
+// Library pages
+const LibraryPage = React.lazy(() => import('../pages/admin/LibraryPage'))
+const StudentLibraryPage = React.lazy(() => import('../pages/student/StudentLibraryPage'))
+
 // Staff pages
 const StaffDashboard = React.lazy(() => import('../pages/staff/StaffDashboard'))
 
@@ -300,6 +304,14 @@ const AppRoutes: React.FC = () => {
             }
           />
 
+          <Route
+            path="library"
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN', 'USER']}>
+                <LibraryPage />
+              </ProtectedRoute>
+            }
+          />
           {/* Add more admin routes */}
         </Route>
 
@@ -454,6 +466,14 @@ const AppRoutes: React.FC = () => {
             element={
               <ProtectedRoute allowedRoles={['STUDENT']}>
                 <StudentSettingsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="library"
+            element={
+              <ProtectedRoute allowedRoles={['STUDENT']}>
+                <StudentLibraryPage />
               </ProtectedRoute>
             }
           />
@@ -670,6 +690,14 @@ const AppRoutes: React.FC = () => {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="library"
+            element={
+              <ProtectedRoute allowedRoles={['LECTURER']}>
+                <StudentLibraryPage />
+              </ProtectedRoute>
+            }
+          />
           {/* Add more lecturer routes */}
         </Route>
 
@@ -825,6 +853,14 @@ const AppRoutes: React.FC = () => {
             element={
               <ProtectedRoute allowedRoles={['USER']}>
                 <NotificationsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="library"
+            element={
+              <ProtectedRoute allowedRoles={['USER']}>
+                <LibraryPage />
               </ProtectedRoute>
             }
           />
