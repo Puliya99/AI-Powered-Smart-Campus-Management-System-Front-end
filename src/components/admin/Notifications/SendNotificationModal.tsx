@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { X, Send, Users, Search, Loader2 } from 'lucide-react';
+import {
+  X, Send, Users, Search, Loader2, Filter,
+  CheckCircle2, AlertCircle, Mail, ChevronLeft,
+} from 'lucide-react';
 import axiosInstance from '../../../services/api/axios.config';
-import notificationService from '../../../services/notification.service';
+import notificationService, { RecipientUser } from '../../../services/notification.service';
 import toast from 'react-hot-toast';
 
 interface SendNotificationModalProps {
@@ -9,225 +12,570 @@ interface SendNotificationModalProps {
   onClose: () => void;
 }
 
+const NOTIFICATION_TYPES = [
+  { value: 'GENERAL',    label: 'General' },
+  { value: 'ASSIGNMENT', label: 'Assignment' },
+  { value: 'PAYMENT',    label: 'Payment' },
+  { value: 'ATTENDANCE', label: 'Attendance' },
+  { value: 'SCHEDULE',   label: 'Schedule' },
+  { value: 'RESULT',     label: 'Result' },
+  { value: 'LIBRARY',    label: 'Library' },
+  { value: 'EXAM',       label: 'Exam' },
+];
+
+const ROLE_CHIPS = [
+  { label: 'All',       value: '' },
+  { label: 'Students',  value: 'STUDENT' },
+  { label: 'Lecturers', value: 'LECTURER' },
+  { label: 'Staff',     value: 'USER' },
+  { label: 'Admins',    value: 'ADMIN' },
+];
+
+const ROLE_COLORS: Record<string, string> = {
+  STUDENT:  'bg-blue-100 text-blue-700',
+  LECTURER: 'bg-purple-100 text-purple-700',
+  ADMIN:    'bg-red-100 text-red-700',
+  USER:     'bg-green-100 text-green-700',
+};
+
 const SendNotificationModal: React.FC<SendNotificationModalProps> = ({ isOpen, onClose }) => {
-  const [loading, setLoading] = useState(false);
-  const [users, setUsers] = useState<any[]>([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
+  const [step, setStep] = useState<'compose' | 'confirm'>('compose');
+  const [sending, setSending] = useState(false);
+  const [recipientsLoading, setRecipientsLoading] = useState(false);
+
+  // Notification content
   const [formData, setFormData] = useState({
-    title: '',
-    message: '',
-    type: 'GENERAL',
-    link: '',
+    title:     '',
+    message:   '',
+    type:      'GENERAL',
+    link:      '',
+    sendEmail: false,
   });
 
+  // Targeting filters
+  const [roleFilter,  setRoleFilter]  = useState('');
+  const [centerId,    setCenterId]    = useState('');
+  const [programId,   setProgramId]   = useState('');
+  const [batchId,     setBatchId]     = useState('');
+  const [searchTerm,  setSearchTerm]  = useState('');
+
+  // Recipients
+  const [allRecipients,   setAllRecipients]   = useState<RecipientUser[]>([]);
+  const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
+
+  // Dropdown data
+  const [centers,  setCenters]  = useState<any[]>([]);
+  const [programs, setPrograms] = useState<any[]>([]);
+  const [batches,  setBatches]  = useState<any[]>([]);
+
+  // ── fetch dropdown data once when modal opens ──────────────────────────────
   useEffect(() => {
-    if (isOpen) {
-      fetchUsers();
-    }
+    if (!isOpen) return;
+    fetchDropdowns();
   }, [isOpen]);
 
-  const fetchUsers = async () => {
+  // ── refetch recipients whenever a filter changes ───────────────────────────
+  useEffect(() => {
+    if (!isOpen) return;
+    fetchRecipients();
+  }, [isOpen, roleFilter, centerId, programId, batchId]);
+
+  // ── reload batches when program changes ───────────────────────────────────
+  useEffect(() => {
+    fetchBatches(programId || undefined);
+    setBatchId('');
+  }, [programId]);
+
+  const fetchDropdowns = async () => {
     try {
-      const response = await axiosInstance.get('/users?limit=100');
-      setUsers(response.data.data.users);
-    } catch (error) {
-      console.error('Failed to fetch users', error);
+      const [centersRes, programsRes] = await Promise.all([
+        axiosInstance.get('/centers?limit=200'),
+        axiosInstance.get('/programs?limit=200'),
+      ]);
+      setCenters(centersRes.data.data?.centers ?? []);
+      setPrograms(programsRes.data.data?.programs ?? []);
+      fetchBatches();
+    } catch {
+      // non-critical — dropdowns stay empty
     }
   };
 
-  const filteredUsers = users.filter(user => 
-    `${user.firstName} ${user.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.role.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const fetchBatches = async (pId?: string) => {
+    try {
+      const params: Record<string, string> = { limit: '200' };
+      if (pId) params.programId = pId;
+      const res = await axiosInstance.get('/batches', { params });
+      setBatches(res.data.data?.batches ?? []);
+    } catch {
+      // non-critical
+    }
+  };
 
-  const toggleUserSelection = (userId: string) => {
-    setSelectedUserIds(prev => 
-      prev.includes(userId) 
-        ? prev.filter(id => id !== userId) 
-        : [...prev, userId]
+  const fetchRecipients = async () => {
+    setRecipientsLoading(true);
+    try {
+      const params: Record<string, string> = {};
+      if (roleFilter)  params.role      = roleFilter;
+      if (centerId)    params.centerId  = centerId;
+      if (programId)   params.programId = programId;
+      if (batchId)     params.batchId   = batchId;
+
+      const res = await notificationService.getRecipients(params);
+      const users = res.data.users ?? [];
+      setAllRecipients(users);
+      setSelectedUserIds(users.map(u => u.id)); // auto-select all on filter change
+    } catch {
+      toast.error('Failed to load recipients');
+    } finally {
+      setRecipientsLoading(false);
+    }
+  };
+
+  // ── derived list (local search within fetched results) ────────────────────
+  const displayedRecipients = allRecipients.filter(u => {
+    const term = searchTerm.toLowerCase();
+    return (
+      `${u.firstName} ${u.lastName}`.toLowerCase().includes(term) ||
+      u.email?.toLowerCase().includes(term)
     );
-  };
+  });
 
-  const handleSelectAll = () => {
-    if (selectedUserIds.length === filteredUsers.length) {
-      setSelectedUserIds([]);
+  // ── selection helpers ─────────────────────────────────────────────────────
+  const toggleUser = (id: string) =>
+    setSelectedUserIds(prev =>
+      prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
+    );
+
+  const allDisplayedSelected =
+    displayedRecipients.length > 0 &&
+    displayedRecipients.every(u => selectedUserIds.includes(u.id));
+
+  const toggleSelectAll = () => {
+    if (allDisplayedSelected) {
+      setSelectedUserIds(prev => prev.filter(id => !displayedRecipients.some(u => u.id === id)));
     } else {
-      setSelectedUserIds(filteredUsers.map(u => u.id));
+      const newIds = displayedRecipients.map(u => u.id);
+      setSelectedUserIds(prev => [...new Set([...prev, ...newIds])]);
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  // ── step navigation ───────────────────────────────────────────────────────
+  const handlePreview = () => {
+    if (!formData.title.trim() || !formData.message.trim()) {
+      toast.error('Please fill in the title and message');
+      return;
+    }
     if (selectedUserIds.length === 0) {
       toast.error('Please select at least one recipient');
       return;
     }
+    setStep('confirm');
+  };
 
+  const handleSend = async () => {
     try {
-      setLoading(true);
+      setSending(true);
       await notificationService.sendNotification({
         userIds: selectedUserIds,
-        ...formData
+        ...formData,
       });
-      toast.success('Notification sent successfully');
-      onClose();
-      // Reset form
-      setFormData({ title: '', message: '', type: 'GENERAL', link: '' });
-      setSelectedUserIds([]);
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to send notification');
+      toast.success(`Notification sent to ${selectedUserIds.length} recipient${selectedUserIds.length !== 1 ? 's' : ''}`);
+      handleClose();
+    } catch (err: any) {
+      toast.error(err.response?.data?.message ?? 'Failed to send notification');
     } finally {
-      setLoading(false);
+      setSending(false);
     }
+  };
+
+  const handleClose = () => {
+    setStep('compose');
+    setFormData({ title: '', message: '', type: 'GENERAL', link: '', sendEmail: false });
+    setRoleFilter('');
+    setCenterId('');
+    setProgramId('');
+    setBatchId('');
+    setSearchTerm('');
+    setSelectedUserIds([]);
+    setAllRecipients([]);
+    onClose();
   };
 
   if (!isOpen) return null;
 
+  // ── CONFIRM STEP ──────────────────────────────────────────────────────────
+  if (step === 'confirm') {
+    const selectedRecipients = allRecipients.filter(u => selectedUserIds.includes(u.id));
+
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+        <div className="bg-white rounded-xl shadow-xl w-full max-w-lg overflow-hidden flex flex-col">
+
+          {/* Header */}
+          <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between bg-gray-50">
+            <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+              <CheckCircle2 className="w-5 h-5 text-green-600" />
+              Review & Confirm
+            </h2>
+            <button onClick={handleClose} className="text-gray-400 hover:text-gray-600 p-1 rounded">
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          <div className="p-6 space-y-4 overflow-y-auto">
+
+            {/* Notification preview card */}
+            <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 mb-2">Notification preview</p>
+              <p className="font-semibold text-gray-900 text-sm">{formData.title}</p>
+              <p className="text-sm text-gray-600 mt-1 whitespace-pre-wrap">{formData.message}</p>
+              <div className="flex flex-wrap items-center gap-2 mt-3">
+                <span className="text-[10px] font-medium px-2 py-0.5 bg-gray-200 text-gray-700 rounded-full uppercase">
+                  {formData.type}
+                </span>
+                {formData.sendEmail && (
+                  <span className="text-[10px] font-medium px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full flex items-center gap-1">
+                    <Mail className="w-3 h-3" />Email included
+                  </span>
+                )}
+                {formData.link && (
+                  <span className="text-[10px] text-gray-400 truncate max-w-xs">{formData.link}</span>
+                )}
+              </div>
+            </div>
+
+            {/* Recipient warning */}
+            <div className="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-lg p-4">
+              <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm font-semibold text-amber-900">
+                  Sending to <span className="text-amber-700">{selectedUserIds.length}</span> recipient{selectedUserIds.length !== 1 ? 's' : ''}
+                </p>
+                <p className="text-xs text-amber-700 mt-0.5">
+                  This will create a notification for every selected user. This action cannot be undone.
+                </p>
+              </div>
+            </div>
+
+            {/* Recipient preview chips */}
+            <div>
+              <p className="text-xs font-medium text-gray-500 mb-2">Selected recipients:</p>
+              <div className="flex flex-wrap gap-1.5 max-h-28 overflow-y-auto">
+                {selectedRecipients.slice(0, 20).map(u => (
+                  <span
+                    key={u.id}
+                    className="text-[11px] bg-white border border-gray-200 text-gray-700 px-2 py-0.5 rounded-full flex items-center gap-1"
+                  >
+                    {u.firstName} {u.lastName}
+                    <span className={`text-[9px] px-1 rounded ${ROLE_COLORS[u.role] ?? 'bg-gray-100 text-gray-500'}`}>
+                      {u.role}
+                    </span>
+                  </span>
+                ))}
+                {selectedUserIds.length > 20 && (
+                  <span className="text-[11px] text-gray-400 px-2 py-0.5">
+                    +{selectedUserIds.length - 20} more
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div className="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end gap-3">
+            <button
+              onClick={() => setStep('compose')}
+              className="px-5 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition flex items-center gap-2"
+            >
+              <ChevronLeft className="w-4 h-4" />Back
+            </button>
+            <button
+              onClick={handleSend}
+              disabled={sending}
+              className="px-8 py-2 text-sm font-medium text-white bg-primary-600 rounded-lg hover:bg-primary-700 transition disabled:opacity-50 flex items-center gap-2"
+            >
+              {sending ? (
+                <><Loader2 className="w-4 h-4 animate-spin" />Sending…</>
+              ) : (
+                <><Send className="w-4 h-4" />Confirm Send</>
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── COMPOSE STEP ──────────────────────────────────────────────────────────
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+      <div className="bg-white rounded-xl shadow-xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col">
+
         {/* Header */}
-        <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-gray-50">
-          <h2 className="text-xl font-bold text-gray-900 flex items-center">
-            <Send className="w-5 h-5 mr-2 text-primary-600" />
-            Send New Notification
+        <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between bg-gray-50">
+          <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+            <Send className="w-5 h-5 text-primary-600" />
+            Send Notification
           </h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700 p-1">
-            <X className="w-6 h-6" />
+          <button onClick={handleClose} className="text-gray-400 hover:text-gray-600 p-1 rounded">
+            <X className="w-5 h-5" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="flex-1 overflow-hidden flex flex-col lg:flex-row">
-          {/* Left Side: Form Details */}
+        <div className="flex-1 overflow-hidden flex flex-col lg:flex-row">
+
+          {/* ── LEFT: Notification content ─────────────────────────────────── */}
           <div className="flex-1 p-6 space-y-4 overflow-y-auto border-b lg:border-b-0 lg:border-r border-gray-200">
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Title *</label>
               <input
                 type="text"
                 required
                 value={formData.title}
                 onChange={e => setFormData({ ...formData, title: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none text-sm"
                 placeholder="Notification title"
               />
             </div>
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Message</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Message *</label>
               <textarea
                 required
-                rows={4}
+                rows={5}
                 value={formData.message}
                 onChange={e => setFormData({ ...formData, message: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none resize-none"
-                placeholder="Type your message here..."
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none resize-none text-sm"
+                placeholder="Type your message…"
               />
             </div>
+
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
                 <select
                   value={formData.type}
                   onChange={e => setFormData({ ...formData, type: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none text-sm"
                 >
-                  <option value="GENERAL">General</option>
-                  <option value="ASSIGNMENT">Assignment</option>
-                  <option value="PAYMENT">Payment</option>
-                  <option value="ATTENDANCE">Attendance</option>
+                  {NOTIFICATION_TYPES.map(t => (
+                    <option key={t.value} value={t.value}>{t.label}</option>
+                  ))}
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Link (Optional)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Link (optional)</label>
                 <input
                   type="text"
                   value={formData.link}
                   onChange={e => setFormData({ ...formData, link: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
-                  placeholder="/student/courses"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none text-sm"
+                  placeholder="/student/schedule"
                 />
               </div>
             </div>
+
+            {/* Send email toggle */}
+            <label className="flex items-center gap-3 cursor-pointer p-3 bg-blue-50 rounded-lg border border-blue-100 hover:bg-blue-100 transition select-none">
+              <input
+                type="checkbox"
+                checked={formData.sendEmail}
+                onChange={e => setFormData({ ...formData, sendEmail: e.target.checked })}
+                className="w-4 h-4 accent-primary-600"
+              />
+              <div>
+                <p className="text-sm font-medium text-gray-800 flex items-center gap-1.5">
+                  <Mail className="w-4 h-4 text-blue-600" />
+                  Also send as email
+                </p>
+                <p className="text-xs text-gray-500">Each recipient will also receive an email notification</p>
+              </div>
+            </label>
           </div>
 
-          {/* Right Side: Recipient Selection */}
-          <div className="w-full lg:w-80 p-6 flex flex-col bg-gray-50">
-            <label className="block text-sm font-medium text-gray-700 mb-3 flex items-center">
-              <Users className="w-4 h-4 mr-2" />
-              Recipients ({selectedUserIds.length})
-            </label>
-            
-            <div className="relative mb-3">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={e => setSearchTerm(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none bg-white"
-                placeholder="Search users..."
-              />
+          {/* ── RIGHT: Audience targeting ──────────────────────────────────── */}
+          <div className="w-full lg:w-96 flex flex-col bg-gray-50">
+
+            {/* Filter panel */}
+            <div className="p-4 border-b border-gray-200 space-y-3">
+              <p className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                <Filter className="w-4 h-4" />
+                Audience Filters
+              </p>
+
+              {/* Role chips */}
+              <div className="flex flex-wrap gap-1.5">
+                {ROLE_CHIPS.map(chip => (
+                  <button
+                    key={chip.value}
+                    type="button"
+                    onClick={() => setRoleFilter(chip.value)}
+                    className={`px-3 py-1 rounded-full text-xs font-medium transition ${
+                      roleFilter === chip.value
+                        ? 'bg-primary-600 text-white shadow-sm'
+                        : 'bg-white text-gray-600 border border-gray-300 hover:border-primary-400 hover:text-primary-600'
+                    }`}
+                  >
+                    {chip.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Center */}
+              <select
+                value={centerId}
+                onChange={e => setCenterId(e.target.value)}
+                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none bg-white"
+              >
+                <option value="">All Centers</option>
+                {centers.map(c => (
+                  <option key={c.id} value={c.id}>{c.centerName}</option>
+                ))}
+              </select>
+
+              {/* Program */}
+              <select
+                value={programId}
+                onChange={e => setProgramId(e.target.value)}
+                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none bg-white"
+              >
+                <option value="">All Programs</option>
+                {programs.map(p => (
+                  <option key={p.id} value={p.id}>{p.programName ?? p.name}</option>
+                ))}
+              </select>
+
+              {/* Batch — only students can be enrolled */}
+              <select
+                value={batchId}
+                onChange={e => setBatchId(e.target.value)}
+                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none bg-white"
+              >
+                <option value="">All Batches</option>
+                {batches.map(b => (
+                  <option key={b.id} value={b.id}>{b.batchNumber ?? b.name}</option>
+                ))}
+              </select>
+
+              {(programId || batchId) && (
+                <p className="text-[10px] text-gray-400 flex items-center gap-1">
+                  <AlertCircle className="w-3 h-3" />
+                  Program/Batch filters show enrolled students only
+                </p>
+              )}
             </div>
 
-            <div className="flex justify-between items-center mb-2 px-1">
+            {/* Search within fetched results */}
+            <div className="px-3 py-2 border-b border-gray-200">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={e => setSearchTerm(e.target.value)}
+                  className="w-full pl-9 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none bg-white"
+                  placeholder="Search by name or email…"
+                />
+              </div>
+            </div>
+
+            {/* Select-all bar + count */}
+            <div className="px-4 py-2 flex items-center justify-between border-b border-gray-200 bg-white">
               <button
                 type="button"
-                onClick={handleSelectAll}
+                onClick={toggleSelectAll}
                 className="text-xs text-primary-600 font-medium hover:underline"
               >
-                {selectedUserIds.length === filteredUsers.length ? 'Deselect All' : 'Select All'}
+                {allDisplayedSelected ? 'Deselect all visible' : 'Select all visible'}
               </button>
+              <span className="text-xs text-gray-500">
+                {recipientsLoading
+                  ? 'Loading…'
+                  : `${selectedUserIds.length} / ${allRecipients.length} selected`}
+              </span>
             </div>
 
-            <div className="flex-1 overflow-y-auto space-y-1 pr-2">
-              {filteredUsers.map(u => (
-                <div
-                  key={u.id}
-                  onClick={() => toggleUserSelection(u.id)}
-                  className={`flex items-center p-2 rounded-lg cursor-pointer transition-colors ${
-                    selectedUserIds.includes(u.id) ? 'bg-primary-100' : 'hover:bg-gray-200'
-                  }`}
-                >
-                  <div className={`w-3 h-3 rounded-full mr-3 border ${
-                    selectedUserIds.includes(u.id) ? 'bg-primary-600 border-primary-600' : 'bg-white border-gray-300'
-                  }`} />
-                  <div className="min-w-0">
-                    <p className="text-xs font-semibold text-gray-900 truncate">
-                      {u.firstName} {u.lastName}
-                    </p>
-                    <p className="text-[10px] text-gray-500 uppercase">{u.role}</p>
-                  </div>
+            {/* Scrollable recipient list */}
+            <div className="flex-1 overflow-y-auto p-2 space-y-0.5">
+              {recipientsLoading ? (
+                <div className="flex items-center justify-center py-10">
+                  <Loader2 className="w-5 h-5 animate-spin text-primary-500" />
                 </div>
-              ))}
+              ) : displayedRecipients.length === 0 ? (
+                <div className="text-center py-10">
+                  <Users className="w-8 h-8 text-gray-300 mx-auto mb-2" />
+                  <p className="text-sm text-gray-400">No users match the current filters</p>
+                </div>
+              ) : (
+                displayedRecipients.map(u => {
+                  const isSelected = selectedUserIds.includes(u.id);
+                  return (
+                    <div
+                      key={u.id}
+                      onClick={() => toggleUser(u.id)}
+                      className={`flex items-center gap-2.5 px-3 py-2 rounded-lg cursor-pointer transition-colors ${
+                        isSelected
+                          ? 'bg-primary-50 border border-primary-200'
+                          : 'hover:bg-gray-100 border border-transparent'
+                      }`}
+                    >
+                      {/* Checkbox indicator */}
+                      <div
+                        className={`w-3.5 h-3.5 rounded border flex-shrink-0 flex items-center justify-center ${
+                          isSelected ? 'bg-primary-600 border-primary-600' : 'bg-white border-gray-300'
+                        }`}
+                      >
+                        {isSelected && (
+                          <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 10 8">
+                            <path d="M1 4l3 3 5-6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                        )}
+                      </div>
+
+                      {/* User info */}
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs font-semibold text-gray-900 truncate">
+                          {u.firstName} {u.lastName}
+                        </p>
+                        <p className="text-[10px] text-gray-400 truncate">{u.email}</p>
+                      </div>
+
+                      {/* Role badge */}
+                      <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-full flex-shrink-0 ${ROLE_COLORS[u.role] ?? 'bg-gray-100 text-gray-500'}`}>
+                        {u.role}
+                      </span>
+                    </div>
+                  );
+                })
+              )}
             </div>
           </div>
-        </form>
+        </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end space-x-3">
-          <button
-            onClick={onClose}
-            className="px-6 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleSubmit}
-            disabled={loading}
-            className="px-8 py-2 text-sm font-medium text-white bg-primary-600 rounded-lg hover:bg-primary-700 transition disabled:opacity-50 flex items-center"
-          >
-            {loading ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Sending...
-              </>
-            ) : (
-              <>
-                <Send className="w-4 h-4 mr-2" />
-                Send Notification
-              </>
-            )}
-          </button>
+        <div className="px-6 py-4 border-t border-gray-200 bg-gray-50 flex items-center justify-between">
+          <p className="text-sm text-gray-600">
+            <span className="font-semibold text-gray-900">{selectedUserIds.length}</span>{' '}
+            recipient{selectedUserIds.length !== 1 ? 's' : ''} selected
+          </p>
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={handleClose}
+              className="px-5 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={handlePreview}
+              className="px-8 py-2 text-sm font-medium text-white bg-primary-600 rounded-lg hover:bg-primary-700 transition flex items-center gap-2"
+            >
+              <CheckCircle2 className="w-4 h-4" />
+              Preview & Send
+            </button>
+          </div>
         </div>
       </div>
     </div>
