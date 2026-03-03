@@ -177,7 +177,7 @@ const VideoRoom: React.FC = () => {
           if (cancelled) return
           const newPeers: any[] = []
           users.forEach((u: any) => {
-            const peer = createPeer(u.id, socket.id, stream)
+            const peer = createPeer(u.id, socket.id!, stream)
             peersRef.current.push({ peerID: u.id, peer })
             newPeers.push({ peerID: u.id, peer })
           })
