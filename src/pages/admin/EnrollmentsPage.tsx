@@ -18,6 +18,7 @@ import DashboardLayout from '../../components/common/Layout/DashboardLayout'
 import axiosInstance from '../../services/api/axios.config'
 import toast from 'react-hot-toast'
 import { format } from 'date-fns'
+import { useAuth } from '../../context/AuthContext'
 
 interface Enrollment {
   id: string
@@ -43,6 +44,7 @@ interface Enrollment {
 }
 
 const EnrollmentsPage: React.FC = () => {
+  const { user } = useAuth()
   const [enrollments, setEnrollments] = useState<Enrollment[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
@@ -52,9 +54,11 @@ const EnrollmentsPage: React.FC = () => {
     status: '',
     programId: '',
     batchId: '',
+    centerId: '',
   })
   const [programs, setPrograms] = useState<any[]>([])
   const [batches, setBatches] = useState<any[]>([])
+  const [centers, setCenters] = useState<any[]>([])
 
   useEffect(() => {
     fetchEnrollments()
@@ -66,12 +70,14 @@ const EnrollmentsPage: React.FC = () => {
 
   const fetchFilterData = async () => {
     try {
-      const [programsRes, batchesRes] = await Promise.all([
+      const [programsRes, batchesRes, centersRes] = await Promise.all([
         axiosInstance.get('/programs/dropdown'),
         axiosInstance.get('/batches/dropdown'),
+        axiosInstance.get('/centers/dropdown'),
       ])
       setPrograms(programsRes.data.data.programs || [])
       setBatches(batchesRes.data.data.batches || [])
+      setCenters(centersRes.data.data.centers || [])
     } catch (error) {
       console.error('Failed to fetch filter data', error)
     }
@@ -87,6 +93,7 @@ const EnrollmentsPage: React.FC = () => {
         ...(filters.status && { status: filters.status }),
         ...(filters.programId && { programId: filters.programId }),
         ...(filters.batchId && { batchId: filters.batchId }),
+        ...(filters.centerId && { centerId: filters.centerId }),
       })
 
       const response = await axiosInstance.get(`/enrollments?${params}`)
@@ -179,6 +186,21 @@ const EnrollmentsPage: React.FC = () => {
               <option value="WITHDRAWN">Withdrawn</option>
               <option value="SUSPENDED">Suspended</option>
             </select>
+
+            {user?.role === 'ADMIN' && (
+              <select
+                value={filters.centerId}
+                onChange={(e) => setFilters({ ...filters, centerId: e.target.value })}
+                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              >
+                <option value="">All Centers</option>
+                {centers.map((center) => (
+                  <option key={center.id} value={center.id}>
+                    {center.centerName}
+                  </option>
+                ))}
+              </select>
+            )}
           </div>
         </div>
 
