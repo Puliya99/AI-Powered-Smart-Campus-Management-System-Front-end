@@ -26,7 +26,7 @@ export const aiService = {
 
   askQuestion: async (courseId: string, question: string): Promise<ChatResponse> => {
     const response = await axiosInstance.post('/ai/chat/ask', { courseId, question }, {
-      timeout: 60000 // Increase timeout to 60 seconds for AI chat
+      timeout: 120000 // Match the backend's 120-second Gemini timeout
     });
     return response.data.data;
   },
