@@ -177,7 +177,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         { name: 'Programs', href: '/user/programs', icon: BookOpen },
         { name: 'Modules', href: '/user/modules', icon: FileText },
         { name: 'Batches', href: '/user/batches', icon: Users },
-        { name: 'Centers', href: '/user/centers', icon: Building2 },
         { name: 'Schedule', href: '/user/schedule', icon: Calendar },
         { name: 'Attendance', href: '/user/attendance', icon: ClipboardList },
         { name: 'Library', href: '/user/library', icon: Library },
