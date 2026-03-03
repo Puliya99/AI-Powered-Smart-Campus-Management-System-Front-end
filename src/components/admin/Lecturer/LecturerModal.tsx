@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { X, Save, Loader2 } from 'lucide-react'
 import axiosInstance from '../../../services/api/axios.config'
 import toast from 'react-hot-toast'
+import { useAuth } from '../../../context/AuthContext'
 
 interface LecturerModalProps {
   isOpen: boolean
@@ -37,6 +38,8 @@ const LecturerModal: React.FC<LecturerModalProps> = ({
   lecturer,
   onSuccess,
 }) => {
+  const { user } = useAuth()
+  const isAdmin = user?.role === 'ADMIN'
   const [loading, setLoading] = useState(false)
   const [centers, setCenters] = useState<any[]>([])
   const [formData, setFormData] = useState<FormData>({
@@ -64,7 +67,12 @@ const LecturerModal: React.FC<LecturerModalProps> = ({
   const fetchCenters = async () => {
     try {
       const response = await axiosInstance.get('/centers/dropdown')
-      setCenters(response.data.data.centers)
+      const fetchedCenters = response.data.data.centers
+      setCenters(fetchedCenters)
+      // Auto-set center for non-ADMIN users
+      if (!isAdmin && fetchedCenters.length === 1 && !formData.centerId) {
+        setFormData(prev => ({ ...prev, centerId: fetchedCenters[0].id }))
+      }
     } catch (error) {
       console.error('Failed to fetch centers', error)
     }
@@ -459,25 +467,34 @@ const LecturerModal: React.FC<LecturerModalProps> = ({
                 </div>
 
                 {/* Center */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Center <span className="text-red-500">*</span>
-                  </label>
-                  <select
-                    name="centerId"
-                    value={formData.centerId}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  >
-                    <option value="">Select Center</option>
-                    {centers.map((center) => (
-                      <option key={center.id} value={center.id}>
-                        {center.centerName}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                {isAdmin ? (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Center <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      name="centerId"
+                      value={formData.centerId}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    >
+                      <option value="">Select Center</option>
+                      {centers.map((center) => (
+                        <option key={center.id} value={center.id}>
+                          {center.centerName}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                ) : formData.centerId && centers.length > 0 ? (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Center</label>
+                    <p className="px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-700">
+                      {centers.find(c => c.id === formData.centerId)?.centerName || 'Your Center'}
+                    </p>
+                  </div>
+                ) : null}
 
                 {/* Specialization */}
                 <div>
