@@ -8,6 +8,7 @@ import {
   AlertCircle,
   Clock,
   BookOpen,
+  Layers,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../services/api/axios.config';
@@ -32,6 +33,10 @@ interface Meeting {
       lastName: string;
     };
   };
+  batch?: {
+    id: string;
+    batchNumber: string;
+  };
 }
 
 const StudentOnlineClassesPage: React.FC = () => {
@@ -48,25 +53,15 @@ const StudentOnlineClassesPage: React.FC = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      
-      // Get all active meetings for student's modules
-      // First, get enrolled modules to fetch meetings for each (or use a dedicated endpoint if available)
-      // Based on previous analysis, we'll fetch student dashboard data to get modules
-      const dashboardRes = await axiosInstance.get('/dashboard/student');
-      const modules = dashboardRes.data.data.enrolledModules || [];
-      
-      const activeMeetingsPromises = modules.map((m: any) => 
-        axiosInstance.get(`/video-meetings/module/${m.id}`)
-      );
-      
-      const activeMeetingsResponses = await Promise.all(activeMeetingsPromises);
-      const allActiveMeetings = activeMeetingsResponses.flatMap(res => res.data.data.meetings);
-      setActiveMeetings(allActiveMeetings);
 
-      // Get meeting history
-      const historyRes = await axiosInstance.get('/video-meetings/history');
+      // Fetch active meetings restricted to the student's enrolled batches
+      const [activeRes, historyRes] = await Promise.all([
+        axiosInstance.get('/video-meetings/student-active'),
+        axiosInstance.get('/video-meetings/history'),
+      ]);
+
+      setActiveMeetings(activeRes.data.data.meetings);
       setHistoryMeetings(historyRes.data.data.meetings);
-
     } catch (error) {
       console.error('Failed to fetch online classes:', error);
       toast.error('Failed to load online classes');
@@ -145,13 +140,19 @@ const StudentOnlineClassesPage: React.FC = () => {
                     <h3 className="text-lg font-bold text-gray-900 mb-1">
                       {meeting.title}
                     </h3>
-                    <div className="flex items-center text-sm text-primary-600 font-medium mb-3">
+                    <div className="flex items-center text-sm text-primary-600 font-medium mb-1">
                       <BookOpen className="h-4 w-4 mr-1.5" />
                       {meeting.module?.moduleCode}
                     </div>
-                    <p className="text-sm text-gray-500 mb-4">
+                    <p className="text-sm text-gray-500 mb-2">
                       {meeting.module?.moduleName}
                     </p>
+                    {meeting.batch && (
+                      <div className="flex items-center text-xs text-indigo-600 font-medium mb-3">
+                        <Layers className="h-3.5 w-3.5 mr-1.5" />
+                        {meeting.batch.batchNumber}
+                      </div>
+                    )}
 
                     <div className="space-y-2 mb-6 border-t border-gray-100 pt-4">
                       <div className="flex items-center text-xs text-gray-500">
