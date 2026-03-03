@@ -169,8 +169,10 @@ const VideoRoom: React.FC = () => {
 
         socket.emit('join-meeting', {
           meetingCode,
+          meetingId: meetingIdRef.current ?? undefined,
           userId: user?.id,
           userName: `${user?.firstName} ${user?.lastName}`,
+          role: user?.role as 'LECTURER' | 'STUDENT',
         })
 
         socket.on('all-users', (users: any[]) => {
