@@ -82,6 +82,7 @@ const ModuleResultsPage = React.lazy(() => import('../pages/lecturer/ModuleResul
 const LecturePerformancePage = React.lazy(() => import('../pages/lecturer/LecturePerformancePage'))
 const LecturerSettingsPage = React.lazy(() => import('../pages/lecturer/LecturerSettingsPage'))
 const AdminPerformancePage = React.lazy(() => import('../pages/admin/AdminPerformancePage'))
+const GraduationReportPage = React.lazy(() => import('../pages/admin/GraduationReportPage'))
 
 // Kiosk page (public)
 const KioskAttendancePage = React.lazy(() => import('../pages/common/KioskAttendancePage'))
@@ -309,6 +310,14 @@ const AppRoutes: React.FC = () => {
             element={
               <ProtectedRoute allowedRoles={['ADMIN', 'USER']}>
                 <LibraryPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="graduation-report"
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN', 'USER']}>
+                <GraduationReportPage />
               </ProtectedRoute>
             }
           />
@@ -853,6 +862,14 @@ const AppRoutes: React.FC = () => {
             element={
               <ProtectedRoute allowedRoles={['USER']}>
                 <LibraryPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="graduation-report"
+            element={
+              <ProtectedRoute allowedRoles={['USER']}>
+                <GraduationReportPage />
               </ProtectedRoute>
             }
           />
