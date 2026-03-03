@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { X, Save, Loader2 } from 'lucide-react'
 import axiosInstance from '../../../services/api/axios.config'
 import toast from 'react-hot-toast'
+import { useAuth } from '../../../context/AuthContext'
 
 interface StudentModalProps {
   isOpen: boolean
@@ -38,6 +39,8 @@ const StudentModal: React.FC<StudentModalProps> = ({
   student,
   onSuccess,
 }) => {
+  const { user } = useAuth()
+  const isAdmin = user?.role === 'ADMIN'
   const [loading, setLoading] = useState(false)
   const [centers, setCenters] = useState<any[]>([])
   const [programs, setPrograms] = useState<any[]>([])
@@ -67,18 +70,42 @@ const StudentModal: React.FC<StudentModalProps> = ({
 
   const fetchSelectionData = async () => {
     try {
-      const [centersRes, programsRes, batchesRes] = await Promise.all([
+      const [centersRes, programsRes] = await Promise.all([
         axiosInstance.get('/centers/dropdown'),
         axiosInstance.get('/programs/dropdown'),
-        axiosInstance.get('/batches/dropdown'),
       ])
-      setCenters(centersRes.data.data.centers)
+      const fetchedCenters = centersRes.data.data.centers
+      setCenters(fetchedCenters)
       setPrograms(programsRes.data.data.programs)
-      setBatches(batchesRes.data.data.batches)
+
+      // Auto-set center for non-ADMIN users
+      if (!isAdmin && fetchedCenters.length === 1) {
+        setFormData(prev => ({ ...prev, centerId: fetchedCenters[0].id }))
+      }
     } catch (error) {
       console.error('Failed to fetch selection data', error)
     }
   }
+
+  // Fetch batches filtered by selected center
+  useEffect(() => {
+    const fetchBatches = async () => {
+      if (!formData.centerId) {
+        setBatches([])
+        return
+      }
+      try {
+        const res = await axiosInstance.get('/batches/dropdown', {
+          params: { centerId: formData.centerId },
+        })
+        setBatches(res.data.data.batches)
+      } catch (error) {
+        console.error('Failed to fetch batches', error)
+        setBatches([])
+      }
+    }
+    fetchBatches()
+  }, [formData.centerId])
 
   useEffect(() => {
     if (student) {
@@ -129,7 +156,13 @@ const StudentModal: React.FC<StudentModalProps> = ({
     >
   ) => {
     const { name, value } = e.target
-    if (name === 'programId') {
+    if (name === 'centerId') {
+      setFormData({
+        ...formData,
+        [name]: value,
+        batchId: '', // Reset batch when center changes
+      })
+    } else if (name === 'programId') {
       setFormData({
         ...formData,
         [name]: value,
@@ -462,25 +495,34 @@ const StudentModal: React.FC<StudentModalProps> = ({
                 </div>
 
                 {/* Center */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Center <span className="text-red-500">*</span>
-                  </label>
-                  <select
-                    name="centerId"
-                    value={formData.centerId}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  >
-                    <option value="">Select Center</option>
-                    {centers.map((center) => (
-                      <option key={center.id} value={center.id}>
-                        {center.centerName}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                {isAdmin ? (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Center <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      name="centerId"
+                      value={formData.centerId}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    >
+                      <option value="">Select Center</option>
+                      {centers.map((center) => (
+                        <option key={center.id} value={center.id}>
+                          {center.centerName}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                ) : formData.centerId && centers.length > 0 ? (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Center</label>
+                      <p className="px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-700">
+                        {centers.find(c => c.id === formData.centerId)?.centerName || 'Your Center'}
+                      </p>
+                    </div>
+                  ) : null}
 
                 {/* Program */}
                 <div>
