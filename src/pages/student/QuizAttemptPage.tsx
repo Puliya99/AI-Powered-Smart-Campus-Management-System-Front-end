@@ -1,10 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Clock, Send, AlertTriangle, CheckCircle, ChevronLeft, ChevronRight, Camera, CameraOff } from 'lucide-react';
+import { Clock, Send, AlertTriangle, CheckCircle, ChevronLeft, ChevronRight, Camera, CameraOff, ShieldCheck, Eye, EyeOff, Smartphone, MonitorOff, Users, BookOpen, XCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import axiosInstance from '../../services/api/axios.config';
 import FaceDetectionCamera from '../../components/student/Quiz/FaceDetectionCamera';
+import FaceVerificationModal from '../../components/student/Quiz/FaceVerificationModal';
+import LivenessChallenge from '../../components/student/Quiz/LivenessChallenge';
 
 interface Question {
   id: string;
@@ -41,17 +43,94 @@ const QuizAttemptPage: React.FC = () => {
   const [violationWarning, setViolationWarning] = useState<{ message: string; countdown: number } | null>(null);
   const [tabSwitchCount, setTabSwitchCount] = useState(0);
   const [violationScore, setViolationScore] = useState(0);
+  const [faceVerified, setFaceVerified] = useState(false);
+  const [livenessPassed, setLivenessPassed] = useState(false);
+  const [checkingEnrollment, setCheckingEnrollment] = useState(true);
+  const [hasEnrolledFace, setHasEnrolledFace] = useState(false);
+  const [preExamReady, setPreExamReady] = useState(false);
+  const [cameraGranted, setCameraGranted] = useState(false);
+  const [cameraCheckError, setCameraCheckError] = useState<string | null>(null);
+  const [rulesAccepted, setRulesAccepted] = useState(false);
+  const preExamVideoRef = useRef<HTMLVideoElement>(null);
+  const preExamStreamRef = useRef<MediaStream | null>(null);
 
   const timerRef = useRef<NodeJS.Timeout>();
   const warningTimerRef = useRef<NodeJS.Timeout>();
 
+  // Check if the student has an enrolled face
   useEffect(() => {
+    const checkFaceEnrollment = async () => {
+      try {
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        const studentId = user.userId || user.id;
+        if (!studentId) {
+          setCheckingEnrollment(false);
+          return;
+        }
+        const response = await axiosInstance.get(`/face/check/${studentId}`);
+        const enrolled = response.data?.data?.enrolled === true;
+        setHasEnrolledFace(enrolled);
+        if (!enrolled) {
+          setFaceVerified(true); // Skip verification if not enrolled
+          setLivenessPassed(true);
+        }
+      } catch {
+        // If check fails, skip verification
+        setFaceVerified(true);
+        setLivenessPassed(true);
+      } finally {
+        setCheckingEnrollment(false);
+      }
+    };
+    checkFaceEnrollment();
+  }, []);
+
+  useEffect(() => {
+    if (!faceVerified || !livenessPassed || !preExamReady) return; // Don't start quiz until all gates pass
     startQuiz();
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
       if (warningTimerRef.current) clearInterval(warningTimerRef.current);
     };
-  }, [quizId]);
+  }, [quizId, faceVerified, livenessPassed, preExamReady]);
+
+  // Pre-exam camera check
+  const requestCameraAccess = useCallback(async () => {
+    setCameraCheckError(null);
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { width: 640, height: 480, facingMode: 'user' },
+      });
+      preExamStreamRef.current = stream;
+      if (preExamVideoRef.current) {
+        preExamVideoRef.current.srcObject = stream;
+      }
+      setCameraGranted(true);
+    } catch {
+      setCameraCheckError('Camera access was denied. You must allow camera access to take this exam. Please check your browser settings and try again.');
+      setCameraGranted(false);
+    }
+  }, []);
+
+  const stopPreExamCamera = useCallback(() => {
+    if (preExamStreamRef.current) {
+      preExamStreamRef.current.getTracks().forEach(t => t.stop());
+      preExamStreamRef.current = null;
+    }
+    if (preExamVideoRef.current) {
+      preExamVideoRef.current.srcObject = null;
+    }
+  }, []);
+
+  const handleStartExam = useCallback(() => {
+    stopPreExamCamera();
+    setPreExamReady(true);
+  }, [stopPreExamCamera]);
+
+  // Cleanup pre-exam camera on unmount
+  useEffect(() => {
+    return () => stopPreExamCamera();
+  }, [stopPreExamCamera]);
 
   // Tab Switch / Window Blur Detection
   useEffect(() => {
@@ -114,12 +193,15 @@ const QuizAttemptPage: React.FC = () => {
         setAnswers(existingAnswers);
       }
 
-      // Set timer based on start time and duration
-      const startTime = new Date(attemptData.startTime).getTime();
-      const now = new Date().getTime();
-      const elapsedSeconds = Math.floor((now - startTime) / 1000);
+      // Set timer: account for time already spent in previous sessions (restarts)
+      // plus time elapsed in the current session
+      const previousTimeSpent = attemptData.timeSpentSeconds || 0;
+      const sessionStart = new Date(attemptData.startTime).getTime();
+      const now = Date.now();
+      const currentSessionSeconds = Math.floor((now - sessionStart) / 1000);
+      const totalElapsedSeconds = previousTimeSpent + currentSessionSeconds;
       const totalDurationSeconds = quizData.durationMinutes * 60;
-      const remainingSeconds = Math.max(0, totalDurationSeconds - elapsedSeconds);
+      const remainingSeconds = Math.max(0, totalDurationSeconds - totalElapsedSeconds);
 
       setTimeLeft(remainingSeconds);
       
@@ -277,6 +359,212 @@ const QuizAttemptPage: React.FC = () => {
     const secs = seconds % 60;
     return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
   };
+
+  if (checkingEnrollment) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600 font-medium">Checking identity requirements...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (hasEnrolledFace && !faceVerified) {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    return (
+      <FaceVerificationModal
+        studentId={user.userId || user.id}
+        onVerified={() => setFaceVerified(true)}
+        onSkip={() => navigate(-1)}
+      />
+    );
+  }
+
+  if (hasEnrolledFace && faceVerified && !livenessPassed) {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    return (
+      <LivenessChallenge
+        studentId={user.userId || user.id}
+        onPassed={() => setLivenessPassed(true)}
+        onFailed={() => navigate(-1)}
+      />
+    );
+  }
+
+  if (!preExamReady) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        <div className="max-w-2xl w-full bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
+          {/* Header */}
+          <div className="bg-primary-600 text-white px-6 py-5">
+            <h1 className="text-xl font-bold flex items-center">
+              <ShieldCheck className="h-6 w-6 mr-2" />
+              Exam Rules & Camera Check
+            </h1>
+            <p className="text-primary-100 text-sm mt-1">Please read carefully before starting</p>
+          </div>
+
+          <div className="p-6">
+            {/* Camera Check Section */}
+            <div className="mb-6">
+              <h2 className="text-lg font-bold text-gray-900 mb-3 flex items-center">
+                <Camera className="h-5 w-5 mr-2 text-primary-600" />
+                Camera Access Required
+              </h2>
+
+              {!cameraGranted ? (
+                <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 text-center">
+                  <CameraOff className="h-12 w-12 text-yellow-500 mx-auto mb-3" />
+                  <p className="text-yellow-800 font-medium mb-1">Camera is not active</p>
+                  <p className="text-yellow-600 text-sm mb-4">
+                    You must turn on your camera before you can start the exam. Your camera will be used to monitor the exam session.
+                  </p>
+                  {cameraCheckError && (
+                    <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded-lg mb-4 text-sm text-left">
+                      <div className="flex items-start">
+                        <XCircle className="h-4 w-4 mr-2 mt-0.5 flex-shrink-0" />
+                        {cameraCheckError}
+                      </div>
+                    </div>
+                  )}
+                  <button
+                    onClick={requestCameraAccess}
+                    className="bg-primary-600 text-white px-6 py-2.5 rounded-xl font-bold hover:bg-primary-700 transition inline-flex items-center"
+                  >
+                    <Camera className="h-5 w-5 mr-2" />
+                    Turn On Camera
+                  </button>
+                </div>
+              ) : (
+                <div className="bg-green-50 border border-green-200 rounded-xl p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center text-green-700">
+                      <CheckCircle className="h-5 w-5 mr-2" />
+                      <span className="font-bold">Camera is active</span>
+                    </div>
+                  </div>
+                  <div className="w-full aspect-[16/9] max-h-48 bg-gray-900 rounded-lg overflow-hidden">
+                    <video
+                      ref={preExamVideoRef}
+                      autoPlay
+                      playsInline
+                      muted
+                      className="w-full h-full object-cover"
+                      style={{ transform: 'scaleX(-1)' }}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Exam Rules Section */}
+            <div className="mb-6">
+              <h2 className="text-lg font-bold text-gray-900 mb-3 flex items-center">
+                <BookOpen className="h-5 w-5 mr-2 text-primary-600" />
+                Exam Rules
+              </h2>
+              <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                <p className="text-gray-600 text-sm mb-3">
+                  This exam is AI-proctored. The following actions are <strong>strictly prohibited</strong> and will be recorded as violations:
+                </p>
+                <div className="space-y-2.5">
+                  <div className="flex items-start text-sm">
+                    <div className="w-7 h-7 rounded-lg bg-red-100 flex items-center justify-center mr-3 flex-shrink-0 mt-0.5">
+                      <CameraOff className="h-4 w-4 text-red-600" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-800">Do not turn off your camera</p>
+                      <p className="text-gray-500 text-xs">Your camera must remain on throughout the entire exam.</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start text-sm">
+                    <div className="w-7 h-7 rounded-lg bg-red-100 flex items-center justify-center mr-3 flex-shrink-0 mt-0.5">
+                      <EyeOff className="h-4 w-4 text-red-600" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-800">Do not look away from the screen</p>
+                      <p className="text-gray-500 text-xs">Keep your eyes focused on the exam at all times.</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start text-sm">
+                    <div className="w-7 h-7 rounded-lg bg-red-100 flex items-center justify-center mr-3 flex-shrink-0 mt-0.5">
+                      <MonitorOff className="h-4 w-4 text-red-600" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-800">Do not switch tabs or leave this window</p>
+                      <p className="text-gray-500 text-xs">Switching tabs or minimizing the browser will be recorded.</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start text-sm">
+                    <div className="w-7 h-7 rounded-lg bg-red-100 flex items-center justify-center mr-3 flex-shrink-0 mt-0.5">
+                      <Smartphone className="h-4 w-4 text-red-600" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-800">Do not use phones, notes, or other devices</p>
+                      <p className="text-gray-500 text-xs">Any suspicious objects detected by the camera will be flagged.</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start text-sm">
+                    <div className="w-7 h-7 rounded-lg bg-red-100 flex items-center justify-center mr-3 flex-shrink-0 mt-0.5">
+                      <Users className="h-4 w-4 text-red-600" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-800">Do not allow other people near you</p>
+                      <p className="text-gray-500 text-xs">Only your face should be visible in the camera.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-4 bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                  <p className="text-yellow-800 text-xs font-medium">
+                    <AlertTriangle className="h-3.5 w-3.5 inline mr-1 -mt-0.5" />
+                    Violations are scored automatically. If your violation score reaches <strong>5/5</strong>, your exam will be <strong>auto-submitted</strong> and your lecturer will be notified.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Accept & Start */}
+            <div className="space-y-3">
+              <label className="flex items-start cursor-pointer group">
+                <input
+                  type="checkbox"
+                  checked={rulesAccepted}
+                  onChange={(e) => setRulesAccepted(e.target.checked)}
+                  className="mt-1 mr-3 h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                />
+                <span className="text-sm text-gray-700 group-hover:text-gray-900">
+                  I have read and understood the exam rules. I agree to be monitored by the AI proctoring system during this exam.
+                </span>
+              </label>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => {
+                    stopPreExamCamera();
+                    navigate(-1);
+                  }}
+                  className="flex-1 bg-gray-100 text-gray-700 py-3 rounded-xl font-bold hover:bg-gray-200 transition"
+                >
+                  Go Back
+                </button>
+                <button
+                  onClick={handleStartExam}
+                  disabled={!cameraGranted || !rulesAccepted}
+                  className="flex-1 bg-primary-600 text-white py-3 rounded-xl font-bold hover:bg-primary-700 transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center"
+                >
+                  <ShieldCheck className="h-5 w-5 mr-2" />
+                  Start Exam
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
@@ -480,10 +768,11 @@ const QuizAttemptPage: React.FC = () => {
       )}
 
       {/* Face Detection Camera */}
-      <FaceDetectionCamera 
-        isActive={!submitting && !isCancelled && !isFinished && !!attempt} 
-        onViolation={handleViolation} 
+      <FaceDetectionCamera
+        isActive={!submitting && !isCancelled && !isFinished && !!attempt}
+        onViolation={handleViolation}
         isCameraOff={isCameraOff}
+        attemptId={attempt?.id}
       />
     </div>
   );

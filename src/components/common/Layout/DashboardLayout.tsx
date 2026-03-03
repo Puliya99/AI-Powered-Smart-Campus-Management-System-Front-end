@@ -29,6 +29,7 @@ import {
   UserCheck,
   Sun,
   Moon,
+  Library,
 } from 'lucide-react'
 
 interface DashboardLayoutProps {
@@ -111,6 +112,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         { name: 'Modules', href: '/admin/modules', icon: FileText },
         { name: 'Batches', href: '/admin/batches', icon: Users },
         { name: 'Schedule', href: '/admin/schedule', icon: Calendar },
+        { name: 'Library', href: '/admin/library', icon: Library },
         { name: 'Payments', href: '/admin/payments', icon: DollarSign },
         { name: 'Reports', href: '/admin/reports', icon: FileText },
         { name: 'Performance', href: '/admin/performance', icon: Award },
@@ -134,6 +136,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         { name: 'Online Tests', href: '/student/quizzes', icon: ClipboardList },
         { name: 'Assignments', href: '/student/assignments', icon: FileText },
         { name: 'Results', href: '/student/results', icon: Award },
+        { name: 'Library', href: '/student/library', icon: Library },
         { name: 'Payments', href: '/student/payments', icon: CreditCard },
         { name: 'Feedback', href: '/student/feedback', icon: MessageSquare },
       ],
@@ -163,6 +166,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         },
         { name: 'Assignments', href: '/lecturer/assignments', icon: FileText },
         { name: 'Results', href: '/lecturer/results', icon: Award },
+        { name: 'Library', href: '/lecturer/library', icon: Library },
         { name: 'Performance', href: '/lecturer/performance', icon: Award },
       ],
       user: [
@@ -176,6 +180,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         { name: 'Centers', href: '/user/centers', icon: Building2 },
         { name: 'Schedule', href: '/user/schedule', icon: Calendar },
         { name: 'Attendance', href: '/user/attendance', icon: ClipboardList },
+        { name: 'Library', href: '/user/library', icon: Library },
         { name: 'Payments', href: '/user/payments', icon: DollarSign },
         { name: 'Reports', href: '/user/reports', icon: FileText },
         { name: 'Performance', href: '/user/performance', icon: Award },
