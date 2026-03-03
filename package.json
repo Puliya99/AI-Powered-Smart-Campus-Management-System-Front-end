@@ -28,6 +28,7 @@
     "recharts": "^2.10.3",
     "simple-peer": "^9.11.1",
     "socket.io-client": "^4.8.3",
+    "xlsx": "^0.18.5",
     "zustand": "^4.4.7"
   },
   "devDependencies": {
