@@ -16,6 +16,7 @@ import ProgramModal from '../../components/admin/Programs/ProgramModal'
 import ProgramViewModal from '../../components/admin/Programs/ProgramViewModal'
 import axiosInstance from '../../services/api/axios.config'
 import toast from 'react-hot-toast'
+import { useAuth } from '../../context/AuthContext'
 
 interface Program {
   id: string
@@ -32,6 +33,7 @@ interface Program {
 }
 
 const ProgramsPage: React.FC = () => {
+  const { user } = useAuth()
   const [programs, setPrograms] = useState<Program[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
@@ -205,23 +207,25 @@ const ProgramsPage: React.FC = () => {
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             />
           </div>
-          <div className="w-full md:w-64">
-            <select
-              value={selectedCenter}
-              onChange={(e) => {
-                setSelectedCenter(e.target.value)
-                setCurrentPage(1)
-              }}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-            >
-              <option value="">All Centers</option>
-              {centers.map((center) => (
-                <option key={center.id} value={center.id}>
-                  {center.centerName}
-                </option>
-              ))}
-            </select>
-          </div>
+          {user?.role === 'ADMIN' && (
+            <div className="w-full md:w-64">
+              <select
+                value={selectedCenter}
+                onChange={(e) => {
+                  setSelectedCenter(e.target.value)
+                  setCurrentPage(1)
+                }}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              >
+                <option value="">All Centers</option>
+                {centers.map((center) => (
+                  <option key={center.id} value={center.id}>
+                    {center.centerName}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
         </div>
 
         {/* Programs Grid */}

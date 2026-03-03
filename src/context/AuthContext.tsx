@@ -17,6 +17,10 @@ interface User {
   lastName: string
   role: string
   registrationNumber: string
+  center?: {
+    id: string
+    centerName: string
+  }
 }
 
 interface AuthContextType {

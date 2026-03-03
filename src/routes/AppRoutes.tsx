@@ -793,14 +793,6 @@ const AppRoutes: React.FC = () => {
             }
           />
           <Route
-            path="centers"
-            element={
-              <ProtectedRoute allowedRoles={['USER']}>
-                <CentersPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
             path="payments"
             element={
               <ProtectedRoute allowedRoles={['USER']}>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { X, Save, Loader2 } from 'lucide-react'
 import axiosInstance from '../../../services/api/axios.config'
 import toast from 'react-hot-toast'
+import { useAuth } from '../../../context/AuthContext'
 
 interface ProgramModalProps {
   isOpen: boolean
@@ -25,6 +26,8 @@ const ProgramModal: React.FC<ProgramModalProps> = ({
   program,
   onSuccess,
 }) => {
+  const { user } = useAuth()
+  const isAdmin = user?.role === 'ADMIN'
   const [loading, setLoading] = useState(false)
   const [centers, setCenters] = useState<any[]>([])
   const [formData, setFormData] = useState<FormData>({
@@ -42,9 +45,13 @@ const ProgramModal: React.FC<ProgramModalProps> = ({
 
   const fetchCenters = async () => {
     try {
-      const response = await axiosInstance.get('/centers')
-      // Assuming /centers returns an array of centers in data.data.centers
-      setCenters(response.data.data.centers || [])
+      const response = await axiosInstance.get('/centers/dropdown')
+      const fetchedCenters = response.data.data.centers || []
+      setCenters(fetchedCenters)
+      // Auto-set center for non-ADMIN users
+      if (!isAdmin && fetchedCenters.length >= 1) {
+        setFormData(prev => ({ ...prev, centerIds: fetchedCenters.map((c: any) => c.id) }))
+      }
     } catch (error) {
       console.error('Failed to fetch centers:', error)
     }
@@ -282,31 +289,40 @@ const ProgramModal: React.FC<ProgramModalProps> = ({
               </div>
 
               {/* Centers */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Available Centers <span className="text-red-500">*</span>
-                </label>
-                <div className="grid grid-cols-2 gap-3 border border-gray-300 rounded-lg p-4 max-h-48 overflow-y-auto">
-                  {centers.length > 0 ? (
-                    centers.map((center) => (
-                      <label key={center.id} className="flex items-center space-x-3 cursor-pointer p-2 hover:bg-gray-50 rounded transition">
-                        <input
-                          type="checkbox"
-                          checked={formData.centerIds.includes(center.id)}
-                          onChange={() => handleCenterChange(center.id)}
-                          className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
-                        />
-                        <span className="text-sm text-gray-700">{center.centerName}</span>
-                      </label>
-                    ))
-                  ) : (
-                    <p className="col-span-2 text-sm text-gray-500 italic">No centers available</p>
+              {isAdmin ? (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Available Centers <span className="text-red-500">*</span>
+                  </label>
+                  <div className="grid grid-cols-2 gap-3 border border-gray-300 rounded-lg p-4 max-h-48 overflow-y-auto">
+                    {centers.length > 0 ? (
+                      centers.map((center) => (
+                        <label key={center.id} className="flex items-center space-x-3 cursor-pointer p-2 hover:bg-gray-50 rounded transition">
+                          <input
+                            type="checkbox"
+                            checked={formData.centerIds.includes(center.id)}
+                            onChange={() => handleCenterChange(center.id)}
+                            className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                          />
+                          <span className="text-sm text-gray-700">{center.centerName}</span>
+                        </label>
+                      ))
+                    ) : (
+                      <p className="col-span-2 text-sm text-gray-500 italic">No centers available</p>
+                    )}
+                  </div>
+                  {formData.centerIds.length === 0 && (
+                    <p className="text-xs text-red-500 mt-1">Select at least one center</p>
                   )}
                 </div>
-                {formData.centerIds.length === 0 && (
-                  <p className="text-xs text-red-500 mt-1">Select at least one center</p>
-                )}
-              </div>
+              ) : formData.centerIds.length > 0 && centers.length > 0 ? (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Center</label>
+                  <p className="px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-700">
+                    {centers.find(c => c.id === formData.centerIds[0])?.centerName || 'Your Center'}
+                  </p>
+                </div>
+              ) : null}
             </div>
 
             {/* Footer */}

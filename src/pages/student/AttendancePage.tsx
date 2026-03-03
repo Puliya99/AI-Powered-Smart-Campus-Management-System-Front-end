@@ -16,6 +16,7 @@ import {
 import DashboardLayout from '../../components/common/Layout/DashboardLayout'
 import axiosInstance from '../../services/api/axios.config'
 import toast from 'react-hot-toast'
+import { useAuth } from '../../context/AuthContext'
 
 interface AttendanceRecord {
   id: string
@@ -67,6 +68,8 @@ const statusConfig: Record<string, { color: string; bg: string; icon: React.Reac
 }
 
 const StudentAttendancePage: React.FC = () => {
+  const { user } = useAuth()
+  const isAdmin = user?.role === 'ADMIN'
   const [records, setRecords] = useState<AttendanceRecord[]>([])
   const [loading, setLoading] = useState(true)
   const [pagination, setPagination] = useState<Pagination>({ page: 1, limit: 15, total: 0, pages: 0 })
@@ -80,7 +83,7 @@ const StudentAttendancePage: React.FC = () => {
   const [centers, setCenters] = useState<{ id: string; centerCode: string; centerName: string }[]>([])
 
   useEffect(() => {
-    fetchCenters()
+    if (isAdmin) fetchCenters()
   }, [])
 
   useEffect(() => {
@@ -186,16 +189,18 @@ const StudentAttendancePage: React.FC = () => {
                 <option value="LATE">Late</option>
                 <option value="EXCUSED">Excused</option>
               </select>
-              <select
-                value={filters.centerId}
-                onChange={e => setFilters(prev => ({ ...prev, centerId: e.target.value }))}
-                className="px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
-              >
-                <option value="">All Centers</option>
-                {centers.map(center => (
-                  <option key={center.id} value={center.id}>{center.centerCode} - {center.centerName}</option>
-                ))}
-              </select>
+              {isAdmin && (
+                <select
+                  value={filters.centerId}
+                  onChange={e => setFilters(prev => ({ ...prev, centerId: e.target.value }))}
+                  className="px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
+                >
+                  <option value="">All Centers</option>
+                  {centers.map(center => (
+                    <option key={center.id} value={center.id}>{center.centerCode} - {center.centerName}</option>
+                  ))}
+                </select>
+              )}
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
