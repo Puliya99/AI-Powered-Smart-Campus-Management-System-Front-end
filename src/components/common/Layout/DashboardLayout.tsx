@@ -30,6 +30,7 @@ import {
   Sun,
   Moon,
   Library,
+  ShieldAlert,
 } from 'lucide-react'
 
 interface DashboardLayoutProps {
@@ -114,9 +115,11 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         { name: 'Schedule', href: '/admin/schedule', icon: Calendar },
         { name: 'Library', href: '/admin/library', icon: Library },
         { name: 'Payments', href: '/admin/payments', icon: DollarSign },
-        { name: 'Reports', href: '/admin/reports', icon: FileText },
-        { name: 'Performance', href: '/admin/performance', icon: Award },
         { name: 'Fingerprint', href: '/admin/fingerprint', icon: UserCheck },
+        { name: 'Reports', href: '/admin/reports', icon: FileText },
+        { name: 'Graduation Report', href: '/admin/graduation-report', icon: GraduationCap },
+        { name: 'Student Risk',      href: '/admin/student-risk',      icon: ShieldAlert },
+        { name: 'Performance', href: '/admin/performance', icon: Award },
         { name: 'Feedback', href: '/admin/feedback', icon: MessageSquare },
       ],
       student: [
@@ -182,6 +185,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         { name: 'Library', href: '/user/library', icon: Library },
         { name: 'Payments', href: '/user/payments', icon: DollarSign },
         { name: 'Reports', href: '/user/reports', icon: FileText },
+        { name: 'Graduation Report', href: '/user/graduation-report', icon: GraduationCap },
+        { name: 'Student Risk',      href: '/user/student-risk',      icon: ShieldAlert },
         { name: 'Performance', href: '/user/performance', icon: Award },
         { name: 'Feedback', href: '/user/feedback', icon: MessageSquare },
       ],
