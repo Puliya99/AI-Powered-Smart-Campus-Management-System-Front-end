@@ -15,6 +15,7 @@ import ModuleModal from '../../components/admin/Modules/ModuleModal';
 import ModuleViewModal from '../../components/admin/Modules/ModuleViewModal';
 import axiosInstance from '../../services/api/axios.config';
 import toast from 'react-hot-toast';
+import { useAuth } from '../../context/AuthContext';
 
 interface Module {
   id: string;
@@ -39,6 +40,7 @@ interface Module {
 }
 
 const ModulesPage: React.FC = () => {
+  const { user } = useAuth();
   const [modules, setModules] = useState<Module[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -55,8 +57,10 @@ const ModulesPage: React.FC = () => {
   const [filters, setFilters] = useState({
     programId: '',
     semesterNumber: '',
+    centerId: '',
   });
   const [programs, setPrograms] = useState<any[]>([]);
+  const [centers, setCenters] = useState<any[]>([]);
 
   useEffect(() => {
     fetchModules();
@@ -65,6 +69,7 @@ const ModulesPage: React.FC = () => {
 
   useEffect(() => {
     fetchPrograms();
+    fetchCenters();
   }, []);
 
   const fetchPrograms = async () => {
@@ -73,6 +78,15 @@ const ModulesPage: React.FC = () => {
       setPrograms(response.data.data.programs);
     } catch (error) {
       console.error('Failed to fetch programs', error);
+    }
+  };
+
+  const fetchCenters = async () => {
+    try {
+      const response = await axiosInstance.get('/centers/dropdown');
+      setCenters(response.data.data.centers);
+    } catch (error) {
+      console.error('Failed to fetch centers', error);
     }
   };
 
@@ -85,6 +99,7 @@ const ModulesPage: React.FC = () => {
         ...(searchTerm && { search: searchTerm }),
         ...(filters.programId && { programId: filters.programId }),
         ...(filters.semesterNumber && { semesterNumber: filters.semesterNumber }),
+        ...(filters.centerId && { centerId: filters.centerId }),
       });
 
       const response = await axiosInstance.get(`/modules?${params}`);
@@ -234,6 +249,22 @@ const ModulesPage: React.FC = () => {
               <option value="7">Semester 7</option>
               <option value="8">Semester 8</option>
             </select>
+
+            {/* Center Filter (Admin only) */}
+            {user?.role === 'ADMIN' && (
+              <select
+                value={filters.centerId}
+                onChange={(e) => handleFilterChange('centerId', e.target.value)}
+                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+              >
+                <option value="">All Centers</option>
+                {centers.map((center) => (
+                  <option key={center.id} value={center.id}>
+                    {center.centerName}
+                  </option>
+                ))}
+              </select>
+            )}
           </div>
         </div>
 
