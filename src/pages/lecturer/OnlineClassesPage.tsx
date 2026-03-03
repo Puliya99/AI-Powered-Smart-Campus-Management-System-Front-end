@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react'
 import {
   Video,
   Plus,
-  Search,
   Calendar,
   Users,
   ArrowRight,
   X,
+  Layers,
 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import axiosInstance from '../../services/api/axios.config'
@@ -19,16 +19,48 @@ const OnlineClassesPage: React.FC = () => {
   const [loading, setLoading] = useState(true)
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [modules, setModules] = useState<any[]>([])
+  const [batches, setBatches] = useState<any[]>([])
+  const [batchesLoading, setBatchesLoading] = useState(false)
 
   const [formData, setFormData] = useState({
     title: '',
     moduleId: '',
+    batchId: '',
   })
 
   useEffect(() => {
     fetchActiveMeetings()
     fetchLecturerModules()
   }, [])
+
+  // When module changes, load batches for that module's program
+  useEffect(() => {
+    if (!formData.moduleId) {
+      setBatches([])
+      setFormData(prev => ({ ...prev, batchId: '' }))
+      return
+    }
+
+    const selectedModule = modules.find(m => m.id === formData.moduleId)
+    const programId = selectedModule?.program?.id
+
+    const fetchBatches = async () => {
+      setBatchesLoading(true)
+      try {
+        const params: any = { status: 'ACTIVE' }
+        if (programId) params.programId = programId
+        const res = await axiosInstance.get('/batches/dropdown', { params })
+        setBatches(res.data.data.batches || [])
+      } catch {
+        setBatches([])
+      } finally {
+        setBatchesLoading(false)
+      }
+    }
+
+    fetchBatches()
+    setFormData(prev => ({ ...prev, batchId: '' }))
+  }, [formData.moduleId, modules])
 
   const fetchActiveMeetings = async () => {
     try {
@@ -54,7 +86,7 @@ const OnlineClassesPage: React.FC = () => {
 
   const handleCreateMeeting = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!formData.title || !formData.moduleId) {
+    if (!formData.title || !formData.moduleId || !formData.batchId) {
       return toast.error('Please fill all fields')
     }
 
@@ -66,6 +98,12 @@ const OnlineClassesPage: React.FC = () => {
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Failed to create meeting')
     }
+  }
+
+  const handleCloseModal = () => {
+    setShowCreateModal(false)
+    setFormData({ title: '', moduleId: '', batchId: '' })
+    setBatches([])
   }
 
   return (
@@ -111,9 +149,15 @@ const OnlineClassesPage: React.FC = () => {
                   <h3 className="text-lg font-bold text-gray-900 mb-1">
                     {meeting.title}
                   </h3>
-                  <p className="text-sm text-gray-500 mb-4">
+                  <p className="text-sm text-gray-500 mb-1">
                     {meeting.module?.moduleName}
                   </p>
+                  {meeting.batch && (
+                    <div className="flex items-center text-xs text-primary-600 font-medium mb-3">
+                      <Layers className="h-3.5 w-3.5 mr-1.5" />
+                      {meeting.batch.batchNumber}
+                    </div>
+                  )}
 
                   <div className="space-y-2 mb-6">
                     <div className="flex items-center text-xs text-gray-500">
@@ -170,7 +214,7 @@ const OnlineClassesPage: React.FC = () => {
                   Start Online Lecture
                 </h2>
                 <button
-                  onClick={() => setShowCreateModal(false)}
+                  onClick={handleCloseModal}
                   className="text-white hover:text-gray-200 transition-colors"
                 >
                   <X className="h-6 w-6" />
@@ -203,7 +247,7 @@ const OnlineClassesPage: React.FC = () => {
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
                     value={formData.moduleId}
                     onChange={(e) =>
-                      setFormData({ ...formData, moduleId: e.target.value })
+                      setFormData({ ...formData, moduleId: e.target.value, batchId: '' })
                     }
                   >
                     <option value="">Select a module</option>
@@ -215,10 +259,45 @@ const OnlineClassesPage: React.FC = () => {
                   </select>
                 </div>
 
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Batch
+                  </label>
+                  <select
+                    required
+                    disabled={!formData.moduleId || batchesLoading}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none disabled:bg-gray-100 disabled:text-gray-400"
+                    value={formData.batchId}
+                    onChange={(e) =>
+                      setFormData({ ...formData, batchId: e.target.value })
+                    }
+                  >
+                    <option value="">
+                      {!formData.moduleId
+                        ? 'Select a module first'
+                        : batchesLoading
+                        ? 'Loading batches...'
+                        : batches.length === 0
+                        ? 'No batches available'
+                        : 'Select a batch'}
+                    </option>
+                    {batches.map((b) => (
+                      <option key={b.id} value={b.id}>
+                        {b.batchNumber}
+                      </option>
+                    ))}
+                  </select>
+                  {formData.moduleId && !batchesLoading && batches.length === 0 && (
+                    <p className="mt-1 text-xs text-amber-600">
+                      No active batches found for this module's program.
+                    </p>
+                  )}
+                </div>
+
                 <div className="pt-4 flex gap-3">
                   <button
                     type="button"
-                    onClick={() => setShowCreateModal(false)}
+                    onClick={handleCloseModal}
                     className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
                   >
                     Cancel
