@@ -10,6 +10,15 @@ export interface Notification {
   createdAt: string;
 }
 
+export interface RecipientUser {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: string;
+  center?: { id: string; centerName: string };
+}
+
 export interface NotificationResponse {
   status: string;
   data: {
@@ -68,8 +77,23 @@ const notificationService = {
     message: string;
     type?: string;
     link?: string;
+    sendEmail?: boolean;
   }) => {
     const response = await axiosInstance.post<{ status: string; message: string }>('/notifications/send', data);
+    return response.data;
+  },
+
+  // Get filterable recipient list for admin targeting
+  getRecipients: async (params: {
+    role?: string;
+    centerId?: string;
+    programId?: string;
+    batchId?: string;
+  }) => {
+    const response = await axiosInstance.get<{
+      status: string;
+      data: { users: RecipientUser[]; total: number };
+    }>('/notifications/recipients', { params });
     return response.data;
   },
 };

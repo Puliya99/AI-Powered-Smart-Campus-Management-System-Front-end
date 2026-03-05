@@ -13,6 +13,7 @@ import {
 import DashboardLayout from '../../components/common/Layout/DashboardLayout';
 import axiosInstance from '../../services/api/axios.config';
 import toast from 'react-hot-toast';
+import { useAuth } from '../../context/AuthContext';
 
 interface Feedback {
   id: string;
@@ -33,15 +34,18 @@ interface Feedback {
 }
 
 const FeedbackManagementPage: React.FC = () => {
+  const { user } = useAuth();
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [modules, setModules] = useState<any[]>([]);
+  const [centers, setCenters] = useState<any[]>([]);
   const [filters, setFilters] = useState({
     moduleId: '',
     rating: '',
+    centerId: '',
   });
 
   useEffect(() => {
@@ -50,6 +54,7 @@ const FeedbackManagementPage: React.FC = () => {
 
   useEffect(() => {
     fetchModules();
+    fetchCenters();
   }, []);
 
   const fetchFeedbacks = async () => {
@@ -60,6 +65,7 @@ const FeedbackManagementPage: React.FC = () => {
         limit: '10',
         ...(filters.moduleId && { moduleId: filters.moduleId }),
         ...(filters.rating && { rating: filters.rating }),
+        ...(filters.centerId && { centerId: filters.centerId }),
       });
 
       const response = await axiosInstance.get(`/feedback?${params}`);
@@ -79,6 +85,15 @@ const FeedbackManagementPage: React.FC = () => {
       setModules(response.data.data.modules);
     } catch (error) {
       console.error('Failed to fetch modules:', error);
+    }
+  };
+
+  const fetchCenters = async () => {
+    try {
+      const response = await axiosInstance.get('/centers/dropdown');
+      setCenters(response.data.data.centers || []);
+    } catch (error) {
+      console.error('Failed to fetch centers:', error);
     }
   };
 
@@ -114,7 +129,7 @@ const FeedbackManagementPage: React.FC = () => {
 
         {/* Search and Filters */}
         <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
               <input
@@ -151,6 +166,21 @@ const FeedbackManagementPage: React.FC = () => {
               <option value="2">2 Stars</option>
               <option value="1">1 Star</option>
             </select>
+
+            {user?.role === 'ADMIN' && (
+              <select
+                className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+                value={filters.centerId}
+                onChange={(e) => handleFilterChange('centerId', e.target.value)}
+              >
+                <option value="">All Centers</option>
+                {centers.map((center) => (
+                  <option key={center.id} value={center.id}>
+                    {center.centerName}
+                  </option>
+                ))}
+              </select>
+            )}
           </div>
         </div>
 

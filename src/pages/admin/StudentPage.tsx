@@ -18,6 +18,7 @@ import {
 import DashboardLayout from '../../components/common/Layout/DashboardLayout'
 import StudentModal from '../../components/admin/Student/StudentModal'
 import StudentViewModal from '../../components/admin/Student/StudentViewModal'
+import ImportStudentsModal from '../../components/admin/Student/ImportStudentsModal'
 import axiosInstance from '../../services/api/axios.config'
 import toast from 'react-hot-toast'
 import { useAuth } from '../../context/AuthContext'
@@ -49,6 +50,8 @@ const StudentsPage: React.FC = () => {
   const [totalPages, setTotalPages] = useState(1)
   const [showAddModal, setShowAddModal] = useState(false)
   const [showViewModal, setShowViewModal] = useState(false)
+  const [showImportModal, setShowImportModal] = useState(false)
+  const [exporting, setExporting] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null)
   const [filters, setFilters] = useState({
     paymentType: '',
@@ -144,6 +147,35 @@ const StudentsPage: React.FC = () => {
     setCurrentPage(1)
   }
 
+  const handleExport = async () => {
+    try {
+      setExporting(true)
+      const params = new URLSearchParams()
+      if (filters.paymentType) params.set('paymentType', filters.paymentType)
+      if (filters.isActive)    params.set('isActive',    filters.isActive)
+      if (filters.centerId)    params.set('centerId',    filters.centerId)
+      if (filters.batchId)     params.set('batchId',     filters.batchId)
+
+      const response = await axiosInstance.get(`/students/export?${params}`, {
+        responseType: 'blob',
+      })
+
+      const url      = window.URL.createObjectURL(new Blob([response.data]))
+      const link     = document.createElement('a')
+      link.href      = url
+      link.download  = `students_${new Date().toISOString().split('T')[0]}.xlsx`
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      window.URL.revokeObjectURL(url)
+      toast.success('Students exported successfully')
+    } catch {
+      toast.error('Failed to export students')
+    } finally {
+      setExporting(false)
+    }
+  }
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
@@ -153,13 +185,30 @@ const StudentsPage: React.FC = () => {
             <h1 className="text-3xl font-bold text-gray-900">Students</h1>
             <p className="text-gray-600 mt-1">Manage student records</p>
           </div>
-          <button
-            onClick={() => setShowAddModal(true)}
-            className="flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition"
-          >
-            <UserPlus className="w-5 h-5 mr-2" />
-            Add Student
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setShowImportModal(true)}
+              className="flex items-center px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition text-sm font-medium"
+            >
+              <Upload className="w-4 h-4 mr-2 text-green-600" />
+              Import
+            </button>
+            <button
+              onClick={handleExport}
+              disabled={exporting}
+              className="flex items-center px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition text-sm font-medium disabled:opacity-50"
+            >
+              <Download className="w-4 h-4 mr-2 text-blue-600" />
+              {exporting ? 'Exporting…' : 'Export'}
+            </button>
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition text-sm font-medium"
+            >
+              <UserPlus className="w-4 h-4 mr-2" />
+              Add Student
+            </button>
+          </div>
         </div>
 
         {/* Stats Cards */}
@@ -526,6 +575,13 @@ const StudentsPage: React.FC = () => {
           setSelectedStudent(null)
         }}
         studentId={selectedStudent?.id || null}
+      />
+
+      {/* Import Students Modal */}
+      <ImportStudentsModal
+        isOpen={showImportModal}
+        onClose={() => setShowImportModal(false)}
+        onImported={fetchStudents}
       />
     </DashboardLayout>
   )

@@ -24,6 +24,10 @@ export interface AuthResponse {
     lastName: string;
     role: string;
     registrationNumber: string;
+    center?: {
+      id: string;
+      centerName: string;
+    };
   };
   token: string;
 }
