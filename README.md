@@ -1,47 +1,49 @@
-# AI-Powered Smart Campus Management System - Frontend
+# AI-Powered Smart Campus Management System — Frontend
 
 ## Overview
 
 The client-side single-page application for the AI-Powered Smart Campus Management System. Provides a modern, responsive, role-based interface for administrators, staff, lecturers, and students.
 
-Built with **React 18**, **TypeScript**, **Vite**, and **Tailwind CSS**, configured as a **Progressive Web App (PWA)**.
+Built with **React 18**, **TypeScript**, **Vite 6**, and **Tailwind CSS**, configured as a **Progressive Web App (PWA)**.
 
 ---
 
 ## Key Features
 
-- **Role-based Dashboards** - Custom views and statistics for Admin, Staff, Lecturer, and Student roles
-- **Online Quizzes & Exams** - Time-limited assessments with auto-grading
-- **AI Anti-Cheating** - Real-time face detection during quizzes using TensorFlow.js and face-api.js (all processing client-side, no video sent to server)
-- **AI Analytics** - Student risk prediction visualizations via Recharts
-- **RAG Chatbot** - Course material Q&A powered by Gemini through the backend
-- **WebRTC Video Meetings** - Online classes via simple-peer
-- **Real-time Notifications** - Instant updates via Socket.IO
-- **WebAuthn/Passkey** - Biometric kiosk attendance support
-- **PWA Support** - Installable on desktop/mobile with offline capabilities
-- **Dark Mode** - Theme toggle with persistence
+- **Role-based Dashboards** — Custom views and statistics for Admin, Staff, Lecturer, and Student roles
+- **Online Quizzes & Exams** — Time-limited assessments with auto-grading
+- **AI Anti-Cheating** — Real-time face detection during quizzes using **MediaPipe** (all processing client-side, no video sent to server)
+- **AI Analytics** — Student risk prediction visualizations via Recharts
+- **RAG Chatbot** — Course material Q&A powered by Gemini through the backend
+- **WebRTC Video Meetings** — Online classes via simple-peer
+- **Real-time Notifications** — Instant updates via Socket.IO
+- **WebAuthn/Passkey** — Biometric kiosk attendance support
+- **PWA Support** — Installable on desktop/mobile with offline caching (Workbox)
+- **Dark Mode** — Theme toggle with persistence
 
 ---
 
 ## Technology Stack
 
-| Category | Technology |
-|---|---|
-| Framework | React 18.3 |
-| Language | TypeScript 5.6 |
-| Build Tool | Vite 6.0 |
-| Styling | Tailwind CSS 3.4 |
-| State Management | Zustand 4.4 |
-| Routing | React Router DOM 6.20 |
-| HTTP Client | Axios 1.6 |
-| Real-time | Socket.IO Client 4.8 |
-| Charts | Recharts 2.10 |
-| Face Detection | @vladmandic/face-api 1.7 + TensorFlow.js 4.22 |
-| Video Calls | simple-peer 9.11 (WebRTC) |
-| PWA | vite-plugin-pwa |
-| Push/Analytics | Firebase 12.7 |
-| Biometric Auth | @simplewebauthn/browser 13.2 |
-| Icons | Lucide React, React Icons |
+| Category | Technology | Version |
+|---|---|---|
+| Language | TypeScript | 5.6 |
+| Framework | React | 18.3 |
+| Build Tool | Vite | 6.0 |
+| Styling | Tailwind CSS | 3.4 |
+| State Management | Zustand | 4.4 |
+| Routing | React Router DOM | 6.20 |
+| HTTP Client | Axios | 1.6 |
+| Real-time | Socket.IO Client | 4.8 |
+| Charts | Recharts | 2.10 |
+| Face / Pose Detection | MediaPipe | 0.10 |
+| Video Calls | simple-peer (WebRTC) | 9.11 |
+| PWA | vite-plugin-pwa | — |
+| Push / Analytics | Firebase | 12.7 |
+| Biometric Auth | @simplewebauthn/browser | 13.2 |
+| Icons | Lucide React, React Icons | — |
+| Export | XLSX | 0.18 |
+| Test Framework | Vitest + React Testing Library | — |
 
 ---
 
@@ -85,7 +87,9 @@ The application will be available at `http://localhost:3000`.
 | `npm run dev` | Start the Vite development server (port 3000) |
 | `npm run build` | Compile TypeScript and build for production (`dist/`) |
 | `npm run preview` | Preview the production build locally |
-| `npm test` | Run tests using Vitest |
+| `npm test` | Run tests using Vitest (watch mode) |
+| `npm run test:ui` | Run Vitest with browser-based UI |
+| `npm run test:coverage` | Run Vitest with v8 coverage report (output: `coverage/`) |
 | `npm run lint` | Run ESLint for code quality checks |
 | `npm run lint:fix` | Run ESLint and auto-fix issues |
 
@@ -93,7 +97,7 @@ The application will be available at `http://localhost:3000`.
 
 ## Environment Variables
 
-Defined in `.env.local` (see `.env.example` for the full template):
+Defined in `.env.local` (copy from `.env.example`):
 
 ### API Configuration
 
@@ -101,30 +105,25 @@ Defined in `.env.local` (see `.env.example` for the full template):
 |---|---|---|
 | `VITE_API_URL` | Backend API base URL | `http://localhost:5000/api/v1` |
 | `VITE_API_TIMEOUT` | Request timeout (ms) | `30000` |
-| `VITE_AI_SERVICE_URL` | AI module URL (YOLOv8 proctoring) | `http://localhost:8001` |
-| `VITE_ENV` | Environment | `development` |
+| `VITE_AI_SERVICE_URL` | AI module URL (proctoring endpoints) | `http://localhost:8001` |
+| `VITE_WS_URL` | WebSocket URL | `ws://localhost:4000` |
+| `VITE_ENV` | Environment name | `development` |
 
 ### Feature Flags
 
 | Variable | Description | Default |
 |---|---|---|
 | `VITE_ENABLE_CHATBOT` | Enable AI chatbot | `true` |
-| `VITE_ENABLE_NOTIFICATIONS` | Enable notifications | `true` |
+| `VITE_ENABLE_NOTIFICATIONS` | Enable push notifications | `true` |
 | `VITE_ENABLE_AI_PREDICTIONS` | Enable AI risk predictions | `true` |
 | `VITE_ENABLE_ANALYTICS` | Enable Google Analytics | `false` |
-
-### WebSocket
-
-| Variable | Description | Default |
-|---|---|---|
-| `VITE_WS_URL` | WebSocket URL | `ws://localhost:4000` |
 
 ### File Uploads
 
 | Variable | Description | Default |
 |---|---|---|
 | `VITE_MAX_FILE_SIZE` | Max upload size (bytes) | `5242880` |
-| `VITE_ALLOWED_FILE_TYPES` | Allowed upload types | `.jpg,.jpeg,.png,.pdf,.doc,.docx` |
+| `VITE_ALLOWED_FILE_TYPES` | Allowed upload extensions | `.jpg,.jpeg,.png,.pdf,.doc,.docx` |
 
 ### Pagination
 
@@ -137,19 +136,19 @@ Defined in `.env.local` (see `.env.example` for the full template):
 
 | Variable | Description | Default |
 |---|---|---|
-| `VITE_GOOGLE_ANALYTICS_ID` | GA tracking ID | - |
+| `VITE_GOOGLE_ANALYTICS_ID` | GA measurement ID | — |
 
-### Firebase
+### Firebase (Push Notifications)
 
-| Variable | Description | Default |
-|---|---|---|
-| `VITE_apiKey` | Firebase API key | - |
-| `VITE_authDomain` | Firebase auth domain | - |
-| `VITE_projectId` | Firebase project ID | - |
-| `VITE_storageBucket` | Firebase storage bucket | - |
-| `VITE_messagingSenderId` | Firebase messaging sender ID | - |
-| `VITE_appId` | Firebase app ID | - |
-| `VITE_measurementId` | Firebase measurement ID | - |
+| Variable | Description |
+|---|---|
+| `VITE_apiKey` | Firebase API key |
+| `VITE_authDomain` | Firebase auth domain |
+| `VITE_projectId` | Firebase project ID |
+| `VITE_storageBucket` | Firebase storage bucket |
+| `VITE_messagingSenderId` | Firebase messaging sender ID |
+| `VITE_appId` | Firebase app ID |
+| `VITE_measurementId` | Firebase measurement ID |
 
 ---
 
@@ -157,7 +156,7 @@ Defined in `.env.local` (see `.env.example` for the full template):
 
 ```
 src/
-├── main.tsx                 # Entry point, PWA service worker registration
+├── main.tsx                 # Entry point — PWA service worker registration
 ├── App.tsx                  # Root: BrowserRouter + ThemeProvider + AuthProvider + AppRoutes
 ├── config/
 │   └── api.config.ts        # Base URL, timeout, endpoint constants
@@ -203,9 +202,9 @@ src/
 ├── styles/
 │   └── index.css            # Global styles + Tailwind directives
 └── tests/
-    ├── components/          # Component tests
-    ├── services/            # Service tests
-    └── utils/               # Utility tests
+    ├── context/             # Context/provider tests (AuthContext, ThemeContext)
+    ├── services/            # Service layer tests
+    └── setup.ts             # Vitest global setup (@testing-library/jest-dom matchers)
 ```
 
 ---
@@ -246,16 +245,16 @@ All page components use `React.lazy()` for code splitting.
 
 ## Authentication & Security
 
-- **JWT Authentication** - Secure login with token-based session management
-- **Role-Based Access Control (RBAC)** - Users only access authorized modules
-- **Protected Routes** - Navigation guards prevent unauthorized access
-- **Client-side Face Processing** - TensorFlow.js processes webcam data locally; no video data leaves the browser
+- **JWT Authentication** — Secure login with token-based session management
+- **Role-Based Access Control (RBAC)** — Users only access authorized modules
+- **Protected Routes** — Navigation guards prevent unauthorized access
+- **Client-side Face Processing** — MediaPipe processes webcam data locally; no video data leaves the browser
 
 ---
 
 ## Path Aliases
 
-The project configures 13 TypeScript/Vite path aliases for clean imports:
+13 TypeScript/Vite path aliases configured for clean imports:
 
 `@components`, `@pages`, `@services`, `@hooks`, `@context`, `@store`, `@types`, `@enums`, `@utils`, `@routes`, `@assets`, `@styles`, `@config`
 
@@ -263,12 +262,16 @@ The project configures 13 TypeScript/Vite path aliases for clean imports:
 
 ## Testing
 
-- **Framework:** Vitest + React Testing Library
-- **Run:** `npm test`
-- **Directory:** `src/tests/`
+- **Framework:** Vitest + React Testing Library + jsdom
+- **Run:** `npm test` · with UI: `npm run test:ui` · with coverage: `npm run test:coverage`
+- **Directory:** `src/tests/` — `context/` and `services/` subdirectories
+- **Coverage provider:** v8 (reporters: text, lcov, html → `coverage/`)
+- **Environment:** jsdom (configured in `vitest.config.ts`)
 
 ---
 
 ## License
 
-ISC
+MIT — see `LICENSE`.
+
+Copyright © 2026 Pulinda Mathagadeera
