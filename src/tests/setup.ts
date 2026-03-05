@@ -1,26 +1,27 @@
-import '@testing-library/jest-dom';
+import '@testing-library/jest-dom'
+import { vi, beforeEach } from 'vitest'
 
 // Tell React it is running inside a test environment so act() warnings are suppressed
-globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 // ── localStorage mock ─────────────────────────────────────────────────────────
 const localStorageMock = (() => {
-  let store: Record<string, string> = {};
+  let store: Record<string, string> = {}
   return {
     getItem: (key: string) => store[key] ?? null,
     setItem: (key: string, value: string) => {
-      store[key] = value;
+      store[key] = value
     },
     removeItem: (key: string) => {
-      delete store[key];
+      delete store[key]
     },
     clear: () => {
-      store = {};
+      store = {}
     },
-  };
-})();
+  }
+})()
 
-Object.defineProperty(window, 'localStorage', { value: localStorageMock });
+Object.defineProperty(window, 'localStorage', { value: localStorageMock })
 
 // ── window.matchMedia mock ────────────────────────────────────────────────────
 Object.defineProperty(window, 'matchMedia', {
@@ -35,16 +36,16 @@ Object.defineProperty(window, 'matchMedia', {
     removeEventListener: vi.fn(),
     dispatchEvent: vi.fn(),
   }),
-});
+})
 
 // ── window.location mock ──────────────────────────────────────────────────────
 Object.defineProperty(window, 'location', {
   writable: true,
   value: { href: '/', assign: vi.fn(), reload: vi.fn() },
-});
+})
 
 // ── Reset localStorage between tests ─────────────────────────────────────────
 beforeEach(() => {
-  localStorage.clear();
-  vi.clearAllMocks();
-});
+  localStorage.clear()
+  vi.clearAllMocks()
+})
