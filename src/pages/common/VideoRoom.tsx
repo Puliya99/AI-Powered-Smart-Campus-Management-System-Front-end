@@ -36,10 +36,13 @@ interface ChatMessage {
 
 interface VideoTileProps {
   peer: any
+  userName?: string
+  role?: string
+  muted?: boolean
   className?: string
 }
 
-const RemoteVideo: React.FC<VideoTileProps> = ({ peer, className = '' }) => {
+const RemoteVideo: React.FC<VideoTileProps> = ({ peer, userName = 'Participant', role, muted, className = '' }) => {
   const ref = useRef<HTMLVideoElement>(null)
 
   useEffect(() => {
@@ -54,8 +57,12 @@ const RemoteVideo: React.FC<VideoTileProps> = ({ peer, className = '' }) => {
   return (
     <div className={`relative bg-gray-800 rounded-xl overflow-hidden border border-gray-700 shadow-lg ${className}`}>
       <video playsInline autoPlay ref={ref} className="w-full h-full object-cover" />
-      <div className="absolute bottom-2 left-2 bg-black/50 px-2 py-0.5 rounded-md">
-        <span className="text-xs font-medium">Participant</span>
+      <div className="absolute bottom-2 left-2 flex items-center gap-1.5 bg-black/60 px-2 py-1 rounded-lg">
+        {muted && <MicOff className="w-3 h-3 text-red-400 shrink-0" />}
+        <span className="text-xs font-medium truncate max-w-[120px]">{userName}</span>
+        {role === 'LECTURER' && (
+          <span className="text-xs text-blue-300 font-semibold shrink-0">· Host</span>
+        )}
       </div>
     </div>
   )
@@ -81,6 +88,10 @@ const VideoRoom: React.FC = () => {
 
   // header util
   const [copied, setCopied] = useState(false)
+  const [participantsOpen, setParticipantsOpen] = useState(false)
+
+  // remote mute state  { socketId → muted }
+  const [peerMutedMap, setPeerMutedMap] = useState<Record<string, boolean>>({})
 
   // chat
   const [chatOpen, setChatOpen] = useState(false)
@@ -151,6 +162,10 @@ const VideoRoom: React.FC = () => {
       if (!cancelled) setScreenSharingSocketId((prev) => (prev === socketId ? null : prev))
     })
 
+    socket.on('mute-status', ({ socketId, muted }: { socketId: string; muted: boolean }) => {
+      if (!cancelled) setPeerMutedMap((prev) => ({ ...prev, [socketId]: muted }))
+    })
+
     socket.on('meeting-ended', () => {
       if (cancelled) return
       setMeetingEnded(true)
@@ -182,8 +197,8 @@ const VideoRoom: React.FC = () => {
           const newPeers: any[] = []
           users.forEach((u: any) => {
             const peer = createPeer(u.id, socket.id!, stream)
-            peersRef.current.push({ peerID: u.id, peer })
-            newPeers.push({ peerID: u.id, peer })
+            peersRef.current.push({ peerID: u.id, peer, userName: u.userName, role: u.role })
+            newPeers.push({ peerID: u.id, peer, userName: u.userName, role: u.role })
           })
           setPeers(newPeers)
         })
@@ -191,8 +206,8 @@ const VideoRoom: React.FC = () => {
         socket.on('user-joined', (payload: any) => {
           if (cancelled || !payload.signal) return
           const peer = addPeer(payload.signal, payload.callerID, stream)
-          peersRef.current.push({ peerID: payload.callerID, peer })
-          setPeers((prev) => [...prev, { peerID: payload.callerID, peer }])
+          peersRef.current.push({ peerID: payload.callerID, peer, userName: payload.userName, role: payload.role })
+          setPeers((prev) => [...prev, { peerID: payload.callerID, peer, userName: payload.userName, role: payload.role }])
         })
 
         socket.on('receiving-returned-signal', (payload: any) => {
@@ -247,7 +262,13 @@ const VideoRoom: React.FC = () => {
   function createPeer(userToSignal: string, callerID: string, stream: MediaStream) {
     const peer = new Peer({ initiator: true, trickle: false, stream })
     peer.on('signal', (signal: any) => {
-      socketRef.current.emit('sending-signal', { userToSignal, callerID, signal })
+      socketRef.current.emit('sending-signal', {
+        userToSignal,
+        callerID,
+        signal,
+        userName: `${user?.firstName} ${user?.lastName}`,
+        role: user?.role,
+      })
     })
     return peer
   }
@@ -265,8 +286,10 @@ const VideoRoom: React.FC = () => {
 
   const toggleMic = () => {
     if (streamRef.current) {
-      streamRef.current.getAudioTracks()[0].enabled = !micActive
-      setMicActive(!micActive)
+      const newMicActive = !micActive
+      streamRef.current.getAudioTracks()[0].enabled = newMicActive
+      setMicActive(newMicActive)
+      socketRef.current?.emit('mute-status', { meetingCode, muted: !newMicActive })
     }
   }
 
@@ -437,10 +460,14 @@ const VideoRoom: React.FC = () => {
               {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
             </button>
           </div>
-          <div className="flex items-center text-sm text-gray-400">
-            <Users className="w-4 h-4 mr-1" />
+          <button
+            onClick={() => setParticipantsOpen((o) => !o)}
+            className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-sm transition ${participantsOpen ? 'bg-primary-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'}`}
+            title="Participants"
+          >
+            <Users className="w-4 h-4" />
             <span>{peers.length + 1}</span>
-          </div>
+          </button>
         </div>
       </div>
 
@@ -462,7 +489,7 @@ const VideoRoom: React.FC = () => {
                   </div>
                 ) : sharingPeer ? (
                   <div className="relative w-full h-full">
-                    <RemoteVideo peer={sharingPeer.peer} className="w-full h-full border-2 border-yellow-400" />
+                    <RemoteVideo peer={sharingPeer.peer} userName={sharingPeer.userName} role={sharingPeer.role} muted={peerMutedMap[sharingPeer.peerID]} className="w-full h-full border-2 border-yellow-400" />
                     <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-yellow-500 text-gray-900 px-2.5 py-1 rounded-full text-xs font-bold">
                       <Share className="w-3 h-3" /> Participant · Sharing screen
                     </div>
@@ -494,7 +521,7 @@ const VideoRoom: React.FC = () => {
                 {peers
                   .filter((p) => isLocalSharing || p.peerID !== screenSharingSocketId)
                   .map((p) => (
-                    <RemoteVideo key={p.peerID} peer={p.peer} className="w-40 aspect-video shrink-0" />
+                    <RemoteVideo key={p.peerID} peer={p.peer} userName={p.userName} role={p.role} muted={peerMutedMap[p.peerID]} className="w-40 aspect-video shrink-0" />
                   ))}
               </div>
             </div>
@@ -516,11 +543,52 @@ const VideoRoom: React.FC = () => {
                 )}
               </div>
               {peers.map((p) => (
-                <RemoteVideo key={p.peerID} peer={p.peer} className="aspect-video" />
+                <RemoteVideo key={p.peerID} peer={p.peer} userName={p.userName} role={p.role} muted={peerMutedMap[p.peerID]} className="aspect-video" />
               ))}
             </div>
           )}
         </div>
+
+        {/* ── Participants panel ──────────────────────────────────────────────── */}
+        {participantsOpen && (
+          <div className="w-72 shrink-0 flex flex-col bg-gray-800 border-l border-gray-700">
+            <div className="px-4 py-3 border-b border-gray-700 flex items-center justify-between shrink-0">
+              <div className="flex items-center gap-2 font-semibold">
+                <Users className="w-4 h-4 text-primary-400" />
+                Participants ({peers.length + 1})
+              </div>
+              <button onClick={() => setParticipantsOpen(false)} className="text-gray-400 hover:text-white transition">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto px-3 py-3 space-y-1">
+              {/* Local user */}
+              <div className="flex items-center gap-3 px-2 py-2 rounded-lg bg-primary-600/20 border border-primary-500/30">
+                <div className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center text-sm font-bold shrink-0">
+                  {user?.firstName?.charAt(0)}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium truncate">{user?.firstName} {user?.lastName} <span className="text-gray-400 font-normal">(You)</span></p>
+                  <p className="text-xs text-gray-400 capitalize">{user?.role?.toLowerCase()}{user?.role === 'LECTURER' ? ' · Host' : ''}</p>
+                </div>
+                {!micActive && <MicOff className="w-4 h-4 text-red-400 shrink-0" />}
+              </div>
+              {/* Remote peers */}
+              {peers.map((p) => (
+                <div key={p.peerID} className="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-gray-700/50 transition">
+                  <div className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center text-sm font-bold shrink-0">
+                    {(p.userName || 'P').charAt(0).toUpperCase()}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium truncate">{p.userName || 'Participant'}</p>
+                    <p className="text-xs text-gray-400 capitalize">{p.role === 'LECTURER' ? 'lecturer · Host' : (p.role?.toLowerCase() || 'student')}</p>
+                  </div>
+                  {peerMutedMap[p.peerID] && <MicOff className="w-4 h-4 text-red-400 shrink-0" />}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* ── Chat panel ──────────────────────────────────────────────────────── */}
         {chatOpen && (
@@ -617,6 +685,20 @@ const VideoRoom: React.FC = () => {
           title={isScreenSharing ? 'Stop sharing' : 'Share screen'}
         >
           <Share className="w-6 h-6" />
+        </button>
+
+        {/* Participants toggle */}
+        <button
+          onClick={() => setParticipantsOpen((o) => !o)}
+          className={`relative p-4 rounded-full transition ${
+            participantsOpen ? 'bg-primary-600 hover:bg-primary-700' : 'bg-gray-700 hover:bg-gray-600'
+          }`}
+          title="Participants"
+        >
+          <Users className="w-6 h-6" />
+          <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] flex items-center justify-center bg-blue-500 text-white text-xs font-bold rounded-full px-1">
+            {peers.length + 1}
+          </span>
         </button>
 
         {/* Chat toggle with unread badge */}
