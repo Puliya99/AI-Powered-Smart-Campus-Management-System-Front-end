@@ -123,7 +123,9 @@ const VideoRoom: React.FC = () => {
 
     fetchMeetingDetails()
 
-    const socket = io('http://localhost:5000', {
+    const socketUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1')
+      .replace(/\/api\/v1\/?$/, '')
+    const socket = io(socketUrl, {
       transports: ['websocket'],
       auth: { token: localStorage.getItem('token') ?? '' },
     })
