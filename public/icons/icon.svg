@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="80" fill="#2563eb"/>
+  <!-- Building body -->
+  <rect x="136" y="200" width="240" height="220" rx="4" fill="white"/>
+  <!-- Roof / triangle -->
+  <polygon points="256,100 100,210 412,210" fill="white"/>
+  <!-- Door -->
+  <rect x="216" y="320" width="80" height="100" rx="4" fill="#2563eb"/>
+  <!-- Windows left column -->
+  <rect x="160" y="230" width="50" height="40" rx="4" fill="#2563eb"/>
+  <rect x="160" y="290" width="50" height="40" rx="4" fill="#2563eb"/>
+  <!-- Windows right column -->
+  <rect x="302" y="230" width="50" height="40" rx="4" fill="#2563eb"/>
+  <rect x="302" y="290" width="50" height="40" rx="4" fill="#2563eb"/>
+  <!-- AI dot accent -->
+  <circle cx="256" cy="155" r="18" fill="#60a5fa"/>
+</svg>
