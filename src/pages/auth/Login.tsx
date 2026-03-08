@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Eye, EyeOff, Loader2, GraduationCap, Lock, Mail } from 'lucide-react'
+import { Eye, EyeOff, Loader2, GraduationCap, Lock, Mail, AlertCircle } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 
 const Login: React.FC = () => {
@@ -12,9 +12,11 @@ const Login: React.FC = () => {
   })
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target
+    if (errorMessage) setErrorMessage(null)
     setFormData({
       ...formData,
       [name]: type === 'checkbox' ? checked : value,
@@ -24,14 +26,14 @@ const Login: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
+    setErrorMessage(null)
 
     try {
       // Use the login method from AuthContext
       await login(formData.email, formData.password)
       // Navigation is handled in the AuthContext
-    } catch (error) {
-      // Error toast is shown in AuthContext
-      console.error('Login error:', error)
+    } catch (error: any) {
+      setErrorMessage(error?.message || 'Incorrect email or password. Please try again.')
     } finally {
       setIsLoading(false)
     }
@@ -105,7 +107,11 @@ const Login: React.FC = () => {
                   required
                   value={formData.password}
                   onChange={handleChange}
-                  className="block w-full pl-12 pr-12 py-3.5 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-200 text-base"
+                  className={`block w-full pl-12 pr-12 py-3.5 border rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition duration-200 text-base ${
+                    errorMessage
+                      ? 'border-red-400 focus:ring-red-400'
+                      : 'border-gray-300 focus:ring-primary-500'
+                  }`}
                   placeholder="Enter your password"
                 />
                 <button
@@ -121,6 +127,14 @@ const Login: React.FC = () => {
                 </button>
               </div>
             </div>
+
+            {/* Inline error message */}
+            {errorMessage && (
+              <div className="flex items-start gap-3 rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+                <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
+                <span>{errorMessage}</span>
+              </div>
+            )}
 
             {/* Remember me & Forgot password */}
             <div className="flex items-center justify-between">
