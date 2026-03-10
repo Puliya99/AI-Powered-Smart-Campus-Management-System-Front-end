@@ -300,8 +300,6 @@ const StudentDashboard: React.FC = () => {
           </div>
         </div>
       </div>
-      {/* RAG Chatbot */}
-      <ChatBot courseId={dashboardData?.upcomingClasses?.[0]?.module?.id} />
     </DashboardLayout>
   )
 }
