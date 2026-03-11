@@ -24,9 +24,9 @@ interface Borrowing {
 }
 
 const STATUS_STYLES: Record<string, string> = {
-  BORROWED: 'bg-blue-100 text-blue-800',
-  RETURNED: 'bg-green-100 text-green-800',
-  OVERDUE: 'bg-red-100 text-red-800',
+  BORROWED: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
+  RETURNED: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
+  OVERDUE: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
 }
 
 const StudentLibraryPage: React.FC = () => {
@@ -76,36 +76,36 @@ const StudentLibraryPage: React.FC = () => {
     <DashboardLayout>
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">My Library</h1>
-          <p className="text-gray-600 mt-1">View your borrowed books and return status.</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">My Library</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">View your borrowed books and return status.</p>
         </div>
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-200">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-sm border border-gray-200 dark:border-gray-700">
             <div className="flex items-center gap-3">
               <div className="p-3 bg-blue-100 rounded-lg"><BookMarked className="h-6 w-6 text-blue-600" /></div>
               <div>
-                <p className="text-2xl font-bold text-gray-900">{stats.currentlyBorrowed}</p>
-                <p className="text-sm text-gray-500">Currently Borrowed</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.currentlyBorrowed}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Currently Borrowed</p>
               </div>
             </div>
           </div>
-          <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-200">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-sm border border-gray-200 dark:border-gray-700">
             <div className="flex items-center gap-3">
               <div className="p-3 bg-red-100 rounded-lg"><AlertTriangle className="h-6 w-6 text-red-600" /></div>
               <div>
-                <p className="text-2xl font-bold text-gray-900">{stats.overdue}</p>
-                <p className="text-sm text-gray-500">Overdue</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.overdue}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Overdue</p>
               </div>
             </div>
           </div>
-          <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-200">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-sm border border-gray-200 dark:border-gray-700">
             <div className="flex items-center gap-3">
               <div className="p-3 bg-amber-100 rounded-lg"><DollarSign className="h-6 w-6 text-amber-600" /></div>
               <div>
-                <p className="text-2xl font-bold text-gray-900">${stats.totalFines.toFixed(2)}</p>
-                <p className="text-sm text-gray-500">Total Fines</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">${stats.totalFines.toFixed(2)}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Total Fines</p>
               </div>
             </div>
           </div>
@@ -120,7 +120,7 @@ const StudentLibraryPage: React.FC = () => {
               className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
                 filter === f
                   ? 'bg-primary-600 text-white'
-                  : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
+                  : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'
               }`}
             >
               {f === 'all' ? 'All' : f === 'active' ? 'Active' : f === 'overdue' ? 'Overdue' : 'Returned'}
@@ -134,10 +134,10 @@ const StudentLibraryPage: React.FC = () => {
             <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary-600"></div>
           </div>
         ) : filteredBorrowings.length === 0 ? (
-          <div className="bg-white rounded-xl border-2 border-dashed border-gray-300 py-12 text-center">
-            <BookOpen className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900">No borrowings found</h3>
-            <p className="text-gray-500 mt-1">
+          <div className="bg-white dark:bg-gray-800 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 py-12 text-center">
+            <BookOpen className="h-12 w-12 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white">No borrowings found</h3>
+            <p className="text-gray-500 dark:text-gray-400 mt-1">
               {filter === 'all' ? "You haven't borrowed any books yet." : `No ${filter} borrowings.`}
             </p>
           </div>
@@ -148,8 +148,8 @@ const StudentLibraryPage: React.FC = () => {
               return (
                 <div
                   key={b.id}
-                  className={`bg-white rounded-xl shadow-sm border overflow-hidden ${
-                    b.status === 'OVERDUE' ? 'border-red-300 ring-1 ring-red-200' : 'border-gray-200'
+                  className={`bg-white dark:bg-gray-800 rounded-xl shadow-sm border overflow-hidden ${
+                    b.status === 'OVERDUE' ? 'border-red-300 ring-1 ring-red-200' : 'border-gray-200 dark:border-gray-700'
                   }`}
                 >
                   <div className="p-5">
@@ -162,27 +162,27 @@ const StudentLibraryPage: React.FC = () => {
                       </span>
                     </div>
 
-                    <h3 className="text-base font-bold text-gray-900 mb-1 line-clamp-2">{b.book.title}</h3>
-                    <p className="text-sm text-gray-500 mb-4">{b.book.author}</p>
+                    <h3 className="text-base font-bold text-gray-900 dark:text-white mb-1 line-clamp-2">{b.book.title}</h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">{b.book.author}</p>
 
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
-                        <span className="text-gray-500">Borrowed</span>
-                        <span className="text-gray-700">{new Date(b.borrowDate).toLocaleDateString()}</span>
+                        <span className="text-gray-500 dark:text-gray-400">Borrowed</span>
+                        <span className="text-gray-700 dark:text-gray-300">{new Date(b.borrowDate).toLocaleDateString()}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-500">Due Date</span>
-                        <span className="text-gray-700">{new Date(b.dueDate).toLocaleDateString()}</span>
+                        <span className="text-gray-500 dark:text-gray-400">Due Date</span>
+                        <span className="text-gray-700 dark:text-gray-300">{new Date(b.dueDate).toLocaleDateString()}</span>
                       </div>
                       {b.returnDate && (
                         <div className="flex justify-between">
-                          <span className="text-gray-500">Returned</span>
-                          <span className="text-gray-700">{new Date(b.returnDate).toLocaleDateString()}</span>
+                          <span className="text-gray-500 dark:text-gray-400">Returned</span>
+                          <span className="text-gray-700 dark:text-gray-300">{new Date(b.returnDate).toLocaleDateString()}</span>
                         </div>
                       )}
                       {Number(b.fineAmount) > 0 && (
                         <div className="flex justify-between">
-                          <span className="text-gray-500">Fine</span>
+                          <span className="text-gray-500 dark:text-gray-400">Fine</span>
                           <span className="font-medium text-red-600">${Number(b.fineAmount).toFixed(2)}</span>
                         </div>
                       )}
@@ -190,7 +190,7 @@ const StudentLibraryPage: React.FC = () => {
                   </div>
 
                   {daysInfo && (
-                    <div className={`px-5 py-2.5 border-t border-gray-100 bg-gray-50`}>
+                    <div className={`px-5 py-2.5 border-t border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-700`}>
                       <p className={`text-xs font-medium ${daysInfo.color}`}>{daysInfo.text}</p>
                     </div>
                   )}

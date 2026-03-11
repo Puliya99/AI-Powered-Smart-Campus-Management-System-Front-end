@@ -38,7 +38,7 @@ const AdminDashboard: React.FC = () => {
         <div className="flex items-center justify-center h-96">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading dashboard...</p>
+            <p className="mt-4 text-gray-600 dark:text-gray-400">Loading dashboard...</p>
           </div>
         </div>
       </DashboardLayout>
@@ -137,9 +137,9 @@ const AdminDashboard: React.FC = () => {
         {/* Charts and Tables */}
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
           {/* Recent Users */}
-          <div className="bg-white shadow rounded-lg">
-            <div className="px-5 py-4 border-b border-gray-200">
-              <h3 className="text-lg font-medium text-gray-900">
+          <div className="bg-white dark:bg-gray-800 shadow rounded-lg">
+            <div className="px-5 py-4 border-b border-gray-200 dark:border-gray-700">
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white">
                 Recent Registrations
               </h3>
             </div>
@@ -148,7 +148,7 @@ const AdminDashboard: React.FC = () => {
                 {dashboardData?.recentUsers?.slice(0, 5).map((user: any) => (
                   <div
                     key={user.id}
-                    className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                    className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg"
                   >
                     <div className="flex items-center">
                       <div className="w-10 h-10 rounded-full bg-primary-600 flex items-center justify-center text-white font-semibold">
@@ -156,19 +156,19 @@ const AdminDashboard: React.FC = () => {
                         {user.lastName.charAt(0)}
                       </div>
                       <div className="ml-3">
-                        <p className="text-sm font-medium text-gray-900">
+                        <p className="text-sm font-medium text-gray-900 dark:text-white">
                           {user.firstName} {user.lastName}
                         </p>
-                        <p className="text-xs text-gray-500">{user.email}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">{user.email}</p>
                       </div>
                     </div>
                     <span
                       className={`px-2 py-1 text-xs font-medium rounded-full ${
                         user.role === 'STUDENT'
-                          ? 'bg-blue-100 text-blue-800'
+                          ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
                           : user.role === 'LECTURER'
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-gray-100 text-gray-800'
+                          ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                          : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
                       }`}
                     >
                       {user.role}
@@ -180,9 +180,9 @@ const AdminDashboard: React.FC = () => {
           </div>
 
           {/* Quick Actions */}
-          <div className="bg-white shadow rounded-lg">
-            <div className="px-5 py-4 border-b border-gray-200">
-              <h3 className="text-lg font-medium text-gray-900">
+          <div className="bg-white dark:bg-gray-800 shadow rounded-lg">
+            <div className="px-5 py-4 border-b border-gray-200 dark:border-gray-700">
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white">
                 Quick Actions
               </h3>
             </div>
@@ -190,35 +190,35 @@ const AdminDashboard: React.FC = () => {
               <div className="grid grid-cols-2 gap-3">
                 <Link
                   to="/admin/users"
-                  className="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-colors cursor-pointer"
+                  className="p-4 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors cursor-pointer"
                 >
-                  <Users className="w-8 h-8 text-gray-400 mb-2" />
-                  <p className="text-sm font-medium text-gray-900">Add User</p>
+                  <Users className="w-8 h-8 text-gray-400 dark:text-gray-500 mb-2" />
+                  <p className="text-sm font-medium text-gray-900 dark:text-white">Add User</p>
                 </Link>
                 <Link
                   to="/admin/programs"
-                  className="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-colors cursor-pointer"
+                  className="p-4 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors cursor-pointer"
                 >
-                  <BookOpen className="w-8 h-8 text-gray-400 mb-2" />
-                  <p className="text-sm font-medium text-gray-900">
+                  <BookOpen className="w-8 h-8 text-gray-400 dark:text-gray-500 mb-2" />
+                  <p className="text-sm font-medium text-gray-900 dark:text-white">
                     New Program
                   </p>
                 </Link>
                 <Link
                   to="/admin/reports"
-                  className="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-colors cursor-pointer"
+                  className="p-4 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors cursor-pointer"
                 >
-                  <TrendingUp className="w-8 h-8 text-gray-400 mb-2" />
-                  <p className="text-sm font-medium text-gray-900">
+                  <TrendingUp className="w-8 h-8 text-gray-400 dark:text-gray-500 mb-2" />
+                  <p className="text-sm font-medium text-gray-900 dark:text-white">
                     View Reports
                   </p>
                 </Link>
                 <Link
                   to="/admin/payments"
-                  className="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-colors cursor-pointer"
+                  className="p-4 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors cursor-pointer"
                 >
-                  <DollarSign className="w-8 h-8 text-gray-400 mb-2" />
-                  <p className="text-sm font-medium text-gray-900">Payments</p>
+                  <DollarSign className="w-8 h-8 text-gray-400 dark:text-gray-500 mb-2" />
+                  <p className="text-sm font-medium text-gray-900 dark:text-white">Payments</p>
                 </Link>
               </div>
             </div>

@@ -120,18 +120,18 @@ const StudentAssignmentsPage: React.FC = () => {
   if (!moduleId) {
     return (
       <DashboardLayout>
-        <div className="max-w-md mx-auto mt-12 bg-white p-8 rounded-xl shadow-sm border border-gray-200 text-center">
+        <div className="max-w-md mx-auto mt-12 bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 text-center">
           <ClipboardList className="h-12 w-12 text-primary-600 mx-auto mb-4" />
-          <h2 className="text-xl font-bold mb-4">Select a Course</h2>
+          <h2 className="text-xl font-bold mb-4 dark:text-white">Select a Course</h2>
           <div className="space-y-4">
             {availableModules.map(m => (
               <Link
                 key={m.id}
                 to={`/student/modules/${m.id}/assignments`}
-                className="block w-full p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition text-left"
+                className="block w-full p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition text-left"
               >
-                <p className="font-bold text-gray-900">{m.moduleCode}</p>
-                <p className="text-sm text-gray-500">{m.moduleName}</p>
+                <p className="font-bold text-gray-900 dark:text-white">{m.moduleCode}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">{m.moduleName}</p>
               </Link>
             ))}
           </div>
@@ -146,13 +146,13 @@ const StudentAssignmentsPage: React.FC = () => {
         <div className="flex items-center justify-between">
           <div>
             <div className="flex items-center space-x-2 mb-2">
-              <Link to="/student/courses" className="text-sm text-gray-500 hover:text-primary-600 flex items-center">
+              <Link to="/student/courses" className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary-600 flex items-center">
                 <ArrowLeft className="h-4 w-4 mr-1" /> Back
               </Link>
-              <span className="text-gray-300">|</span>
-              <span className="text-sm font-medium text-primary-600">{module?.moduleCode}</span>
+              <span className="text-gray-300 dark:text-gray-600">|</span>
+              <span className="text-sm font-medium text-primary-600 dark:text-primary-400">{module?.moduleCode}</span>
             </div>
-            <h1 className="text-2xl font-bold text-gray-900">Assignments</h1>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Assignments</h1>
           </div>
         </div>
 
@@ -163,7 +163,7 @@ const StudentAssignmentsPage: React.FC = () => {
         ) : assignments.length > 0 ? (
           <div className="space-y-6">
             {assignments.map((assignment) => (
-              <div key={assignment.id} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+              <div key={assignment.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
                 <div className="p-6">
                   <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
                     <div className="flex-1">
@@ -171,21 +171,21 @@ const StudentAssignmentsPage: React.FC = () => {
                         <div className="p-2 bg-indigo-50 rounded-lg mr-3">
                           <ClipboardList className="h-5 w-5 text-indigo-600" />
                         </div>
-                        <h3 className="text-lg font-bold text-gray-900">{assignment.title}</h3>
+                        <h3 className="text-lg font-bold text-gray-900 dark:text-white">{assignment.title}</h3>
                       </div>
-                      <p className="text-gray-600 mb-4 whitespace-pre-wrap">{assignment.description}</p>
-                      
-                      <div className="flex flex-wrap gap-4 text-sm text-gray-500">
+                      <p className="text-gray-600 dark:text-gray-400 mb-4 whitespace-pre-wrap">{assignment.description}</p>
+
+                      <div className="flex flex-wrap gap-4 text-sm text-gray-500 dark:text-gray-400">
                         <div className="flex items-center">
                           <Clock className="h-4 w-4 mr-1 text-gray-400" />
                           Due: {formatDate(assignment.dueDate)}
                         </div>
                         {assignment.fileUrl && (
-                          <a 
-                            href={`http://localhost:5000${assignment.fileUrl}`} 
-                            target="_blank" 
+                          <a
+                            href={`http://localhost:5000${assignment.fileUrl}`}
+                            target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center text-primary-600 hover:underline"
+                            className="flex items-center text-primary-600 dark:text-primary-400 hover:underline"
                           >
                             <Download className="h-4 w-4 mr-1" />
                             Download Brief
@@ -196,7 +196,7 @@ const StudentAssignmentsPage: React.FC = () => {
 
                     <div className="md:w-64">
                       {assignment.submission ? (
-                        <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                        <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 border border-gray-100 dark:border-gray-600">
                           <h4 className="text-xs font-bold text-gray-400 uppercase mb-3">Your Submission</h4>
                           <div className="space-y-3">
                             <div className="flex items-center text-sm">
@@ -210,17 +210,17 @@ const StudentAssignmentsPage: React.FC = () => {
                                 </span>
                               )}
                             </div>
-                            <p className="text-xs text-gray-500">
+                            <p className="text-xs text-gray-500 dark:text-gray-400">
                               On {formatDate(assignment.submission.submittedAt)}
                             </p>
-                            
+
                             {assignment.submission.marks !== null && (
-                              <div className="pt-2 border-t border-gray-200">
-                                <p className="text-sm font-bold text-gray-900">
-                                  Grade: <span className="text-primary-600">{assignment.submission.marks}</span>
+                              <div className="pt-2 border-t border-gray-200 dark:border-gray-600">
+                                <p className="text-sm font-bold text-gray-900 dark:text-white">
+                                  Grade: <span className="text-primary-600 dark:text-primary-400">{assignment.submission.marks}</span>
                                 </p>
                                 {assignment.submission.feedback && (
-                                  <p className="text-xs text-gray-600 mt-1 italic">
+                                  <p className="text-xs text-gray-600 dark:text-gray-400 mt-1 italic">
                                     "{assignment.submission.feedback}"
                                   </p>
                                 )}
@@ -229,7 +229,7 @@ const StudentAssignmentsPage: React.FC = () => {
 
                             <button
                               onClick={() => setSubmittingId(assignment.id)}
-                              className="text-xs text-primary-600 hover:underline font-medium"
+                              className="text-xs text-primary-600 dark:text-primary-400 hover:underline font-medium"
                             >
                               Resubmit Assignment
                             </button>
@@ -251,10 +251,10 @@ const StudentAssignmentsPage: React.FC = () => {
             ))}
           </div>
         ) : (
-          <div className="text-center py-12 bg-white rounded-xl border-2 border-dashed border-gray-300">
+          <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600">
             <ClipboardList className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900">No assignments found</h3>
-            <p className="text-gray-500 mt-1">There are no assignments posted for this module yet.</p>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white">No assignments found</h3>
+            <p className="text-gray-500 dark:text-gray-400 mt-1">There are no assignments posted for this module yet.</p>
           </div>
         )}
       </div>
@@ -262,15 +262,15 @@ const StudentAssignmentsPage: React.FC = () => {
       {/* Submission Modal */}
       {submittingId && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6">
-            <h3 className="text-lg font-bold mb-4 text-gray-900">Upload Assignment</h3>
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl max-w-md w-full p-6">
+            <h3 className="text-lg font-bold mb-4 text-gray-900 dark:text-white">Upload Assignment</h3>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="p-8 border-2 border-dashed border-gray-200 rounded-xl text-center">
+              <div className="p-8 border-2 border-dashed border-gray-200 dark:border-gray-600 rounded-xl text-center">
                 <Upload className="h-8 w-8 text-gray-400 mx-auto mb-2" />
                 <input
                   type="file"
                   required
-                  className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100 cursor-pointer"
+                  className="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100 cursor-pointer"
                   onChange={handleFileChange}
                 />
                 <p className="text-xs text-gray-400 mt-2">Upload your assignment file (PDF, DOCX, ZIP)</p>
@@ -282,7 +282,7 @@ const StudentAssignmentsPage: React.FC = () => {
                     setSubmittingId(null);
                     setFile(null);
                   }}
-                  className="px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg transition"
+                  className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg transition"
                 >
                   Cancel
                 </button>

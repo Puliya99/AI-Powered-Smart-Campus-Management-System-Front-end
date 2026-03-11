@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Award, 
-  BookOpen, 
-  Calendar, 
-  TrendingUp, 
-  TrendingDown, 
-  Search, 
+import {
+  Award,
+  BookOpen,
+  Calendar,
+  TrendingUp,
+  TrendingDown,
+  Search,
   FileText,
   AlertCircle,
   Brain,
@@ -60,7 +60,7 @@ const StudentResultsPage: React.FC = () => {
     }
   };
 
-  const filteredResults = results.filter(r => 
+  const filteredResults = results.filter(r =>
     r.module.moduleName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     r.module.moduleCode.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -69,7 +69,7 @@ const StudentResultsPage: React.FC = () => {
     total: results.length,
     passed: results.filter(r => r.status === 'PASS').length,
     failed: results.filter(r => r.status === 'FAIL').length,
-    avg: results.length > 0 
+    avg: results.length > 0
       ? (results.reduce((acc, r) => acc + (r.marks / r.maxMarks) * 100, 0) / results.length).toFixed(1)
       : '0'
   };
@@ -88,40 +88,40 @@ const StudentResultsPage: React.FC = () => {
     <DashboardLayout>
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">My Results</h1>
-          <p className="text-gray-600 mt-1">View your academic performance and grades.</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">My Results</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">View your academic performance and grades.</p>
         </div>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-4 md:grid-cols-2 gap-4">
-          <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center">
-            <div className="p-3 rounded-full bg-blue-50 mr-4">
+          <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 flex items-center">
+            <div className="p-3 rounded-full bg-blue-50 dark:bg-blue-900/30 mr-4">
               <BookOpen className="h-6 w-6 text-blue-600" />
             </div>
             <div>
-              <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">Total Modules</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 uppercase font-bold tracking-wider">Total Modules</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.total}</p>
             </div>
           </div>
-          <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center">
-            <div className="p-3 rounded-full bg-green-50 mr-4">
+          <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 flex items-center">
+            <div className="p-3 rounded-full bg-green-50 dark:bg-green-900/30 mr-4">
               <TrendingUp className="h-6 w-6 text-green-600" />
             </div>
             <div>
-              <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">Average Rate</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.avg}%</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 uppercase font-bold tracking-wider">Average Rate</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.avg}%</p>
             </div>
           </div>
-          
+
           {/* AI Risk Summary Card */}
-          <div className="bg-white p-5 rounded-xl shadow-sm border border-purple-100 bg-gradient-to-br from-white to-purple-50 flex items-center md:col-span-2">
-            <div className="p-3 rounded-full bg-purple-100 mr-4">
+          <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-purple-100 dark:border-purple-900/50 bg-gradient-to-br from-white to-purple-50 dark:from-gray-800 dark:to-purple-900/20 flex items-center md:col-span-2">
+            <div className="p-3 rounded-full bg-purple-100 dark:bg-purple-900/40 mr-4">
               <Brain className="h-6 w-6 text-purple-600" />
             </div>
             <div className="flex-1">
               <div className="flex justify-between items-center mb-1">
-                <p className="text-xs text-purple-600 uppercase font-bold tracking-wider">AI Center Risk Status</p>
-                <div className="flex items-center text-[8px] font-bold text-purple-700 bg-purple-200 px-1.5 py-0.5 rounded uppercase">
+                <p className="text-xs text-purple-600 dark:text-purple-400 uppercase font-bold tracking-wider">AI Center Risk Status</p>
+                <div className="flex items-center text-[8px] font-bold text-purple-700 dark:text-purple-300 bg-purple-200 dark:bg-purple-900/50 px-1.5 py-0.5 rounded uppercase">
                   <Zap className="h-2 w-2 mr-1" />
                   Live
                 </div>
@@ -129,29 +129,29 @@ const StudentResultsPage: React.FC = () => {
               <div className="flex space-x-4">
                 <div className="text-center">
                   <p className="text-lg font-bold text-red-600 leading-none">{aiRiskStats?.highRisk || 0}</p>
-                  <p className="text-[9px] text-gray-500 font-bold uppercase">High</p>
+                  <p className="text-[9px] text-gray-500 dark:text-gray-400 font-bold uppercase">High</p>
                 </div>
-                <div className="text-center border-x border-purple-100 px-4">
+                <div className="text-center border-x border-purple-100 dark:border-purple-800 px-4">
                   <p className="text-lg font-bold text-yellow-600 leading-none">{aiRiskStats?.mediumRisk || 0}</p>
-                  <p className="text-[9px] text-gray-500 font-bold uppercase">Med</p>
+                  <p className="text-[9px] text-gray-500 dark:text-gray-400 font-bold uppercase">Med</p>
                 </div>
                 <div className="text-center">
                   <p className="text-lg font-bold text-green-600 leading-none">{aiRiskStats?.lowRisk || 0}</p>
-                  <p className="text-[9px] text-gray-500 font-bold uppercase">Low</p>
+                  <p className="text-[9px] text-gray-500 dark:text-gray-400 font-bold uppercase">Low</p>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-          <div className="p-4 border-b border-gray-200">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+          <div className="p-4 border-b border-gray-200 dark:border-gray-700">
             <div className="relative max-w-md">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
               <input
                 type="text"
                 placeholder="Search modules..."
-                className="pl-10 w-full border border-gray-300 rounded-lg p-2 text-sm focus:ring-primary-500 focus:border-primary-500"
+                className="pl-10 w-full border border-gray-300 dark:border-gray-600 rounded-lg p-2 text-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -160,7 +160,7 @@ const StudentResultsPage: React.FC = () => {
 
           <div className="overflow-x-auto">
             <table className="w-full text-left">
-              <thead className="bg-gray-50 text-gray-500 text-xs uppercase font-bold">
+              <thead className="bg-gray-50 dark:bg-gray-900 text-gray-500 dark:text-gray-400 text-xs uppercase font-bold">
                 <tr>
                   <th className="px-6 py-4">Module</th>
                   <th className="px-6 py-4 text-center">Score</th>
@@ -170,46 +170,46 @@ const StudentResultsPage: React.FC = () => {
                   <th className="px-6 py-4">Exam Date</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
                 {filteredResults.map((result) => {
                   const percentage = Math.round((result.marks / result.maxMarks) * 100);
                   return (
-                    <tr key={result.id} className="hover:bg-gray-50 transition">
+                    <tr key={result.id} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition">
                       <td className="px-6 py-4">
-                        <p className="text-sm font-bold text-gray-900">{result.module.moduleName}</p>
-                        <p className="text-xs text-gray-500">{result.module.moduleCode}</p>
+                        <p className="text-sm font-bold text-gray-900 dark:text-white">{result.module.moduleName}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">{result.module.moduleCode}</p>
                       </td>
                       <td className="px-6 py-4 text-center">
-                        <span className="font-medium text-gray-900">{result.marks}</span>
+                        <span className="font-medium text-gray-900 dark:text-white">{result.marks}</span>
                         <span className="text-gray-400 mx-1">/</span>
-                        <span className="text-gray-500">{result.maxMarks}</span>
+                        <span className="text-gray-500 dark:text-gray-400">{result.maxMarks}</span>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center justify-center">
-                          <div className="w-24 bg-gray-100 rounded-full h-2 mr-3 overflow-hidden">
-                            <div 
+                          <div className="w-24 bg-gray-100 dark:bg-gray-700 rounded-full h-2 mr-3 overflow-hidden">
+                            <div
                               className={`h-full rounded-full ${percentage >= 40 ? 'bg-green-500' : 'bg-red-500'}`}
                               style={{ width: `${percentage}%` }}
                             ></div>
                           </div>
-                          <span className="text-sm font-bold text-gray-700">{percentage}%</span>
+                          <span className="text-sm font-bold text-gray-700 dark:text-gray-300">{percentage}%</span>
                         </div>
                       </td>
                       <td className="px-6 py-4 text-center">
-                        <span className="inline-block px-3 py-1 bg-gray-100 rounded text-sm font-black text-gray-900">
+                        <span className="inline-block px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded text-sm font-black text-gray-900 dark:text-white">
                           {result.grade || '-'}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-center">
                         <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${
-                          result.status === 'PASS' ? 'bg-green-100 text-green-700' : 
-                          result.status === 'FAIL' ? 'bg-red-100 text-red-700' : 
-                          'bg-yellow-100 text-yellow-700'
+                          result.status === 'PASS' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :
+                          result.status === 'FAIL' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' :
+                          'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
                         }`}>
                           {result.status}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-500">
+                      <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
                         <div className="flex items-center">
                           <Calendar className="h-3.5 w-3.5 mr-2" />
                           {new Date(result.examDate).toLocaleDateString()}
@@ -220,7 +220,7 @@ const StudentResultsPage: React.FC = () => {
                 })}
                 {filteredResults.length === 0 && (
                   <tr>
-                    <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
+                    <td colSpan={6} className="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
                       <div className="flex flex-col items-center">
                         <FileText className="h-8 w-8 mb-2 opacity-20" />
                         <p>No results found.</p>
@@ -234,16 +234,16 @@ const StudentResultsPage: React.FC = () => {
         </div>
 
         {results.some(r => r.remarks) && (
-          <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-            <h3 className="font-bold text-gray-900 mb-4 flex items-center">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+            <h3 className="font-bold text-gray-900 dark:text-white mb-4 flex items-center">
               <AlertCircle className="h-5 w-5 text-primary-600 mr-2" />
               Lecturer Remarks
             </h3>
             <div className="space-y-4">
               {results.filter(r => r.remarks).map(r => (
-                <div key={r.id} className="p-3 bg-gray-50 rounded-lg border-l-4 border-primary-500">
+                <div key={r.id} className="p-3 bg-gray-50 dark:bg-gray-900 rounded-lg border-l-4 border-primary-500">
                   <p className="text-xs font-bold text-primary-600 uppercase mb-1">{r.module.moduleName}</p>
-                  <p className="text-sm text-gray-700 italic">"{r.remarks}"</p>
+                  <p className="text-sm text-gray-700 dark:text-gray-300 italic">"{r.remarks}"</p>
                 </div>
               ))}
             </div>

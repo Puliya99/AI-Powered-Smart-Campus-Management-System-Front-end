@@ -174,26 +174,26 @@ const SchedulesPage: React.FC = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'SCHEDULED':
-        return 'bg-blue-100 text-blue-800'
+        return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
       case 'COMPLETED':
-        return 'bg-green-100 text-green-800'
+        return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
       case 'CANCELLED':
-        return 'bg-red-100 text-red-800'
+        return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
       case 'RESCHEDULED':
-        return 'bg-yellow-100 text-yellow-800'
+        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
       default:
-        return 'bg-gray-100 text-gray-800'
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
     }
   }
 
   const getTypeColor = (type: string) => {
     switch (type) {
       case 'ONLINE':
-        return 'bg-purple-100 text-purple-800'
+        return 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400'
       case 'PHYSICAL':
         return 'bg-amber-100 text-amber-800'
       default:
-        return 'bg-gray-100 text-gray-800'
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
     }
   }
 
@@ -206,15 +206,15 @@ const SchedulesPage: React.FC = () => {
       case 'WORKSHOP':
         return 'bg-teal-100 text-teal-800'
       case 'EXAM':
-        return 'bg-red-100 text-red-800'
+        return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
       case 'SPORTS_DAY':
         return 'bg-orange-100 text-orange-800'
       case 'GUEST_LECTURE':
         return 'bg-cyan-100 text-cyan-800'
       case 'OTHER':
-        return 'bg-gray-100 text-gray-800'
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
       default:
-        return 'bg-gray-100 text-gray-800'
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
     }
   }
 
@@ -250,8 +250,8 @@ const SchedulesPage: React.FC = () => {
         {/* Header */}
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Schedules</h1>
-            <p className="text-gray-600 mt-1">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Schedules</h1>
+            <p className="text-gray-600 dark:text-gray-400 mt-1">
               {user?.role === 'LECTURER' ? 'View your class schedules' : 'Manage class schedules, events, and timetables'}
             </p>
           </div>
@@ -268,19 +268,19 @@ const SchedulesPage: React.FC = () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-          <div className="bg-white p-5 rounded-lg shadow">
+          <div className="bg-white dark:bg-gray-800 p-5 rounded-lg shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Total</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Total</p>
                 <p className="text-2xl font-bold">{stats.totalSchedules}</p>
               </div>
               <Calendar className="w-10 h-10 text-blue-500" />
             </div>
           </div>
-          <div className="bg-white p-5 rounded-lg shadow">
+          <div className="bg-white dark:bg-gray-800 p-5 rounded-lg shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Scheduled</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Scheduled</p>
                 <p className="text-2xl font-bold text-blue-600">
                   {stats.scheduledCount}
                 </p>
@@ -288,10 +288,10 @@ const SchedulesPage: React.FC = () => {
               <Clock className="w-10 h-10 text-blue-500" />
             </div>
           </div>
-          <div className="bg-white p-5 rounded-lg shadow">
+          <div className="bg-white dark:bg-gray-800 p-5 rounded-lg shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Completed</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Completed</p>
                 <p className="text-2xl font-bold text-green-600">
                   {stats.completedCount}
                 </p>
@@ -299,10 +299,10 @@ const SchedulesPage: React.FC = () => {
               <Calendar className="w-10 h-10 text-green-500" />
             </div>
           </div>
-          <div className="bg-white p-5 rounded-lg shadow">
+          <div className="bg-white dark:bg-gray-800 p-5 rounded-lg shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Today</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Today</p>
                 <p className="text-2xl font-bold text-purple-600">
                   {stats.todaySchedules}
                 </p>
@@ -310,10 +310,10 @@ const SchedulesPage: React.FC = () => {
               <Clock className="w-10 h-10 text-purple-500" />
             </div>
           </div>
-          <div className="bg-white p-5 rounded-lg shadow">
+          <div className="bg-white dark:bg-gray-800 p-5 rounded-lg shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Events</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Events</p>
                 <p className="text-2xl font-bold text-orange-600">
                   {stats.eventCount || 0}
                 </p>
@@ -324,18 +324,18 @@ const SchedulesPage: React.FC = () => {
         </div>
 
         {/* Search and Filters */}
-        <div className="bg-white p-4 rounded-lg shadow">
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
           <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
             {/* Search */}
             <div className="md:col-span-2">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-5 h-5" />
                 <input
                   type="text"
                   placeholder="Search by module, batch, hall, or event..."
                   value={searchTerm}
                   onChange={handleSearch}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                 />
               </div>
             </div>
@@ -345,7 +345,7 @@ const SchedulesPage: React.FC = () => {
               <select
                 value={filters.centerId}
                 onChange={(e) => handleFilterChange('centerId', e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
               >
                 <option value="">All Centers</option>
                 {centers.map((center) => (
@@ -360,7 +360,7 @@ const SchedulesPage: React.FC = () => {
             <select
               value={filters.category}
               onChange={(e) => handleFilterChange('category', e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+              className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
             >
               <option value="">All Categories</option>
               {Object.entries(CATEGORY_LABELS).map(([value, label]) => (
@@ -374,7 +374,7 @@ const SchedulesPage: React.FC = () => {
             <select
               value={filters.status}
               onChange={(e) => handleFilterChange('status', e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+              className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
             >
               <option value="">All Status</option>
               <option value="SCHEDULED">Scheduled</option>
@@ -388,22 +388,22 @@ const SchedulesPage: React.FC = () => {
               type="date"
               value={filters.startDate}
               onChange={(e) => handleFilterChange('startDate', e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+              className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
               placeholder="Start Date"
             />
           </div>
         </div>
 
         {/* Schedules Grid */}
-        <div className="bg-white rounded-lg shadow">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
           {loading ? (
             <div className="flex justify-center items-center h-64">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
             </div>
           ) : schedules.length === 0 ? (
             <div className="text-center py-12">
-              <Calendar className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600">No schedules found</p>
+              <Calendar className="w-16 h-16 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
+              <p className="text-gray-600 dark:text-gray-400">No schedules found</p>
             </div>
           ) : (
             <>
@@ -411,7 +411,7 @@ const SchedulesPage: React.FC = () => {
                 {schedules.map((schedule) => (
                   <div
                     key={schedule.id}
-                    className="border border-gray-200 rounded-lg p-5 hover:shadow-lg transition-shadow"
+                    className="border border-gray-200 dark:border-gray-700 rounded-lg p-5 hover:shadow-lg transition-shadow"
                   >
                     {/* Schedule Header */}
                     <div className="mb-4">
@@ -424,7 +424,7 @@ const SchedulesPage: React.FC = () => {
                           {CATEGORY_LABELS[schedule.category] || 'Class'}
                         </span>
                         {schedule.module && (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-100 text-primary-800">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400">
                             {schedule.module.moduleCode}
                           </span>
                         )}
@@ -443,11 +443,11 @@ const SchedulesPage: React.FC = () => {
                           {schedule.status}
                         </span>
                       </div>
-                      <h3 className="text-lg font-bold text-gray-900 mb-1">
+                      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">
                         {getScheduleDisplayName(schedule)}
                       </h3>
                       {getScheduleSubtitle(schedule) && (
-                        <p className="text-sm text-gray-600 line-clamp-2">
+                        <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
                           {getScheduleSubtitle(schedule)}
                         </p>
                       )}
@@ -455,11 +455,11 @@ const SchedulesPage: React.FC = () => {
 
                     {/* Schedule Details */}
                     <div className="space-y-2 mb-4">
-                      <div className="flex items-center text-sm text-gray-600">
+                      <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
                         <Calendar className="w-4 h-4 mr-2 flex-shrink-0" />
                         <span>{formatDate(schedule.date)}</span>
                       </div>
-                      <div className="flex items-center text-sm text-gray-600">
+                      <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
                         <Clock className="w-4 h-4 mr-2 flex-shrink-0" />
                         <span>
                           {formatTime(schedule.startTime)} -{' '}
@@ -467,7 +467,7 @@ const SchedulesPage: React.FC = () => {
                         </span>
                       </div>
                       {schedule.lecturer && (
-                        <div className="flex items-center text-sm text-gray-600">
+                        <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
                           <User className="w-4 h-4 mr-2 flex-shrink-0" />
                           <span>
                             {schedule.lecturer.user.firstName}{' '}
@@ -475,14 +475,14 @@ const SchedulesPage: React.FC = () => {
                           </span>
                         </div>
                       )}
-                      <div className="flex items-center text-sm text-gray-600">
+                      <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
                         <MapPin className="w-4 h-4 mr-2 flex-shrink-0" />
                         <span>
                           {schedule.lectureHall} - {schedule.center.centerName}
                         </span>
                       </div>
                       {schedule.batch && (
-                        <div className="flex items-center text-sm text-gray-600">
+                        <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
                           <BookOpen className="w-4 h-4 mr-2 flex-shrink-0" />
                           <span>{schedule.batch.batchNumber}</span>
                         </div>
@@ -491,16 +491,16 @@ const SchedulesPage: React.FC = () => {
 
                     {/* Stats */}
                     {schedule.stats && schedule.stats.attendanceCount > 0 && (
-                      <div className="bg-blue-50 rounded-lg p-3 mb-4">
-                        <p className="text-xs text-gray-600">Attendance</p>
-                        <p className="text-lg font-bold text-blue-600">
+                      <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3 mb-4">
+                        <p className="text-xs text-gray-600 dark:text-gray-400">Attendance</p>
+                        <p className="text-lg font-bold text-blue-600 dark:text-blue-400">
                           {schedule.stats.attendanceCount} Students
                         </p>
                       </div>
                     )}
 
                     {/* Actions */}
-                    <div className="flex space-x-2 pt-4 border-t border-gray-200">
+                    <div className="flex space-x-2 pt-4 border-t border-gray-200 dark:border-gray-700">
                       <button
                         onClick={() => {
                           setSelectedSchedule(schedule)
@@ -541,12 +541,12 @@ const SchedulesPage: React.FC = () => {
               </div>
 
               {/* Pagination */}
-              <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+              <div className="bg-white dark:bg-gray-800 px-4 py-3 flex items-center justify-between border-t border-gray-200 dark:border-gray-700 sm:px-6">
                 <div className="flex-1 flex justify-between sm:hidden">
                   <button
                     onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                     disabled={currentPage === 1}
-                    className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
+                    className="relative inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700/50 disabled:opacity-50"
                   >
                     Previous
                   </button>
@@ -555,14 +555,14 @@ const SchedulesPage: React.FC = () => {
                       setCurrentPage((p) => Math.min(totalPages, p + 1))
                     }
                     disabled={currentPage === totalPages}
-                    className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
+                    className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700/50 disabled:opacity-50"
                   >
                     Next
                   </button>
                 </div>
                 <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                   <div>
-                    <p className="text-sm text-gray-700">
+                    <p className="text-sm text-gray-700 dark:text-gray-300">
                       Page <span className="font-medium">{currentPage}</span> of{' '}
                       <span className="font-medium">{totalPages}</span>
                     </p>
@@ -574,7 +574,7 @@ const SchedulesPage: React.FC = () => {
                           setCurrentPage((p) => Math.max(1, p - 1))
                         }
                         disabled={currentPage === 1}
-                        className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50"
+                        className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50 disabled:opacity-50"
                       >
                         Previous
                       </button>
@@ -589,8 +589,8 @@ const SchedulesPage: React.FC = () => {
                               onClick={() => setCurrentPage(pageNum)}
                               className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
                                 pageNum === currentPage
-                                  ? 'z-10 bg-primary-50 border-primary-500 text-primary-600'
-                                  : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
+                                  ? 'z-10 bg-primary-50 dark:bg-primary-900/20 border-primary-500 text-primary-600 dark:text-primary-400'
+                                  : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50'
                               }`}
                             >
                               {pageNum}
@@ -603,7 +603,7 @@ const SchedulesPage: React.FC = () => {
                           setCurrentPage((p) => Math.min(totalPages, p + 1))
                         }
                         disabled={currentPage === totalPages}
-                        className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50"
+                        className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50 disabled:opacity-50"
                       >
                         Next
                       </button>

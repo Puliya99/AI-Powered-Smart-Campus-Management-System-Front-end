@@ -134,7 +134,6 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
       setPrograms(programsRes.data.data.programs || [])
       const fetchedCenters = centersRes.data.data.centers || []
       setCenters(fetchedCenters)
-      // Auto-set center for non-ADMIN users
       if (!isAdmin && fetchedCenters.length === 1 && !formData.centerId) {
         setFormData(prev => ({ ...prev, centerId: fetchedCenters[0].id }))
       }
@@ -147,49 +146,24 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
   }
 
   const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    })
+    setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
   const validateForm = () => {
-    if (!formData.studentId) {
-      toast.error('Please select a student')
-      return false
-    }
-    if (!formData.programId) {
-      toast.error('Please select a program')
-      return false
-    }
-    if (!formData.centerId) {
-      toast.error('Please select a center')
-      return false
-    }
-    if (!formData.amount || parseFloat(formData.amount) <= 0) {
-      toast.error('Valid amount is required')
-      return false
-    }
-    if (parseFloat(formData.outstanding) < 0) {
-      toast.error('Outstanding cannot be negative')
-      return false
-    }
+    if (!formData.studentId) { toast.error('Please select a student'); return false }
+    if (!formData.programId) { toast.error('Please select a program'); return false }
+    if (!formData.centerId) { toast.error('Please select a center'); return false }
+    if (!formData.amount || parseFloat(formData.amount) <= 0) { toast.error('Valid amount is required'); return false }
+    if (parseFloat(formData.outstanding) < 0) { toast.error('Outstanding cannot be negative'); return false }
     return true
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-
-    if (!validateForm()) {
-      return
-    }
-
+    if (!validateForm()) return
     setLoading(true)
-
     try {
       const payload = {
         ...formData,
@@ -197,7 +171,6 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
         outstanding: parseFloat(formData.outstanding),
         nextPaymentDate: formData.nextPaymentDate || null,
       }
-
       if (payment) {
         await axiosInstance.put(`/payments/${payment.id}`, payload)
         toast.success('Payment updated successfully')
@@ -205,48 +178,40 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
         await axiosInstance.post('/payments', payload)
         toast.success('Payment created successfully')
       }
-
       onSuccess()
       onClose()
     } catch (error: any) {
-      toast.error(
-        error.response?.data?.message ||
-          `Failed to ${payment ? 'update' : 'create'} payment`
-      )
+      toast.error(error.response?.data?.message || `Failed to ${payment ? 'update' : 'create'} payment`)
     } finally {
       setLoading(false)
     }
   }
+
+  const inputClass = 'w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white'
+  const labelClass = 'block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'
 
   if (!isOpen) return null
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
       <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-        {/* Background overlay */}
         <div
           className="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75"
           onClick={onClose}
         ></div>
 
-        {/* Modal panel */}
-        <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
-          {/* Header */}
+        <div className="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
           <div className="bg-primary-600 px-6 py-4 flex justify-between items-center">
             <h3 className="text-xl font-semibold text-white">
               {payment ? 'Edit Payment' : 'Add New Payment'}
             </h3>
-            <button
-              onClick={onClose}
-              className="text-white hover:text-gray-200 transition"
-            >
+            <button onClick={onClose} className="text-white hover:text-gray-200 transition">
               <X className="w-6 h-6" />
             </button>
           </div>
 
-          {/* Form */}
           <form onSubmit={handleSubmit}>
-            <div className="bg-white px-6 py-5 space-y-6">
+            <div className="bg-white dark:bg-gray-800 px-6 py-5 space-y-6">
               {loadingData ? (
                 <div className="flex justify-center items-center py-8">
                   <Loader2 className="w-8 h-8 animate-spin text-primary-600" />
@@ -255,16 +220,14 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
                 <>
                   {/* Student Selection */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Student <span className="text-red-500">*</span>
-                    </label>
+                    <label className={labelClass}>Student <span className="text-red-500">*</span></label>
                     <select
                       name="studentId"
                       value={formData.studentId}
                       onChange={handleChange}
                       required
                       disabled={!!payment}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:bg-gray-100"
+                      className={`${inputClass} disabled:bg-gray-100 dark:disabled:bg-gray-600 disabled:cursor-not-allowed`}
                     >
                       <option value="">Select student</option>
                       {students.map((student) => (
@@ -277,16 +240,14 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
 
                   {/* Program Selection */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Program <span className="text-red-500">*</span>
-                    </label>
+                    <label className={labelClass}>Program <span className="text-red-500">*</span></label>
                     <select
                       name="programId"
                       value={formData.programId}
                       onChange={handleChange}
                       required
                       disabled={!!payment}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:bg-gray-100"
+                      className={`${inputClass} disabled:bg-gray-100 dark:disabled:bg-gray-600 disabled:cursor-not-allowed`}
                     >
                       <option value="">Select program</option>
                       {programs.map((program) => (
@@ -300,15 +261,13 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
                   {/* Center Selection */}
                   {isAdmin ? (
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Center <span className="text-red-500">*</span>
-                      </label>
+                      <label className={labelClass}>Center <span className="text-red-500">*</span></label>
                       <select
                         name="centerId"
                         value={formData.centerId}
                         onChange={handleChange}
                         required
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        className={inputClass}
                       >
                         <option value="">Select center</option>
                         {centers.map((center) => (
@@ -320,8 +279,8 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
                     </div>
                   ) : formData.centerId && centers.length > 0 ? (
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Center</label>
-                      <p className="px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-700">
+                      <label className={labelClass}>Center</label>
+                      <p className="px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300">
                         {centers.find(c => c.id === formData.centerId)?.centerName || 'Your Center'}
                       </p>
                     </div>
@@ -329,9 +288,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
 
                   {/* Amount */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Amount (LKR) <span className="text-red-500">*</span>
-                    </label>
+                    <label className={labelClass}>Amount (LKR) <span className="text-red-500">*</span></label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                         <DollarSign className="h-5 w-5 text-gray-400" />
@@ -344,7 +301,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
                         required
                         min="0"
                         step="0.01"
-                        className="w-full pl-12 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        className={`${inputClass} pl-12`}
                         placeholder="0.00"
                       />
                     </div>
@@ -352,9 +309,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
 
                   {/* Outstanding */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Outstanding (LKR)
-                    </label>
+                    <label className={labelClass}>Outstanding (LKR)</label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                         <DollarSign className="h-5 w-5 text-gray-400" />
@@ -366,26 +321,24 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
                         onChange={handleChange}
                         min="0"
                         step="0.01"
-                        className="w-full pl-12 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-gray-50"
+                        className={`${inputClass} pl-12 bg-gray-50 dark:bg-gray-600`}
                         placeholder="0.00"
                       />
                     </div>
-                    <p className="mt-1 text-xs text-gray-500">
+                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                       Auto-loaded based on student's previous payments and program fee.
                     </p>
                   </div>
 
                   {/* Payment Method */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Payment Method <span className="text-red-500">*</span>
-                    </label>
+                    <label className={labelClass}>Payment Method <span className="text-red-500">*</span></label>
                     <select
                       name="paymentMethod"
                       value={formData.paymentMethod}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      className={inputClass}
                     >
                       <option value="CASH">Cash</option>
                       <option value="CARD">Card</option>
@@ -396,64 +349,39 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
 
                   {/* Transaction ID */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Transaction ID
-                    </label>
+                    <label className={labelClass}>Transaction ID</label>
                     <input
                       type="text"
                       name="transactionId"
                       value={formData.transactionId}
                       onChange={handleChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      className={inputClass}
                       placeholder="Optional"
                     />
                   </div>
 
                   {/* Next Payment Date */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Next Payment Date
-                    </label>
+                    <label className={labelClass}>Next Payment Date</label>
                     <input
                       type="date"
                       name="nextPaymentDate"
                       value={formData.nextPaymentDate}
                       onChange={handleChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      className={inputClass}
                     />
-                    <p className="text-xs text-gray-500 mt-1">
-                      For installments
-                    </p>
-                  </div>
-
-                  {/* Outstanding */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Outstanding (LKR)
-                    </label>
-                    <input
-                      type="number"
-                      name="outstanding"
-                      value={formData.outstanding}
-                      onChange={handleChange}
-                      min="0"
-                      step="0.01"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                      placeholder="0.00"
-                    />
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">For installments</p>
                   </div>
 
                   {/* Status */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Status <span className="text-red-500">*</span>
-                    </label>
+                    <label className={labelClass}>Status <span className="text-red-500">*</span></label>
                     <select
                       name="status"
                       value={formData.status}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      className={inputClass}
                     >
                       <option value="PAID">Paid</option>
                       <option value="PARTIAL">Partial</option>
@@ -463,16 +391,14 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
                   </div>
 
                   {/* Remarks */}
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Remarks
-                    </label>
+                  <div>
+                    <label className={labelClass}>Remarks</label>
                     <textarea
                       name="remarks"
                       value={formData.remarks}
                       onChange={handleChange}
                       rows={3}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      className={inputClass}
                       placeholder="Additional notes or comments..."
                     />
                   </div>
@@ -480,12 +406,11 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
               )}
             </div>
 
-            {/* Footer */}
-            <div className="bg-gray-50 px-6 py-4 flex justify-end space-x-3">
+            <div className="bg-gray-50 dark:bg-gray-900 px-6 py-4 flex justify-end space-x-3">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition"
+                className="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
                 disabled={loading}
               >
                 Cancel
@@ -496,15 +421,9 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
                 className="flex items-center px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition disabled:opacity-50"
               >
                 {loading ? (
-                  <>
-                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                    {payment ? 'Updating...' : 'Creating...'}
-                  </>
+                  <><Loader2 className="w-5 h-5 mr-2 animate-spin" />{payment ? 'Updating...' : 'Creating...'}</>
                 ) : (
-                  <>
-                    <Save className="w-5 h-5 mr-2" />
-                    {payment ? 'Update Payment' : 'Create Payment'}
-                  </>
+                  <><Save className="w-5 h-5 mr-2" />{payment ? 'Update Payment' : 'Create Payment'}</>
                 )}
               </button>
             </div>

@@ -37,7 +37,7 @@ const StaffDashboard: React.FC = () => {
         <div className="flex items-center justify-center h-96">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading dashboard...</p>
+            <p className="mt-4 text-gray-600 dark:text-gray-400">Loading dashboard...</p>
           </div>
         </div>
       </DashboardLayout>
@@ -101,8 +101,8 @@ const StaffDashboard: React.FC = () => {
       <div className="space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Staff Dashboard</h1>
-          <p className="text-gray-600 mt-1">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Staff Dashboard</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">
             Welcome back, {dashboardData?.profile?.name}! Manage campus operations efficiently.
           </p>
         </div>
@@ -112,7 +112,7 @@ const StaffDashboard: React.FC = () => {
           {statCards.map((stat) => (
             <div
               key={stat.name}
-              className="bg-white overflow-hidden shadow rounded-lg"
+              className="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg"
             >
               <div className="p-5">
                 <div className="flex items-center">
@@ -123,10 +123,10 @@ const StaffDashboard: React.FC = () => {
                   </div>
                   <div className="ml-5 w-0 flex-1">
                     <dl>
-                      <dt className="text-sm font-medium text-gray-500 truncate">
+                      <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
                         {stat.name}
                       </dt>
-                      <dd className="text-2xl font-semibold text-gray-900">
+                      <dd className="text-2xl font-semibold text-gray-900 dark:text-white">
                         {stat.value}
                       </dd>
                     </dl>
@@ -143,21 +143,21 @@ const StaffDashboard: React.FC = () => {
             <Link
               key={action.name}
               to={action.href}
-              className="flex items-center p-4 bg-white shadow rounded-lg hover:shadow-md transition-shadow"
+              className="flex items-center p-4 bg-white dark:bg-gray-800 shadow rounded-lg hover:shadow-md transition-shadow"
             >
               <div className={`${action.color} p-3 rounded-lg mr-4`}>
                 <action.icon className="h-6 w-6 text-white" />
               </div>
-              <span className="font-medium text-gray-900">{action.name}</span>
+              <span className="font-medium text-gray-900 dark:text-white">{action.name}</span>
             </Link>
           ))}
         </div>
 
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
           {/* Recent Registrations */}
-          <div className="bg-white shadow rounded-lg">
-            <div className="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
-              <h3 className="text-lg font-medium text-gray-900">
+          <div className="bg-white dark:bg-gray-800 shadow rounded-lg">
+            <div className="px-5 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white">
                 Recent Student Registrations
               </h3>
               <Link to="/user/students" className="text-sm text-primary-600 hover:text-primary-500">
@@ -166,7 +166,7 @@ const StaffDashboard: React.FC = () => {
             </div>
             <div className="p-5">
               <div className="flow-root">
-                <ul className="-my-5 divide-y divide-gray-200">
+                <ul className="-my-5 divide-y divide-gray-200 dark:divide-gray-700">
                   {recentRegistrations.length > 0 ? (
                     recentRegistrations.map((student: any) => (
                       <li key={student.id} className="py-4">
@@ -179,15 +179,15 @@ const StaffDashboard: React.FC = () => {
                             </div>
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-gray-900 truncate">
+                            <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
                               {student.firstName} {student.lastName}
                             </p>
-                            <p className="text-sm text-gray-500 truncate">
+                            <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
                               {student.email}
                             </p>
                           </div>
                           <div>
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
                               {student.registrationNumber || 'New'}
                             </span>
                           </div>
@@ -195,7 +195,7 @@ const StaffDashboard: React.FC = () => {
                       </li>
                     ))
                   ) : (
-                    <p className="py-4 text-center text-gray-500 text-sm">No recent registrations.</p>
+                    <p className="py-4 text-center text-gray-500 dark:text-gray-400 text-sm">No recent registrations.</p>
                   )}
                 </ul>
               </div>
@@ -203,9 +203,9 @@ const StaffDashboard: React.FC = () => {
           </div>
 
           {/* Upcoming Events/Schedules */}
-          <div className="bg-white shadow rounded-lg">
-            <div className="px-5 py-4 border-b border-gray-200">
-              <h3 className="text-lg font-medium text-gray-900">
+          <div className="bg-white dark:bg-gray-800 shadow rounded-lg">
+            <div className="px-5 py-4 border-b border-gray-200 dark:border-gray-700">
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white">
                 Upcoming Classes
               </h3>
             </div>
@@ -213,25 +213,25 @@ const StaffDashboard: React.FC = () => {
               <div className="space-y-4">
                 {upcomingEvents.length > 0 ? (
                   upcomingEvents.map((event: any) => (
-                    <div key={event.id} className="flex items-start p-3 bg-gray-50 rounded-lg">
+                    <div key={event.id} className="flex items-start p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                       <div className="flex-shrink-0 pt-0.5">
-                        <Calendar className="h-5 w-5 text-gray-400" />
+                        <Calendar className="h-5 w-5 text-gray-400 dark:text-gray-500" />
                       </div>
                       <div className="ml-3 w-0 flex-1">
-                        <p className="text-sm font-medium text-gray-900">
+                        <p className="text-sm font-medium text-gray-900 dark:text-white">
                           {event.module?.name}
                         </p>
-                        <p className="text-xs text-gray-500 mt-1">
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                           {event.batch?.name} | {event.startTime} - {event.endTime}
                         </p>
                       </div>
                       <Link to={`/user/schedules/${event.id}`} className="ml-4 flex-shrink-0">
-                        <ArrowRight className="h-5 w-5 text-gray-400" />
+                        <ArrowRight className="h-5 w-5 text-gray-400 dark:text-gray-500" />
                       </Link>
                     </div>
                   ))
                 ) : (
-                  <p className="text-center text-gray-500 text-sm py-4">No upcoming events today.</p>
+                  <p className="text-center text-gray-500 dark:text-gray-400 text-sm py-4">No upcoming events today.</p>
                 )}
               </div>
             </div>

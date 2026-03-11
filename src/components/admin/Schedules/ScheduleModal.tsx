@@ -177,55 +177,24 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
 
   const validateForm = () => {
     if (!isEvent) {
-      // Class schedule requires module, batch, lecturer
-      if (!formData.moduleId) {
-        toast.error('Please select a module');
-        return false;
-      }
-      if (!formData.batchId) {
-        toast.error('Please select a batch');
-        return false;
-      }
-      if (!formData.lecturerId) {
-        toast.error('Please select a lecturer');
-        return false;
-      }
+      if (!formData.moduleId) { toast.error('Please select a module'); return false; }
+      if (!formData.batchId) { toast.error('Please select a batch'); return false; }
+      if (!formData.lecturerId) { toast.error('Please select a lecturer'); return false; }
     } else {
-      // Event schedule requires title
-      if (!formData.title.trim()) {
-        toast.error('Event title is required');
-        return false;
-      }
+      if (!formData.title.trim()) { toast.error('Event title is required'); return false; }
     }
-    if (!formData.centerId) {
-      toast.error('Please select a center');
-      return false;
-    }
-    if (!formData.date) {
-      toast.error('Date is required');
-      return false;
-    }
-    if (!formData.startTime || !formData.endTime) {
-      toast.error('Start time and end time are required');
-      return false;
-    }
-    if (formData.startTime >= formData.endTime) {
-      toast.error('End time must be after start time');
-      return false;
-    }
-    if (!formData.lectureHall.trim()) {
-      toast.error('Venue / Lecture hall is required');
-      return false;
-    }
+    if (!formData.centerId) { toast.error('Please select a center'); return false; }
+    if (!formData.date) { toast.error('Date is required'); return false; }
+    if (!formData.startTime || !formData.endTime) { toast.error('Start time and end time are required'); return false; }
+    if (formData.startTime >= formData.endTime) { toast.error('End time must be after start time'); return false; }
+    if (!formData.lectureHall.trim()) { toast.error('Venue / Lecture hall is required'); return false; }
     return true;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!validateForm()) {
-      return;
-    }
+    if (!validateForm()) return;
 
     setLoading(true);
     setConflicts([]);
@@ -245,7 +214,6 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
       if (isEvent) {
         payload.title = formData.title;
         payload.description = formData.description;
-        // Optional fields for events
         if (formData.moduleId) payload.moduleId = formData.moduleId;
         if (formData.batchId) payload.batchId = formData.batchId;
         if (formData.lecturerId) payload.lecturerId = formData.lecturerId;
@@ -282,6 +250,9 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
     }
   };
 
+  const inputClass = 'w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white';
+  const labelClass = 'block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2';
+
   if (!isOpen) return null;
 
   return (
@@ -292,7 +263,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
           onClick={onClose}
         ></div>
 
-        <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl sm:w-full">
+        <div className="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl sm:w-full">
           <div className="bg-primary-600 px-6 py-4 flex justify-between items-center">
             <h3 className="text-xl font-semibold text-white">
               {schedule ? 'Edit Schedule' : 'Add New Schedule'}
@@ -306,7 +277,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
           </div>
 
           <form onSubmit={handleSubmit}>
-            <div className="bg-white px-6 py-5 space-y-6 max-h-[calc(100vh-200px)] overflow-y-auto">
+            <div className="bg-white dark:bg-gray-800 px-6 py-5 space-y-6 max-h-[calc(100vh-200px)] overflow-y-auto">
               {loadingData ? (
                 <div className="flex justify-center items-center py-8">
                   <Loader2 className="w-8 h-8 animate-spin text-primary-600" />
@@ -315,14 +286,14 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
                 <>
                   {/* Conflicts Warning */}
                   {conflicts.length > 0 && (
-                    <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                    <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
                       <div className="flex items-start">
-                        <AlertCircle className="w-5 h-5 text-red-600 mt-0.5 mr-3" />
+                        <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5 mr-3" />
                         <div className="flex-1">
-                          <h4 className="text-sm font-semibold text-red-800 mb-2">
+                          <h4 className="text-sm font-semibold text-red-800 dark:text-red-300 mb-2">
                             Schedule Conflicts Detected:
                           </h4>
-                          <ul className="text-sm text-red-700 space-y-1">
+                          <ul className="text-sm text-red-700 dark:text-red-400 space-y-1">
                             {conflicts.map((conflict, index) => (
                               <li key={index}>- {conflict.message}</li>
                             ))}
@@ -334,7 +305,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
 
                   {/* Category Selector */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className={labelClass}>
                       Schedule Category <span className="text-red-500">*</span>
                     </label>
                     <div className="flex flex-wrap gap-2">
@@ -346,7 +317,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
                           className={`px-4 py-2 rounded-lg text-sm font-medium border transition ${
                             formData.category === opt.value
                               ? 'bg-primary-600 text-white border-primary-600'
-                              : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                              : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600'
                           }`}
                         >
                           {opt.label}
@@ -359,7 +330,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
                   {isEvent && (
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className={labelClass}>
                           Event Title <span className="text-red-500">*</span>
                         </label>
                         <input
@@ -367,20 +338,18 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
                           name="title"
                           value={formData.title}
                           onChange={handleChange}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                          className={inputClass}
                           placeholder="e.g., Annual Science Workshop"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Description
-                        </label>
+                        <label className={labelClass}>Description</label>
                         <textarea
                           name="description"
                           value={formData.description}
                           onChange={handleChange}
                           rows={3}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                          className={inputClass}
                           placeholder="Event details..."
                         />
                       </div>
@@ -390,7 +359,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Module */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className={labelClass}>
                         Module {!isEvent && <span className="text-red-500">*</span>}
                         {isEvent && <span className="text-gray-400 text-xs ml-1">(Optional)</span>}
                       </label>
@@ -399,7 +368,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
                         value={formData.moduleId}
                         onChange={handleChange}
                         required={!isEvent}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        className={inputClass}
                       >
                         <option value="">Select module</option>
                         {modules.map((module) => (
@@ -412,7 +381,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
 
                     {/* Batch */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className={labelClass}>
                         Batch {!isEvent && <span className="text-red-500">*</span>}
                         {isEvent && <span className="text-gray-400 text-xs ml-1">(Optional)</span>}
                       </label>
@@ -421,7 +390,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
                         value={formData.batchId}
                         onChange={handleChange}
                         required={!isEvent}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        className={inputClass}
                       >
                         <option value="">Select batch</option>
                         {batches.map((batch) => (
@@ -434,7 +403,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
 
                     {/* Lecturer */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className={labelClass}>
                         Lecturer {!isEvent && <span className="text-red-500">*</span>}
                         {isEvent && <span className="text-gray-400 text-xs ml-1">(Optional)</span>}
                       </label>
@@ -443,7 +412,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
                         value={formData.lecturerId}
                         onChange={handleChange}
                         required={!isEvent}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        className={inputClass}
                       >
                         <option value="">Select lecturer</option>
                         {lecturers.map((lecturer) => (
@@ -457,7 +426,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
                     {/* Center */}
                     {isAdmin ? (
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className={labelClass}>
                           Center <span className="text-red-500">*</span>
                         </label>
                         <select
@@ -465,7 +434,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
                           value={formData.centerId}
                           onChange={handleChange}
                           required
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                          className={inputClass}
                         >
                           <option value="">Select center</option>
                           {centers.map((center) => (
@@ -477,8 +446,8 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
                       </div>
                     ) : formData.centerId && centers.length > 0 ? (
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Center</label>
-                        <p className="px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-700">
+                        <label className={labelClass}>Center</label>
+                        <p className="px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300">
                           {centers.find(c => c.id === formData.centerId)?.centerName || 'Your Center'}
                         </p>
                       </div>
@@ -486,7 +455,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
 
                     {/* Date */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className={labelClass}>
                         Date <span className="text-red-500">*</span>
                       </label>
                       <input
@@ -495,13 +464,13 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
                         value={formData.date}
                         onChange={handleChange}
                         required
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        className={inputClass}
                       />
                     </div>
 
                     {/* Venue / Lecture Hall */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className={labelClass}>
                         {isEvent ? 'Venue' : 'Lecture Hall'} <span className="text-red-500">*</span>
                       </label>
                       <input
@@ -510,14 +479,14 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
                         value={formData.lectureHall}
                         onChange={handleChange}
                         required
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        className={inputClass}
                         placeholder={isEvent ? 'e.g., Main Auditorium' : 'e.g., Hall A, Room 101'}
                       />
                     </div>
 
                     {/* Start Time */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className={labelClass}>
                         Start Time <span className="text-red-500">*</span>
                       </label>
                       <input
@@ -526,13 +495,13 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
                         value={formData.startTime}
                         onChange={handleChange}
                         required
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        className={inputClass}
                       />
                     </div>
 
                     {/* End Time */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className={labelClass}>
                         End Time <span className="text-red-500">*</span>
                       </label>
                       <input
@@ -541,13 +510,13 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
                         value={formData.endTime}
                         onChange={handleChange}
                         required
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        className={inputClass}
                       />
                     </div>
 
                     {/* Status */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className={labelClass}>
                         Status <span className="text-red-500">*</span>
                       </label>
                       <select
@@ -555,7 +524,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
                         value={formData.status}
                         onChange={handleChange}
                         required
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        className={inputClass}
                       >
                         <option value="SCHEDULED">Scheduled</option>
                         <option value="COMPLETED">Completed</option>
@@ -566,7 +535,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
 
                     {/* Type */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className={labelClass}>
                         Type <span className="text-red-500">*</span>
                       </label>
                       <select
@@ -574,7 +543,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
                         value={formData.type}
                         onChange={handleChange}
                         required
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        className={inputClass}
                       >
                         <option value="PHYSICAL">Physical</option>
                         <option value="ONLINE">Online</option>
@@ -583,8 +552,8 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
                   </div>
 
                   {/* Info Box */}
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <p className="text-sm text-blue-800">
+                  <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                    <p className="text-sm text-blue-800 dark:text-blue-300">
                       <strong>Note:</strong> The system will automatically check for
                       conflicts with existing schedules (lecturer availability and
                       venue booking).
@@ -604,11 +573,11 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
               )}
             </div>
 
-            <div className="bg-gray-50 px-6 py-4 flex justify-end space-x-3">
+            <div className="bg-gray-50 dark:bg-gray-900 px-6 py-4 flex justify-end space-x-3">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition"
+                className="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
                 disabled={loading}
               >
                 Cancel

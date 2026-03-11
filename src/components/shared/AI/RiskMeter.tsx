@@ -60,11 +60,11 @@ const RiskMeter: React.FC<RiskMeterProps> = ({ score, level, size = 'md' }) => {
             {level} RISK
           </span>
         </div>
-        <span className={`font-medium ${currentSize.text} text-gray-600`}>
+        <span className={`font-medium ${currentSize.text} text-gray-600 dark:text-gray-400`}>
           {Math.round(score)}%
         </span>
       </div>
-      <div className={`w-full bg-gray-200 rounded-full ${currentSize.h} overflow-hidden`}>
+      <div className={`w-full bg-gray-200 dark:bg-gray-700 rounded-full ${currentSize.h} overflow-hidden`}>
         <div 
           className={`${colors.bar} ${currentSize.h} transition-all duration-1000 ease-out`}
           style={{ width: `${score}%` }}

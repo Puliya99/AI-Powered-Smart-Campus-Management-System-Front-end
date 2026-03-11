@@ -102,10 +102,10 @@ const ResetPassword: React.FC = () => {
   // Loading state
   if (isVerifying) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-primary-100">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-primary-100 dark:bg-gray-900">
         <div className="text-center">
           <Loader2 className="w-12 h-12 text-primary-600 animate-spin mx-auto" />
-          <p className="mt-4 text-gray-600">Verifying reset link...</p>
+          <p className="mt-4 text-gray-600 dark:text-gray-400">Verifying reset link...</p>
         </div>
       </div>
     )
@@ -114,14 +114,14 @@ const ResetPassword: React.FC = () => {
   // Invalid token
   if (!isValidToken) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-primary-100 px-4">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-primary-100 dark:bg-gray-900 px-4">
         <div className="max-w-md w-full">
-          <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 text-center">
             <div className="text-6xl mb-4">⚠️</div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-3">
               Invalid or Expired Link
             </h2>
-            <p className="text-gray-600 mb-6">
+            <p className="text-gray-600 dark:text-gray-400 mb-6">
               This password reset link is invalid or has expired.
             </p>
             <Link
@@ -139,22 +139,22 @@ const ResetPassword: React.FC = () => {
   // Success state
   if (isSuccess) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-primary-100 px-4">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-primary-100 dark:bg-gray-900 px-4">
         <div className="max-w-md w-full">
-          <div className="bg-white rounded-2xl shadow-xl p-8">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8">
             <div className="text-center">
               <div className="flex justify-center mb-6">
                 <div className="bg-green-100 p-4 rounded-full">
                   <CheckCircle className="w-16 h-16 text-green-600" />
                 </div>
               </div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-3">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-3">
                 Password Reset!
               </h2>
-              <p className="text-gray-600 mb-6">
+              <p className="text-gray-600 dark:text-gray-400 mb-6">
                 Your password has been successfully reset.
               </p>
-              <p className="text-sm text-gray-500 mb-4">
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
                 Redirecting to login page...
               </p>
               <Loader2 className="w-6 h-6 text-primary-600 animate-spin mx-auto" />
@@ -166,7 +166,7 @@ const ResetPassword: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-primary-100 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-primary-100 dark:bg-gray-900 px-4">
       <div className="max-w-md w-full">
         {/* Header */}
         <div className="text-center mb-8">
@@ -175,22 +175,22 @@ const ResetPassword: React.FC = () => {
               <GraduationCap className="w-12 h-12 text-white" />
             </div>
           </div>
-          <h2 className="text-4xl font-bold text-gray-900 tracking-tight">
+          <h2 className="text-4xl font-bold text-gray-900 dark:text-white tracking-tight">
             Reset Password
           </h2>
-          <p className="mt-3 text-base text-gray-600">
+          <p className="mt-3 text-base text-gray-600 dark:text-gray-400">
             Enter your new password below
           </p>
         </div>
 
         {/* Form */}
-        <div className="bg-white rounded-2xl shadow-xl p-8">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8">
           <form className="space-y-6" onSubmit={handleSubmit}>
             {/* Password */}
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-semibold text-gray-700 mb-2"
+                className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2"
               >
                 New Password
               </label>
@@ -205,7 +205,7 @@ const ResetPassword: React.FC = () => {
                   required
                   value={formData.password}
                   onChange={handleChange}
-                  className="block w-full pl-12 pr-12 py-3.5 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-200 text-base"
+                  className="block w-full pl-12 pr-12 py-3.5 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-200 text-base"
                   placeholder="Enter new password"
                 />
                 <button
@@ -226,7 +226,7 @@ const ResetPassword: React.FC = () => {
             <div>
               <label
                 htmlFor="confirmPassword"
-                className="block text-sm font-semibold text-gray-700 mb-2"
+                className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2"
               >
                 Confirm New Password
               </label>
@@ -241,7 +241,7 @@ const ResetPassword: React.FC = () => {
                   required
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  className="block w-full pl-12 pr-12 py-3.5 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-200 text-base"
+                  className="block w-full pl-12 pr-12 py-3.5 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-200 text-base"
                   placeholder="Confirm new password"
                 />
                 <button
@@ -259,11 +259,11 @@ const ResetPassword: React.FC = () => {
             </div>
 
             {/* Password Requirements */}
-            <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
-              <p className="text-xs font-medium text-gray-700 mb-1">
+            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
+              <p className="text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Password must contain:
               </p>
-              <ul className="text-xs text-gray-600 space-y-1">
+              <ul className="text-xs text-gray-600 dark:text-gray-400 space-y-1">
                 <li>• At least 8 characters</li>
                 <li>• One uppercase and one lowercase letter</li>
                 <li>• At least one number</li>

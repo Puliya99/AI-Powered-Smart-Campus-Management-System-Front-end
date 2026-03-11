@@ -137,8 +137,8 @@ const ProgramsPage: React.FC = () => {
         {/* Header */}
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Programs</h1>
-            <p className="text-gray-600 mt-1">Manage academic programs</p>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Programs</h1>
+            <p className="text-gray-600 dark:text-gray-400 mt-1">Manage academic programs</p>
           </div>
           <button
             onClick={() => setShowAddModal(true)}
@@ -151,19 +151,19 @@ const ProgramsPage: React.FC = () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="bg-white p-5 rounded-lg shadow">
+          <div className="bg-white dark:bg-gray-800 p-5 rounded-lg shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Total Programs</p>
-                <p className="text-2xl font-bold">{stats.totalPrograms}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Total Programs</p>
+                <p className="text-2xl font-bold dark:text-white">{stats.totalPrograms}</p>
               </div>
               <BookOpen className="w-10 h-10 text-blue-500" />
             </div>
           </div>
-          <div className="bg-white p-5 rounded-lg shadow">
+          <div className="bg-white dark:bg-gray-800 p-5 rounded-lg shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Total Enrollments</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Total Enrollments</p>
                 <p className="text-2xl font-bold text-green-600">
                   {stats.totalEnrollments}
                 </p>
@@ -171,10 +171,10 @@ const ProgramsPage: React.FC = () => {
               <Users className="w-10 h-10 text-green-500" />
             </div>
           </div>
-          <div className="bg-white p-5 rounded-lg shadow">
+          <div className="bg-white dark:bg-gray-800 p-5 rounded-lg shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Total Modules</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Total Modules</p>
                 <p className="text-2xl font-bold text-purple-600">
                   {stats.totalModules}
                 </p>
@@ -182,10 +182,10 @@ const ProgramsPage: React.FC = () => {
               <FileText className="w-10 h-10 text-purple-500" />
             </div>
           </div>
-          <div className="bg-white p-5 rounded-lg shadow">
+          <div className="bg-white dark:bg-gray-800 p-5 rounded-lg shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Total Revenue</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Total Revenue</p>
                 <p className="text-2xl font-bold text-orange-600">
                   {formatCurrency(stats.totalRevenue)}
                 </p>
@@ -196,7 +196,7 @@ const ProgramsPage: React.FC = () => {
         </div>
 
         {/* Search and Filter */}
-        <div className="bg-white p-4 rounded-lg shadow flex flex-col md:flex-row gap-4">
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow flex flex-col md:flex-row gap-4">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <input
@@ -204,7 +204,7 @@ const ProgramsPage: React.FC = () => {
               placeholder="Search by program name or code..."
               value={searchTerm}
               onChange={handleSearch}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
             />
           </div>
           {user?.role === 'ADMIN' && (
@@ -215,7 +215,7 @@ const ProgramsPage: React.FC = () => {
                   setSelectedCenter(e.target.value)
                   setCurrentPage(1)
                 }}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
               >
                 <option value="">All Centers</option>
                 {centers.map((center) => (
@@ -229,7 +229,7 @@ const ProgramsPage: React.FC = () => {
         </div>
 
         {/* Programs Grid */}
-        <div className="bg-white rounded-lg shadow">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
           {loading ? (
             <div className="flex justify-center items-center h-64">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
@@ -237,7 +237,7 @@ const ProgramsPage: React.FC = () => {
           ) : programs.length === 0 ? (
             <div className="text-center py-12">
               <BookOpen className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600">No programs found</p>
+              <p className="text-gray-600 dark:text-gray-400">No programs found</p>
             </div>
           ) : (
             <>
@@ -245,7 +245,7 @@ const ProgramsPage: React.FC = () => {
                 {programs.map((program) => (
                   <div
                     key={program.id}
-                    className="border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow"
+                    className="border border-gray-200 dark:border-gray-700 rounded-lg p-6 hover:shadow-lg transition-shadow dark:bg-gray-800"
                   >
                     {/* Program Header */}
                     <div className="flex items-start justify-between mb-4">
@@ -256,7 +256,7 @@ const ProgramsPage: React.FC = () => {
                             {program.programCode}
                           </span>
                         </div>
-                        <h3 className="text-lg font-bold text-gray-900 mb-2">
+                        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
                           {program.programName}
                         </h3>
                       </div>
@@ -264,11 +264,11 @@ const ProgramsPage: React.FC = () => {
 
                     {/* Program Details */}
                     <div className="space-y-3 mb-4">
-                      <div className="flex items-center text-sm text-gray-600">
+                      <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
                         <Calendar className="w-4 h-4 mr-2" />
                         <span>Duration: {program.duration}</span>
                       </div>
-                      <div className="flex items-center text-sm text-gray-600">
+                      <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
                         <DollarSign className="w-4 h-4 mr-2" />
                         <span>Fee: {formatCurrency(program.programFee)}</span>
                       </div>
@@ -276,15 +276,15 @@ const ProgramsPage: React.FC = () => {
 
                     {/* Program Stats */}
                     <div className="grid grid-cols-2 gap-3 mb-4">
-                      <div className="bg-blue-50 rounded-lg p-3">
-                        <p className="text-xs text-gray-600">Modules</p>
-                        <p className="text-lg font-bold text-blue-600">
+                      <div className="bg-blue-50 dark:bg-blue-900/30 rounded-lg p-3">
+                        <p className="text-xs text-gray-600 dark:text-gray-400">Modules</p>
+                        <p className="text-lg font-bold text-blue-600 dark:text-blue-400">
                           {program.stats?.moduleCount || 0}
                         </p>
                       </div>
-                      <div className="bg-green-50 rounded-lg p-3">
-                        <p className="text-xs text-gray-600">Students</p>
-                        <p className="text-lg font-bold text-green-600">
+                      <div className="bg-green-50 dark:bg-green-900/30 rounded-lg p-3">
+                        <p className="text-xs text-gray-600 dark:text-gray-400">Students</p>
+                        <p className="text-lg font-bold text-green-600 dark:text-green-400">
                           {program.stats?.enrollmentCount || 0}
                         </p>
                       </div>
@@ -292,16 +292,16 @@ const ProgramsPage: React.FC = () => {
 
                     {/* Description */}
                     {program.description && (
-                      <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
                         {program.description}
                       </p>
                     )}
 
                     {/* Actions */}
-                    <div className="flex space-x-2 pt-4 border-t border-gray-200">
+                    <div className="flex space-x-2 pt-4 border-t border-gray-200 dark:border-gray-700">
                       <button
                         onClick={() => handleViewDetails(program)}
-                        className="flex-1 flex items-center justify-center px-3 py-2 text-sm text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition"
+                        className="flex-1 flex items-center justify-center px-3 py-2 text-sm text-blue-600 bg-blue-50 dark:bg-blue-900/30 dark:text-blue-400 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/50 transition"
                         title="View Details"
                       >
                         <Eye className="w-4 h-4 mr-1" />
@@ -312,7 +312,7 @@ const ProgramsPage: React.FC = () => {
                           setSelectedProgram(program)
                           setShowAddModal(true)
                         }}
-                        className="flex-1 flex items-center justify-center px-3 py-2 text-sm text-green-600 bg-green-50 rounded-lg hover:bg-green-100 transition"
+                        className="flex-1 flex items-center justify-center px-3 py-2 text-sm text-green-600 bg-green-50 dark:bg-green-900/30 dark:text-green-400 rounded-lg hover:bg-green-100 dark:hover:bg-green-900/50 transition"
                         title="Edit"
                       >
                         <Edit className="w-4 h-4 mr-1" />
@@ -320,7 +320,7 @@ const ProgramsPage: React.FC = () => {
                       </button>
                       <button
                         onClick={() => handleDelete(program.id)}
-                        className="flex-1 flex items-center justify-center px-3 py-2 text-sm text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition"
+                        className="flex-1 flex items-center justify-center px-3 py-2 text-sm text-red-600 bg-red-50 dark:bg-red-900/30 dark:text-red-400 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/50 transition"
                         title="Delete"
                       >
                         <Trash2 className="w-4 h-4 mr-1" />
@@ -332,12 +332,12 @@ const ProgramsPage: React.FC = () => {
               </div>
 
               {/* Pagination */}
-              <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+              <div className="bg-white dark:bg-gray-800 px-4 py-3 flex items-center justify-between border-t border-gray-200 dark:border-gray-700 sm:px-6">
                 <div className="flex-1 flex justify-between sm:hidden">
                   <button
                     onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                     disabled={currentPage === 1}
-                    className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
+                    className="relative inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
                   >
                     Previous
                   </button>
@@ -346,14 +346,14 @@ const ProgramsPage: React.FC = () => {
                       setCurrentPage((p) => Math.min(totalPages, p + 1))
                     }
                     disabled={currentPage === totalPages}
-                    className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
+                    className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
                   >
                     Next
                   </button>
                 </div>
                 <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                   <div>
-                    <p className="text-sm text-gray-700">
+                    <p className="text-sm text-gray-700 dark:text-gray-300">
                       Page <span className="font-medium">{currentPage}</span> of{' '}
                       <span className="font-medium">{totalPages}</span>
                     </p>
@@ -365,7 +365,7 @@ const ProgramsPage: React.FC = () => {
                           setCurrentPage((p) => Math.max(1, p - 1))
                         }
                         disabled={currentPage === 1}
-                        className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50"
+                        className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
                       >
                         Previous
                       </button>
@@ -378,8 +378,8 @@ const ProgramsPage: React.FC = () => {
                           onClick={() => setCurrentPage(page)}
                           className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
                             currentPage === page
-                              ? 'z-10 bg-primary-50 border-primary-500 text-primary-600'
-                              : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
+                              ? 'z-10 bg-primary-50 border-primary-500 text-primary-600 dark:bg-primary-900/30 dark:text-primary-400'
+                              : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'
                           }`}
                         >
                           {page}
@@ -390,7 +390,7 @@ const ProgramsPage: React.FC = () => {
                           setCurrentPage((p) => Math.min(totalPages, p + 1))
                         }
                         disabled={currentPage === totalPages}
-                        className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50"
+                        className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
                       >
                         Next
                       </button>
