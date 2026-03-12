@@ -70,22 +70,22 @@ const CalendarView: React.FC<CalendarViewProps> = ({ events }) => {
 
   const renderHeader = () => {
     return (
-      <div className="flex items-center justify-between px-4 py-4 bg-white border-b border-gray-200 rounded-t-xl">
-        <h2 className="text-lg font-bold text-gray-900">
+      <div className="flex items-center justify-between px-4 py-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 rounded-t-xl">
+        <h2 className="text-lg font-bold text-gray-900 dark:text-white">
           {format(currentMonth, 'MMMM yyyy')}
         </h2>
         <div className="flex space-x-2">
           <button
             onClick={prevMonth}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
           >
-            <ChevronLeft className="h-5 w-5 text-gray-600" />
+            <ChevronLeft className="h-5 w-5 text-gray-600 dark:text-gray-400" />
           </button>
           <button
             onClick={nextMonth}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
           >
-            <ChevronRight className="h-5 w-5 text-gray-600" />
+            <ChevronRight className="h-5 w-5 text-gray-600 dark:text-gray-400" />
           </button>
         </div>
       </div>
@@ -95,11 +95,11 @@ const CalendarView: React.FC<CalendarViewProps> = ({ events }) => {
   const renderDays = () => {
     const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
     return (
-      <div className="grid grid-cols-7 bg-gray-50 border-b border-gray-200">
+      <div className="grid grid-cols-7 bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
         {days.map((day) => (
           <div
             key={day}
-            className="py-2 text-center text-xs font-bold text-gray-500 uppercase tracking-wide"
+            className="py-2 text-center text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide"
           >
             {day}
           </div>
@@ -110,7 +110,7 @@ const CalendarView: React.FC<CalendarViewProps> = ({ events }) => {
 
   const renderCells = () => {
     return (
-      <div className="grid grid-cols-7 auto-rows-[minmax(120px,auto)] bg-gray-200 gap-px border-b border-gray-200 overflow-hidden">
+      <div className="grid grid-cols-7 auto-rows-[minmax(120px,auto)] bg-gray-200 dark:bg-gray-600 gap-px border-b border-gray-200 dark:border-gray-600 overflow-hidden">
         {calendarDays.map((day, idx) => {
           const dayEvents = getEventsForDay(day)
           const isSelectedMonth = isSameMonth(day, monthStart)
@@ -128,11 +128,11 @@ const CalendarView: React.FC<CalendarViewProps> = ({ events }) => {
                   setSelectedDay(isSelected ? null : day)
                 }
               }}
-              className={`bg-white p-2 flex flex-col space-y-1 transition-colors ${
-                !isSelectedMonth ? 'bg-gray-50 text-gray-400' : 'text-gray-900'
-              } ${dayEvents.length > 0 ? 'cursor-pointer hover:bg-gray-50' : ''} ${
+              className={`bg-white dark:bg-gray-800 p-2 flex flex-col space-y-1 transition-colors ${
+                !isSelectedMonth ? 'bg-gray-50 dark:bg-gray-700 text-gray-400 dark:text-gray-600' : 'text-gray-900 dark:text-white'
+              } ${dayEvents.length > 0 ? 'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700' : ''} ${
                 isSelected
-                  ? 'ring-2 ring-inset ring-primary-500 bg-primary-50'
+                  ? 'ring-2 ring-inset ring-primary-500 bg-primary-50 dark:bg-primary-900/20'
                   : ''
               }`}
             >
@@ -201,19 +201,19 @@ const CalendarView: React.FC<CalendarViewProps> = ({ events }) => {
     if (!selectedDay || selectedDayEvents.length === 0) return null
 
     return (
-      <div className="border-t border-gray-200 bg-white p-4 space-y-4">
+      <div className="border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Calendar className="h-5 w-5 text-primary-600" />
-            <h3 className="text-base font-bold text-gray-900">
+            <h3 className="text-base font-bold text-gray-900 dark:text-white">
               {formatFullDate(selectedDay)}
             </h3>
           </div>
           <button
             onClick={() => setSelectedDay(null)}
-            className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+            className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
           >
-            <X className="h-4 w-4 text-gray-500" />
+            <X className="h-4 w-4 text-gray-500 dark:text-gray-400" />
           </button>
         </div>
 
@@ -223,7 +223,7 @@ const CalendarView: React.FC<CalendarViewProps> = ({ events }) => {
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <span className="h-2.5 w-2.5 rounded-full bg-blue-500" />
-                <span className="text-sm font-semibold text-gray-700">
+                <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                   Classes ({selectedClasses.length})
                 </span>
               </div>
@@ -263,7 +263,7 @@ const CalendarView: React.FC<CalendarViewProps> = ({ events }) => {
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
-                <span className="text-sm font-semibold text-gray-700">
+                <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                   Events ({selectedEvents.length})
                 </span>
               </div>
@@ -298,7 +298,7 @@ const CalendarView: React.FC<CalendarViewProps> = ({ events }) => {
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <span className="h-2.5 w-2.5 rounded-full bg-orange-500" />
-                <span className="text-sm font-semibold text-gray-700">
+                <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                   Assignments ({selectedAssignments.length})
                 </span>
               </div>
@@ -334,7 +334,7 @@ const CalendarView: React.FC<CalendarViewProps> = ({ events }) => {
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
       {renderHeader()}
       {renderDays()}
       {renderCells()}
@@ -343,20 +343,20 @@ const CalendarView: React.FC<CalendarViewProps> = ({ events }) => {
       {renderSelectedDayDetails()}
 
       {/* Legend */}
-      <div className="p-4 bg-gray-50 border-t border-gray-200 flex flex-wrap gap-x-6 gap-y-2 text-xs font-medium">
+      <div className="p-4 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600 flex flex-wrap gap-x-6 gap-y-2 text-xs font-medium">
         <div className="flex items-center">
           <span className="h-3 w-3 rounded-full bg-blue-500 mr-2" />
-          <span className="text-gray-600">Classes</span>
+          <span className="text-gray-600 dark:text-gray-400">Classes</span>
         </div>
         <div className="flex items-center">
           <span className="h-3 w-3 rounded-full bg-emerald-500 mr-2" />
-          <span className="text-gray-600">Events</span>
+          <span className="text-gray-600 dark:text-gray-400">Events</span>
         </div>
         <div className="flex items-center">
           <span className="h-3 w-3 rounded-full bg-orange-500 mr-2" />
-          <span className="text-gray-600">Assignments</span>
+          <span className="text-gray-600 dark:text-gray-400">Assignments</span>
         </div>
-        <span className="text-gray-400 ml-auto hidden sm:block">
+        <span className="text-gray-400 dark:text-gray-500 ml-auto hidden sm:block">
           Click a date to see details
         </span>
       </div>

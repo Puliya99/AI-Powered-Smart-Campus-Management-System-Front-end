@@ -148,15 +148,15 @@ const ImportStudentsModal: React.FC<Props> = ({ isOpen, onClose, onImported }) =
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
         {/* Header */}
-        <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between bg-gray-50">
-          <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+        <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between bg-gray-50 dark:bg-gray-900">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
             <FileSpreadsheet className="w-5 h-5 text-green-600" />
             Import Students from Excel
           </h2>
-          <button onClick={handleClose} className="text-gray-400 hover:text-gray-600 p-1 rounded">
+          <button onClick={handleClose} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1 rounded">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -164,15 +164,15 @@ const ImportStudentsModal: React.FC<Props> = ({ isOpen, onClose, onImported }) =
         <div className="p-6 space-y-5 overflow-y-auto flex-1">
 
           {/* Step 1: Download template */}
-          <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-            <p className="text-sm font-semibold text-blue-900 mb-1">Step 1 — Download the template</p>
-            <p className="text-xs text-blue-700 mb-3">
+          <div className="rounded-lg border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20 p-4">
+            <p className="text-sm font-semibold text-blue-900 dark:text-blue-300 mb-1">Step 1 — Download the template</p>
+            <p className="text-xs text-blue-700 dark:text-blue-400 mb-3">
               Fill in the template with student data. Required fields are marked in the Field Notes sheet.
-              The default password for all imported students is <code className="bg-blue-100 px-1 rounded font-mono">Student123</code>.
+              The default password for all imported students is <code className="bg-blue-100 dark:bg-blue-800 px-1 rounded font-mono">Student123</code>.
             </p>
             <button
               onClick={downloadTemplate}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-blue-300 text-blue-700 text-sm font-medium rounded-lg hover:bg-blue-50 transition"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-700 border border-blue-300 dark:border-blue-600 text-blue-700 dark:text-blue-300 text-sm font-medium rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/30 transition"
             >
               <Download className="w-4 h-4" />
               Download Template (.xlsx)
@@ -181,7 +181,7 @@ const ImportStudentsModal: React.FC<Props> = ({ isOpen, onClose, onImported }) =
 
           {/* Step 2: Upload file */}
           <div>
-            <p className="text-sm font-semibold text-gray-700 mb-2">Step 2 — Upload filled template</p>
+            <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Step 2 — Upload filled template</p>
 
             <div
               onDragOver={e => e.preventDefault()}
@@ -189,8 +189,8 @@ const ImportStudentsModal: React.FC<Props> = ({ isOpen, onClose, onImported }) =
               onClick={() => inputRef.current?.click()}
               className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
                 file
-                  ? 'border-green-400 bg-green-50'
-                  : 'border-gray-300 bg-gray-50 hover:border-primary-400 hover:bg-primary-50'
+                  ? 'border-green-400 bg-green-50 dark:bg-green-900/20'
+                  : 'border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 hover:border-primary-400 hover:bg-primary-50 dark:hover:bg-gray-700'
               }`}
             >
               <input
@@ -203,15 +203,15 @@ const ImportStudentsModal: React.FC<Props> = ({ isOpen, onClose, onImported }) =
               {file ? (
                 <div className="flex flex-col items-center gap-2">
                   <FileSpreadsheet className="w-10 h-10 text-green-500" />
-                  <p className="text-sm font-semibold text-green-800">{file.name}</p>
-                  <p className="text-xs text-green-600">{(file.size / 1024).toFixed(1)} KB</p>
-                  <p className="text-xs text-gray-500 mt-1">Click to change file</p>
+                  <p className="text-sm font-semibold text-green-800 dark:text-green-400">{file.name}</p>
+                  <p className="text-xs text-green-600 dark:text-green-500">{(file.size / 1024).toFixed(1)} KB</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Click to change file</p>
                 </div>
               ) : (
                 <div className="flex flex-col items-center gap-2">
                   <Upload className="w-10 h-10 text-gray-400" />
-                  <p className="text-sm font-medium text-gray-700">Drag & drop your Excel file here</p>
-                  <p className="text-xs text-gray-400">or click to browse • .xlsx / .xls • max 10 MB</p>
+                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Drag & drop your Excel file here</p>
+                  <p className="text-xs text-gray-400 dark:text-gray-500">or click to browse • .xlsx / .xls • max 10 MB</p>
                 </div>
               )}
             </div>
@@ -219,27 +219,27 @@ const ImportStudentsModal: React.FC<Props> = ({ isOpen, onClose, onImported }) =
 
           {/* Import result summary */}
           {summary && (
-            <div className="rounded-lg border border-gray-200 overflow-hidden">
-              <div className="grid grid-cols-3 divide-x divide-gray-200 bg-gray-50 text-center">
+            <div className="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+              <div className="grid grid-cols-3 divide-x divide-gray-200 dark:divide-gray-700 bg-gray-50 dark:bg-gray-900 text-center">
                 <div className="p-4">
-                  <p className="text-2xl font-bold text-gray-800">{summary.total}</p>
-                  <p className="text-xs text-gray-500 mt-0.5">Total rows</p>
+                  <p className="text-2xl font-bold text-gray-800 dark:text-white">{summary.total}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Total rows</p>
                 </div>
                 <div className="p-4">
                   <p className="text-2xl font-bold text-green-600">{summary.imported}</p>
-                  <p className="text-xs text-gray-500 mt-0.5">Imported</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Imported</p>
                 </div>
                 <div className="p-4">
                   <p className="text-2xl font-bold text-red-500">{summary.skipped}</p>
-                  <p className="text-xs text-gray-500 mt-0.5">Skipped</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Skipped</p>
                 </div>
               </div>
 
               {summary.errors.length > 0 && (
-                <div className="border-t border-gray-200">
+                <div className="border-t border-gray-200 dark:border-gray-700">
                   <button
                     onClick={() => setShowErrors(v => !v)}
-                    className="w-full flex items-center justify-between px-4 py-3 text-sm text-red-700 font-medium hover:bg-red-50 transition"
+                    className="w-full flex items-center justify-between px-4 py-3 text-sm text-red-700 dark:text-red-400 font-medium hover:bg-red-50 dark:hover:bg-red-900/20 transition"
                   >
                     <span className="flex items-center gap-2">
                       <AlertCircle className="w-4 h-4" />
@@ -249,15 +249,15 @@ const ImportStudentsModal: React.FC<Props> = ({ isOpen, onClose, onImported }) =
                   </button>
 
                   {showErrors && (
-                    <div className="max-h-48 overflow-y-auto divide-y divide-gray-100">
+                    <div className="max-h-48 overflow-y-auto divide-y divide-gray-100 dark:divide-gray-700">
                       {summary.errors.map((err, idx) => (
-                        <div key={idx} className="px-4 py-2.5 bg-red-50 flex items-start gap-3">
-                          <span className="text-xs font-mono bg-red-100 text-red-700 px-1.5 py-0.5 rounded flex-shrink-0">
+                        <div key={idx} className="px-4 py-2.5 bg-red-50 dark:bg-red-900/20 flex items-start gap-3">
+                          <span className="text-xs font-mono bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-400 px-1.5 py-0.5 rounded flex-shrink-0">
                             Row {err.row}
                           </span>
                           <div>
-                            <p className="text-xs font-semibold text-red-800">{err.name}</p>
-                            <p className="text-xs text-red-600 mt-0.5">{err.reason}</p>
+                            <p className="text-xs font-semibold text-red-800 dark:text-red-300">{err.name}</p>
+                            <p className="text-xs text-red-600 dark:text-red-400 mt-0.5">{err.reason}</p>
                           </div>
                         </div>
                       ))}
@@ -267,9 +267,9 @@ const ImportStudentsModal: React.FC<Props> = ({ isOpen, onClose, onImported }) =
               )}
 
               {summary.imported > 0 && summary.errors.length === 0 && (
-                <div className="border-t border-gray-200 px-4 py-3 bg-green-50 flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-green-600" />
-                  <p className="text-sm text-green-800 font-medium">All students imported successfully!</p>
+                <div className="border-t border-gray-200 dark:border-gray-700 px-4 py-3 bg-green-50 dark:bg-green-900/20 flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-green-600 dark:text-green-400" />
+                  <p className="text-sm text-green-800 dark:text-green-400 font-medium">All students imported successfully!</p>
                 </div>
               )}
             </div>
@@ -277,10 +277,10 @@ const ImportStudentsModal: React.FC<Props> = ({ isOpen, onClose, onImported }) =
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end gap-3">
+        <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 flex justify-end gap-3">
           <button
             onClick={handleClose}
-            className="px-5 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+            className="px-5 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition"
           >
             {summary ? 'Close' : 'Cancel'}
           </button>

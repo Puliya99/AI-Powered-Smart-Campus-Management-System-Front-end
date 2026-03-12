@@ -54,20 +54,20 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
   }
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
+    <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
       <h2 className="text-xl font-semibold mb-4 flex items-center">
         <FileText className="w-5 h-5 mr-2 text-primary-600" />
         Generate Report
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Report Type
           </label>
           <select
             value={reportType}
             onChange={(e) => setReportType(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
           >
             <option value="enrollment">Enrollment Report</option>
             <option value="payment">Payment Report</option>
@@ -78,7 +78,7 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
         {reportType === 'payment' && (
           <>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Start Date
               </label>
               <input
@@ -87,11 +87,11 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                 onChange={(e) =>
                   setFilters({ ...filters, startDate: e.target.value })
                 }
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 End Date
               </label>
               <input
@@ -100,7 +100,7 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                 onChange={(e) =>
                   setFilters({ ...filters, endDate: e.target.value })
                 }
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
               />
             </div>
           </>
@@ -108,7 +108,7 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
 
         {reportType === 'attendance' && (
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Batch ID (Optional)
             </label>
             <input
@@ -118,7 +118,7 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({
               onChange={(e) =>
                 setFilters({ ...filters, batchId: e.target.value })
               }
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
             />
           </div>
         )}

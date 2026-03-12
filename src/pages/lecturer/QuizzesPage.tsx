@@ -39,7 +39,7 @@ const LecturerQuizzesPage: React.FC = () => {
   const { moduleId } = useParams<{ moduleId: string }>();
   const { user } = useAuth();
   const navigate = useNavigate();
-  
+
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
   const [module, setModule] = useState<Module | null>(null);
   const [availableModules, setAvailableModules] = useState<Module[]>([]);
@@ -118,12 +118,12 @@ const LecturerQuizzesPage: React.FC = () => {
   if (!moduleId) {
     return (
       <DashboardLayout>
-        <div className="max-w-md mx-auto mt-12 bg-white p-8 rounded-xl shadow-sm border border-gray-200 text-center">
+        <div className="max-w-md mx-auto mt-12 bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 text-center">
           <Layout className="h-12 w-12 text-primary-600 mx-auto mb-4" />
-          <h2 className="text-xl font-bold mb-4">Select a Module</h2>
+          <h2 className="text-xl font-bold mb-4 dark:text-white">Select a Module</h2>
           <select
             onChange={handleModuleChange}
-            className="block w-full p-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+            className="block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-primary-500 focus:border-primary-500 bg-white dark:bg-gray-700 dark:text-white"
             defaultValue=""
           >
             <option value="" disabled>Choose a module...</option>
@@ -142,14 +142,14 @@ const LecturerQuizzesPage: React.FC = () => {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <div className="flex items-center space-x-2 mb-2">
-              <Link to="/lecturer/classes" className="text-sm text-gray-500 hover:text-primary-600 flex items-center">
+              <Link to="/lecturer/classes" className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary-600 flex items-center">
                 <ArrowLeft className="h-4 w-4 mr-1" /> Back
               </Link>
-              <span className="text-gray-300">|</span>
+              <span className="text-gray-300 dark:text-gray-600">|</span>
               <span className="text-sm font-medium text-primary-600">{module?.moduleCode}</span>
             </div>
-            <h1 className="text-2xl font-bold text-gray-900">Module Quizzes</h1>
-            <p className="text-gray-600">Create and manage assessments for your students.</p>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Module Quizzes</h1>
+            <p className="text-gray-600 dark:text-gray-400">Create and manage assessments for your students.</p>
           </div>
           <Link
             to={`/lecturer/modules/${moduleId}/quizzes/create`}
@@ -167,7 +167,7 @@ const LecturerQuizzesPage: React.FC = () => {
         ) : quizzes.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {quizzes.map((quiz) => (
-              <div key={quiz.id} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition">
+              <div key={quiz.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-md transition">
                 <div className="p-5">
                   <div className="flex justify-between items-start mb-4">
                     <div className="p-2 bg-primary-50 rounded-lg">
@@ -175,25 +175,25 @@ const LecturerQuizzesPage: React.FC = () => {
                     </div>
                     <div className="flex items-center space-x-2">
                       {quiz.isPublished ? (
-                        <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">PUBLISHED</span>
+                        <span className="px-2 py-1 bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300 text-xs font-bold rounded-full">PUBLISHED</span>
                       ) : (
-                        <span className="px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-bold rounded-full">DRAFT</span>
+                        <span className="px-2 py-1 bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300 text-xs font-bold rounded-full">DRAFT</span>
                       )}
                       <div className="relative group/menu">
-                        <button className="p-1 hover:bg-gray-100 rounded-full transition-colors text-gray-400">
+                        <button className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors text-gray-400">
                           <MoreVertical className="h-4 w-4" />
                         </button>
-                        <div className="absolute right-0 top-full mt-1 w-32 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 invisible group-hover/menu:opacity-100 group-hover/menu:visible transition-all z-10 overflow-hidden">
+                        <div className="absolute right-0 top-full mt-1 w-32 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg opacity-0 invisible group-hover/menu:opacity-100 group-hover/menu:visible transition-all z-10 overflow-hidden">
                           <button
                             onClick={() => navigate(`/lecturer/quizzes/${quiz.id}/edit`)}
-                            className="w-full px-4 py-2 text-left text-xs font-medium text-gray-700 hover:bg-gray-50 flex items-center"
+                            className="w-full px-4 py-2 text-left text-xs font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center"
                           >
                             <Edit className="h-3.5 w-3.5 mr-2" />
                             Edit Quiz
                           </button>
                           <button
                             onClick={() => handleDelete(quiz.id)}
-                            className="w-full px-4 py-2 text-left text-xs font-medium text-red-600 hover:bg-red-50 flex items-center border-t border-gray-100"
+                            className="w-full px-4 py-2 text-left text-xs font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center border-t border-gray-100 dark:border-gray-700"
                           >
                             <Trash2 className="h-3.5 w-3.5 mr-2" />
                             Delete Quiz
@@ -202,10 +202,10 @@ const LecturerQuizzesPage: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                  <h3 className="text-lg font-bold text-gray-900 mb-1">{quiz.title}</h3>
-                  <p className="text-sm text-gray-500 line-clamp-2 mb-4">{quiz.description}</p>
-                  
-                  <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">{quiz.title}</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mb-4">{quiz.description}</p>
+
+                  <div className="grid grid-cols-2 gap-4 text-sm text-gray-600 dark:text-gray-400">
                     <div className="flex items-center">
                       <Clock className="h-4 w-4 mr-2 text-gray-400" />
                       {quiz.durationMinutes} mins
@@ -216,8 +216,8 @@ const LecturerQuizzesPage: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                
-                <div className="bg-gray-50 px-5 py-3 border-t flex justify-between items-center">
+
+                <div className="bg-gray-50 dark:bg-gray-900 px-5 py-3 border-t border-gray-200 dark:border-gray-700 flex justify-between items-center">
                   {!quiz.isPublished && (
                     <button
                       onClick={() => handlePublish(quiz.id)}
@@ -237,10 +237,10 @@ const LecturerQuizzesPage: React.FC = () => {
             ))}
           </div>
         ) : (
-          <div className="text-center py-12 bg-white rounded-xl border-2 border-dashed border-gray-300">
-            <Layout className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900">No quizzes yet</h3>
-            <p className="text-gray-500 mt-1">Start by creating your first assessment for this module.</p>
+          <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600">
+            <Layout className="h-12 w-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white">No quizzes yet</h3>
+            <p className="text-gray-500 dark:text-gray-400 mt-1">Start by creating your first assessment for this module.</p>
           </div>
         )}
       </div>

@@ -153,8 +153,8 @@ const ModulesPage: React.FC = () => {
         {/* Header */}
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Modules</h1>
-            <p className="text-gray-600 mt-1">Manage course modules</p>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Modules</h1>
+            <p className="text-gray-600 dark:text-gray-400 mt-1">Manage course modules</p>
           </div>
           <button
             onClick={() => setShowAddModal(true)}
@@ -167,19 +167,19 @@ const ModulesPage: React.FC = () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-white p-5 rounded-lg shadow">
+          <div className="bg-white dark:bg-gray-800 p-5 rounded-lg shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Total Modules</p>
-                <p className="text-2xl font-bold">{stats.totalModules}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Total Modules</p>
+                <p className="text-2xl font-bold dark:text-white">{stats.totalModules}</p>
               </div>
               <BookOpen className="w-10 h-10 text-blue-500" />
             </div>
           </div>
-          <div className="bg-white p-5 rounded-lg shadow">
+          <div className="bg-white dark:bg-gray-800 p-5 rounded-lg shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">With Lecturer</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">With Lecturer</p>
                 <p className="text-2xl font-bold text-green-600">
                   {stats.modulesWithLecturer}
                 </p>
@@ -187,10 +187,10 @@ const ModulesPage: React.FC = () => {
               <User className="w-10 h-10 text-green-500" />
             </div>
           </div>
-          <div className="bg-white p-5 rounded-lg shadow">
+          <div className="bg-white dark:bg-gray-800 p-5 rounded-lg shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Unassigned</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Unassigned</p>
                 <p className="text-2xl font-bold text-orange-600">
                   {stats.modulesWithoutLecturer}
                 </p>
@@ -201,7 +201,7 @@ const ModulesPage: React.FC = () => {
         </div>
 
         {/* Search and Filters */}
-        <div className="bg-white p-4 rounded-lg shadow">
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             {/* Search */}
             <div className="md:col-span-1">
@@ -212,7 +212,7 @@ const ModulesPage: React.FC = () => {
                   placeholder="Search modules..."
                   value={searchTerm}
                   onChange={handleSearch}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                 />
               </div>
             </div>
@@ -221,7 +221,7 @@ const ModulesPage: React.FC = () => {
             <select
               value={filters.programId}
               onChange={(e) => handleFilterChange('programId', e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+              className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
             >
               <option value="">All Programs</option>
               {programs.map((program) => (
@@ -237,7 +237,7 @@ const ModulesPage: React.FC = () => {
               onChange={(e) =>
                 handleFilterChange('semesterNumber', e.target.value)
               }
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+              className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
             >
               <option value="">All Semesters</option>
               <option value="1">Semester 1</option>
@@ -255,7 +255,7 @@ const ModulesPage: React.FC = () => {
               <select
                 value={filters.centerId}
                 onChange={(e) => handleFilterChange('centerId', e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
               >
                 <option value="">All Centers</option>
                 {centers.map((center) => (
@@ -269,7 +269,7 @@ const ModulesPage: React.FC = () => {
         </div>
 
         {/* Modules Grid */}
-        <div className="bg-white rounded-lg shadow">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
           {loading ? (
             <div className="flex justify-center items-center h-64">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
@@ -277,7 +277,7 @@ const ModulesPage: React.FC = () => {
           ) : modules.length === 0 ? (
             <div className="text-center py-12">
               <BookOpen className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600">No modules found</p>
+              <p className="text-gray-600 dark:text-gray-400">No modules found</p>
             </div>
           ) : (
             <>
@@ -285,33 +285,33 @@ const ModulesPage: React.FC = () => {
                 {modules.map((module) => (
                   <div
                     key={module.id}
-                    className="border border-gray-200 rounded-lg p-5 hover:shadow-lg transition-shadow"
+                    className="border border-gray-200 dark:border-gray-700 rounded-lg p-5 hover:shadow-lg transition-shadow dark:bg-gray-800"
                   >
                     {/* Module Header */}
                     <div className="mb-4">
                       <div className="flex items-center justify-between mb-2">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-100 text-primary-800">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-400">
                           {module.moduleCode}
                         </span>
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
                           Semester {module.semesterNumber}
                         </span>
                       </div>
-                      <h3 className="text-lg font-bold text-gray-900 mb-1">
+                      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">
                         {module.moduleName}
                       </h3>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
                         {module.program.programName}
                       </p>
                     </div>
 
                     {/* Module Details */}
                     <div className="space-y-2 mb-4">
-                      <div className="flex items-center text-sm text-gray-600">
+                      <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
                         <Award className="w-4 h-4 mr-2" />
                         <span>Credits: {module.credits || 'N/A'}</span>
                       </div>
-                      <div className="flex items-center text-sm text-gray-600">
+                      <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
                         <User className="w-4 h-4 mr-2" />
                         <span>
                           {module.lecturer
@@ -323,19 +323,19 @@ const ModulesPage: React.FC = () => {
 
                     {/* Description */}
                     {module.description && (
-                      <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
                         {module.description}
                       </p>
                     )}
 
                     {/* Actions */}
-                    <div className="flex space-x-2 pt-4 border-t border-gray-200">
+                    <div className="flex space-x-2 pt-4 border-t border-gray-200 dark:border-gray-700">
                       <button
                         onClick={() => {
                           setSelectedModule(module)
                           setShowViewModal(true)
                         }}
-                        className="flex-1 flex items-center justify-center px-3 py-2 text-sm text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition"
+                        className="flex-1 flex items-center justify-center px-3 py-2 text-sm text-blue-600 bg-blue-50 dark:bg-blue-900/30 dark:text-blue-400 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/50 transition"
                       >
                         <Eye className="w-4 h-4 mr-1" />
                         View
@@ -345,14 +345,14 @@ const ModulesPage: React.FC = () => {
                           setSelectedModule(module)
                           setShowAddModal(true)
                         }}
-                        className="flex-1 flex items-center justify-center px-3 py-2 text-sm text-green-600 bg-green-50 rounded-lg hover:bg-green-100 transition"
+                        className="flex-1 flex items-center justify-center px-3 py-2 text-sm text-green-600 bg-green-50 dark:bg-green-900/30 dark:text-green-400 rounded-lg hover:bg-green-100 dark:hover:bg-green-900/50 transition"
                       >
                         <Edit className="w-4 h-4 mr-1" />
                         Edit
                       </button>
                       <button
                         onClick={() => handleDelete(module.id)}
-                        className="flex-1 flex items-center justify-center px-3 py-2 text-sm text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition"
+                        className="flex-1 flex items-center justify-center px-3 py-2 text-sm text-red-600 bg-red-50 dark:bg-red-900/30 dark:text-red-400 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/50 transition"
                       >
                         <Trash2 className="w-4 h-4 mr-1" />
                         Delete
@@ -363,12 +363,12 @@ const ModulesPage: React.FC = () => {
               </div>
 
               {/* Pagination */}
-              <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+              <div className="bg-white dark:bg-gray-800 px-4 py-3 flex items-center justify-between border-t border-gray-200 dark:border-gray-700 sm:px-6">
                 <div className="flex-1 flex justify-between sm:hidden">
                   <button
                     onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                     disabled={currentPage === 1}
-                    className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
+                    className="relative inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
                   >
                     Previous
                   </button>
@@ -377,14 +377,14 @@ const ModulesPage: React.FC = () => {
                       setCurrentPage((p) => Math.min(totalPages, p + 1))
                     }
                     disabled={currentPage === totalPages}
-                    className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
+                    className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
                   >
                     Next
                   </button>
                 </div>
                 <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                   <div>
-                    <p className="text-sm text-gray-700">
+                    <p className="text-sm text-gray-700 dark:text-gray-300">
                       Page <span className="font-medium">{currentPage}</span> of{' '}
                       <span className="font-medium">{totalPages}</span>
                     </p>
@@ -396,7 +396,7 @@ const ModulesPage: React.FC = () => {
                           setCurrentPage((p) => Math.max(1, p - 1))
                         }
                         disabled={currentPage === 1}
-                        className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50"
+                        className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
                       >
                         Previous
                       </button>
@@ -411,8 +411,8 @@ const ModulesPage: React.FC = () => {
                               onClick={() => setCurrentPage(pageNum)}
                               className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
                                 pageNum === currentPage
-                                  ? 'z-10 bg-primary-50 border-primary-500 text-primary-600'
-                                  : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
+                                  ? 'z-10 bg-primary-50 border-primary-500 text-primary-600 dark:bg-primary-900/30 dark:text-primary-400'
+                                  : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
                               }`}
                             >
                               {pageNum}
@@ -425,7 +425,7 @@ const ModulesPage: React.FC = () => {
                           setCurrentPage((p) => Math.min(totalPages, p + 1))
                         }
                         disabled={currentPage === totalPages}
-                        className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50"
+                        className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
                       >
                         Next
                       </button>

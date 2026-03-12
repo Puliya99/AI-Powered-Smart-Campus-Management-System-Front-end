@@ -54,9 +54,9 @@ const CATEGORY_LABELS: Record<string, string> = {
 }
 
 const STATUS_STYLES: Record<string, string> = {
-  BORROWED: 'bg-blue-100 text-blue-800',
-  RETURNED: 'bg-green-100 text-green-800',
-  OVERDUE: 'bg-red-100 text-red-800',
+  BORROWED: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
+  RETURNED: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
+  OVERDUE: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
 }
 
 const LibraryPage: React.FC = () => {
@@ -181,8 +181,8 @@ const LibraryPage: React.FC = () => {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Library Management</h1>
-            <p className="text-gray-600 mt-1">Manage books, borrowings, and track inventory.</p>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Library Management</h1>
+            <p className="text-gray-600 dark:text-gray-400 mt-1">Manage books, borrowings, and track inventory.</p>
           </div>
           <div className="flex gap-2">
             {activeTab === 'books' ? (
@@ -205,50 +205,50 @@ const LibraryPage: React.FC = () => {
 
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-200 dark:border-gray-700">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-100 rounded-lg"><BookOpen className="h-5 w-5 text-blue-600" /></div>
+              <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg"><BookOpen className="h-5 w-5 text-blue-600" /></div>
               <div>
-                <p className="text-2xl font-bold text-gray-900">{bookStats.totalBooks}</p>
-                <p className="text-xs text-gray-500">Total Books</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">{bookStats.totalBooks}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Total Books</p>
               </div>
             </div>
           </div>
-          <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-200 dark:border-gray-700">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-green-100 rounded-lg"><Archive className="h-5 w-5 text-green-600" /></div>
+              <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg"><Archive className="h-5 w-5 text-green-600" /></div>
               <div>
-                <p className="text-2xl font-bold text-gray-900">{bookStats.availableCopies}</p>
-                <p className="text-xs text-gray-500">Available</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">{bookStats.availableCopies}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Available</p>
               </div>
             </div>
           </div>
-          <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-200 dark:border-gray-700">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-amber-100 rounded-lg"><BookMarked className="h-5 w-5 text-amber-600" /></div>
               <div>
-                <p className="text-2xl font-bold text-gray-900">{bookStats.borrowedCount}</p>
-                <p className="text-xs text-gray-500">Borrowed</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">{bookStats.borrowedCount}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Borrowed</p>
               </div>
             </div>
           </div>
-          <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-200 dark:border-gray-700">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-red-100 rounded-lg"><AlertTriangle className="h-5 w-5 text-red-600" /></div>
+              <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-lg"><AlertTriangle className="h-5 w-5 text-red-600" /></div>
               <div>
-                <p className="text-2xl font-bold text-gray-900">{bookStats.overdueCount}</p>
-                <p className="text-xs text-gray-500">Overdue</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">{bookStats.overdueCount}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Overdue</p>
               </div>
             </div>
           </div>
         </div>
 
         {/* Tabs */}
-        <div className="flex border-b border-gray-200">
+        <div className="flex border-b border-gray-200 dark:border-gray-700">
           <button
             onClick={() => setActiveTab('books')}
             className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
-              activeTab === 'books' ? 'border-primary-600 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700'
+              activeTab === 'books' ? 'border-primary-600 text-primary-600 dark:text-primary-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
             }`}
           >
             Books
@@ -256,7 +256,7 @@ const LibraryPage: React.FC = () => {
           <button
             onClick={() => setActiveTab('borrowings')}
             className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
-              activeTab === 'borrowings' ? 'border-primary-600 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700'
+              activeTab === 'borrowings' ? 'border-primary-600 text-primary-600 dark:text-primary-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
             }`}
           >
             Borrowings
@@ -264,9 +264,9 @@ const LibraryPage: React.FC = () => {
         </div>
 
         {/* Search & Filters */}
-        <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200 flex flex-col md:flex-row gap-4">
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col md:flex-row gap-4">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 dark:text-gray-500" />
             <input
               type="text"
               placeholder={activeTab === 'books' ? 'Search books by title, author, ISBN...' : 'Search by book title or borrower name...'}
@@ -280,14 +280,14 @@ const LibraryPage: React.FC = () => {
                   setBorrowPagination(p => ({ ...p, page: 1 }))
                 }
               }}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
             />
           </div>
           {activeTab === 'books' ? (
             <select
               value={bookCategory}
               onChange={e => { setBookCategory(e.target.value); setBookPagination(p => ({ ...p, page: 1 })) }}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
             >
               <option value="">All Categories</option>
               {Object.entries(CATEGORY_LABELS).map(([val, label]) => (
@@ -298,7 +298,7 @@ const LibraryPage: React.FC = () => {
             <select
               value={borrowStatus}
               onChange={e => { setBorrowStatus(e.target.value); setBorrowPagination(p => ({ ...p, page: 1 })) }}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
             >
               <option value="">All Statuses</option>
               <option value="BORROWED">Borrowed</option>
@@ -315,30 +315,30 @@ const LibraryPage: React.FC = () => {
           </div>
         ) : activeTab === 'books' ? (
           /* Books Table */
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50 border-b border-gray-200">
+                <thead className="bg-gray-50 dark:bg-gray-700/50 border-b border-gray-200 dark:border-gray-700">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Title</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Author</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ISBN</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Category</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Copies</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Shelf</th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Title</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Author</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">ISBN</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Category</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Copies</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Shelf</th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200">
+                <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                   {books.length === 0 ? (
-                    <tr><td colSpan={7} className="px-6 py-12 text-center text-gray-500">No books found</td></tr>
+                    <tr><td colSpan={7} className="px-6 py-12 text-center text-gray-500 dark:text-gray-400">No books found</td></tr>
                   ) : books.map(book => (
-                    <tr key={book.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 text-sm font-medium text-gray-900">{book.title}</td>
-                      <td className="px-6 py-4 text-sm text-gray-600">{book.author}</td>
-                      <td className="px-6 py-4 text-sm text-gray-500">{book.isbn || '—'}</td>
+                    <tr key={book.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                      <td className="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">{book.title}</td>
+                      <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">{book.author}</td>
+                      <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">{book.isbn || '—'}</td>
                       <td className="px-6 py-4">
-                        <span className="px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-700">
+                        <span className="px-2 py-1 text-xs font-medium rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
                           {CATEGORY_LABELS[book.category] || book.category}
                         </span>
                       </td>
@@ -346,9 +346,9 @@ const LibraryPage: React.FC = () => {
                         <span className={`font-medium ${book.availableCopies === 0 ? 'text-red-600' : 'text-green-600'}`}>
                           {book.availableCopies}
                         </span>
-                        <span className="text-gray-400"> / {book.totalCopies}</span>
+                        <span className="text-gray-400 dark:text-gray-500"> / {book.totalCopies}</span>
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-500">{book.shelfLocation || '—'}</td>
+                      <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">{book.shelfLocation || '—'}</td>
                       <td className="px-6 py-4 text-right">
                         <div className="flex justify-end gap-2">
                           <button
@@ -372,22 +372,22 @@ const LibraryPage: React.FC = () => {
             </div>
             {/* Pagination */}
             {bookPagination.pages > 1 && (
-              <div className="flex items-center justify-between px-6 py-3 border-t border-gray-200">
-                <p className="text-sm text-gray-500">
+              <div className="flex items-center justify-between px-6 py-3 border-t border-gray-200 dark:border-gray-700">
+                <p className="text-sm text-gray-500 dark:text-gray-400">
                   Showing {(bookPagination.page - 1) * bookPagination.limit + 1} to {Math.min(bookPagination.page * bookPagination.limit, bookPagination.total)} of {bookPagination.total}
                 </p>
                 <div className="flex gap-2">
                   <button
                     disabled={bookPagination.page <= 1}
                     onClick={() => setBookPagination(p => ({ ...p, page: p.page - 1 }))}
-                    className="p-2 rounded-lg border border-gray-300 disabled:opacity-50 hover:bg-gray-50"
+                    className="p-2 rounded-lg border border-gray-300 dark:border-gray-600 disabled:opacity-50 hover:bg-gray-50 dark:hover:bg-gray-700/50"
                   >
                     <ChevronLeft className="h-4 w-4" />
                   </button>
                   <button
                     disabled={bookPagination.page >= bookPagination.pages}
                     onClick={() => setBookPagination(p => ({ ...p, page: p.page + 1 }))}
-                    className="p-2 rounded-lg border border-gray-300 disabled:opacity-50 hover:bg-gray-50"
+                    className="p-2 rounded-lg border border-gray-300 dark:border-gray-600 disabled:opacity-50 hover:bg-gray-50 dark:hover:bg-gray-700/50"
                   >
                     <ChevronRight className="h-4 w-4" />
                   </button>
@@ -397,36 +397,36 @@ const LibraryPage: React.FC = () => {
           </div>
         ) : (
           /* Borrowings Table */
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50 border-b border-gray-200">
+                <thead className="bg-gray-50 dark:bg-gray-700/50 border-b border-gray-200 dark:border-gray-700">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Book</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Borrower</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Borrow Date</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Due Date</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Returned</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Fine</th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Book</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Borrower</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Borrow Date</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Due Date</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Returned</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Status</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Fine</th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200">
+                <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                   {borrowings.length === 0 ? (
-                    <tr><td colSpan={8} className="px-6 py-12 text-center text-gray-500">No borrowings found</td></tr>
+                    <tr><td colSpan={8} className="px-6 py-12 text-center text-gray-500 dark:text-gray-400">No borrowings found</td></tr>
                   ) : borrowings.map(b => (
-                    <tr key={b.id} className={`hover:bg-gray-50 ${b.status === 'OVERDUE' ? 'bg-red-50' : ''}`}>
-                      <td className="px-6 py-4 text-sm font-medium text-gray-900">{b.book.title}</td>
-                      <td className="px-6 py-4 text-sm text-gray-600">
+                    <tr key={b.id} className={`hover:bg-gray-50 dark:hover:bg-gray-700/50 ${b.status === 'OVERDUE' ? 'bg-red-50 dark:bg-red-900/10' : ''}`}>
+                      <td className="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">{b.book.title}</td>
+                      <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
                         {b.borrower.firstName} {b.borrower.lastName}
-                        <span className="ml-1 text-xs text-gray-400">({b.borrower.role})</span>
+                        <span className="ml-1 text-xs text-gray-400 dark:text-gray-500">({b.borrower.role})</span>
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-500">{new Date(b.borrowDate).toLocaleDateString()}</td>
-                      <td className="px-6 py-4 text-sm text-gray-500">{new Date(b.dueDate).toLocaleDateString()}</td>
-                      <td className="px-6 py-4 text-sm text-gray-500">{b.returnDate ? new Date(b.returnDate).toLocaleDateString() : '—'}</td>
+                      <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">{new Date(b.borrowDate).toLocaleDateString()}</td>
+                      <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">{new Date(b.dueDate).toLocaleDateString()}</td>
+                      <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">{b.returnDate ? new Date(b.returnDate).toLocaleDateString() : '—'}</td>
                       <td className="px-6 py-4">
-                        <span className={`px-2 py-1 text-xs font-medium rounded-full ${STATUS_STYLES[b.status] || 'bg-gray-100 text-gray-700'}`}>
+                        <span className={`px-2 py-1 text-xs font-medium rounded-full ${STATUS_STYLES[b.status] || 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'}`}>
                           {b.status}
                         </span>
                       </td>
@@ -451,22 +451,22 @@ const LibraryPage: React.FC = () => {
               </table>
             </div>
             {borrowPagination.pages > 1 && (
-              <div className="flex items-center justify-between px-6 py-3 border-t border-gray-200">
-                <p className="text-sm text-gray-500">
+              <div className="flex items-center justify-between px-6 py-3 border-t border-gray-200 dark:border-gray-700">
+                <p className="text-sm text-gray-500 dark:text-gray-400">
                   Showing {(borrowPagination.page - 1) * borrowPagination.limit + 1} to {Math.min(borrowPagination.page * borrowPagination.limit, borrowPagination.total)} of {borrowPagination.total}
                 </p>
                 <div className="flex gap-2">
                   <button
                     disabled={borrowPagination.page <= 1}
                     onClick={() => setBorrowPagination(p => ({ ...p, page: p.page - 1 }))}
-                    className="p-2 rounded-lg border border-gray-300 disabled:opacity-50 hover:bg-gray-50"
+                    className="p-2 rounded-lg border border-gray-300 dark:border-gray-600 disabled:opacity-50 hover:bg-gray-50 dark:hover:bg-gray-700/50"
                   >
                     <ChevronLeft className="h-4 w-4" />
                   </button>
                   <button
                     disabled={borrowPagination.page >= borrowPagination.pages}
                     onClick={() => setBorrowPagination(p => ({ ...p, page: p.page + 1 }))}
-                    className="p-2 rounded-lg border border-gray-300 disabled:opacity-50 hover:bg-gray-50"
+                    className="p-2 rounded-lg border border-gray-300 dark:border-gray-600 disabled:opacity-50 hover:bg-gray-50 dark:hover:bg-gray-700/50"
                   >
                     <ChevronRight className="h-4 w-4" />
                   </button>

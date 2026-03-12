@@ -33,7 +33,7 @@ interface Module {
 const AssignmentsPage: React.FC = () => {
   const { moduleId } = useParams<{ moduleId: string }>();
   const navigate = useNavigate();
-  
+
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [module, setModule] = useState<Module | null>(null);
   const [availableModules, setAvailableModules] = useState<Module[]>([]);
@@ -112,12 +112,12 @@ const AssignmentsPage: React.FC = () => {
   if (!moduleId) {
     return (
       <DashboardLayout>
-        <div className="max-w-md mx-auto mt-12 bg-white p-8 rounded-xl shadow-sm border border-gray-200 text-center">
+        <div className="max-w-md mx-auto mt-12 bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 text-center">
           <ClipboardList className="h-12 w-12 text-primary-600 mx-auto mb-4" />
-          <h2 className="text-xl font-bold mb-4">Select a Module</h2>
+          <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">Select a Module</h2>
           <select
             onChange={handleModuleChange}
-            className="block w-full p-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+            className="block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
             defaultValue=""
           >
             <option value="" disabled>Choose a module...</option>
@@ -136,14 +136,14 @@ const AssignmentsPage: React.FC = () => {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <div className="flex items-center space-x-2 mb-2">
-              <Link to="/lecturer/classes" className="text-sm text-gray-500 hover:text-primary-600 flex items-center">
+              <Link to="/lecturer/classes" className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary-600 flex items-center">
                 <ArrowLeft className="h-4 w-4 mr-1" /> Back
               </Link>
               <span className="text-gray-300">|</span>
-              <span className="text-sm font-medium text-primary-600">{module?.moduleCode}</span>
+              <span className="text-sm font-medium text-primary-600 dark:text-primary-400">{module?.moduleCode}</span>
             </div>
-            <h1 className="text-2xl font-bold text-gray-900">Module Assignments</h1>
-            <p className="text-gray-600">Create and manage assignments for your students.</p>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Module Assignments</h1>
+            <p className="text-gray-600 dark:text-gray-400">Create and manage assignments for your students.</p>
           </div>
           <Link
             to={`/lecturer/modules/${moduleId}/assignments/create`}
@@ -161,27 +161,27 @@ const AssignmentsPage: React.FC = () => {
         ) : assignments.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {assignments.map((assignment) => (
-              <div key={assignment.id} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition flex flex-col">
+              <div key={assignment.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-md transition flex flex-col">
                 <div className="p-5 flex-1">
                   <div className="flex justify-between items-start mb-4">
                     <div className="p-2 bg-indigo-50 rounded-lg">
                       <ClipboardList className="h-6 w-6 text-indigo-600" />
                     </div>
                     <div className="relative group/menu">
-                      <button className="p-1 hover:bg-gray-100 rounded-full transition-colors text-gray-400">
+                      <button className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors text-gray-400">
                         <MoreVertical className="h-4 w-4" />
                       </button>
-                      <div className="absolute right-0 top-full mt-1 w-32 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 invisible group-hover/menu:opacity-100 group-hover/menu:visible transition-all z-10 overflow-hidden">
+                      <div className="absolute right-0 top-full mt-1 w-32 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg opacity-0 invisible group-hover/menu:opacity-100 group-hover/menu:visible transition-all z-10 overflow-hidden">
                         <button
                           onClick={() => navigate(`/lecturer/assignments/${assignment.id}/edit`)}
-                          className="w-full px-4 py-2 text-left text-xs font-medium text-gray-700 hover:bg-gray-50 flex items-center"
+                          className="w-full px-4 py-2 text-left text-xs font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 flex items-center"
                         >
                           <Edit className="h-3.5 w-3.5 mr-2" />
                           Edit
                         </button>
                         <button
                           onClick={() => handleDelete(assignment.id)}
-                          className="w-full px-4 py-2 text-left text-xs font-medium text-red-600 hover:bg-red-50 flex items-center border-t border-gray-100"
+                          className="w-full px-4 py-2 text-left text-xs font-medium text-red-600 hover:bg-red-50 flex items-center border-t border-gray-100 dark:border-gray-700"
                         >
                           <Trash2 className="h-3.5 w-3.5 mr-2" />
                           Delete
@@ -189,20 +189,20 @@ const AssignmentsPage: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                  <h3 className="text-lg font-bold text-gray-900 mb-1">{assignment.title}</h3>
-                  <p className="text-sm text-gray-500 line-clamp-2 mb-4">{assignment.description}</p>
-                  
-                  <div className="space-y-2 text-sm text-gray-600">
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">{assignment.title}</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mb-4">{assignment.description}</p>
+
+                  <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
                     <div className="flex items-center">
                       <Clock className="h-4 w-4 mr-2 text-gray-400" />
                       <span>Due: {formatDate(assignment.dueDate)}</span>
                     </div>
                     {assignment.fileUrl && (
-                       <a 
-                       href={`http://localhost:5000${assignment.fileUrl}`} 
-                       target="_blank" 
+                       <a
+                       href={`http://localhost:5000${assignment.fileUrl}`}
+                       target="_blank"
                        rel="noopener noreferrer"
-                       className="flex items-center text-primary-600 hover:underline"
+                       className="flex items-center text-primary-600 dark:text-primary-400 hover:underline"
                      >
                        <Download className="h-4 w-4 mr-2" />
                        View Brief
@@ -210,11 +210,11 @@ const AssignmentsPage: React.FC = () => {
                     )}
                   </div>
                 </div>
-                
-                <div className="bg-gray-50 px-5 py-3 border-t flex justify-between items-center">
+
+                <div className="bg-gray-50 dark:bg-gray-700/50 px-5 py-3 border-t border-gray-200 dark:border-gray-700 flex justify-between items-center">
                   <Link
                     to={`/lecturer/assignments/${assignment.id}/submissions`}
-                    className="flex items-center text-sm font-bold text-primary-600 hover:text-primary-700"
+                    className="flex items-center text-sm font-bold text-primary-600 dark:text-primary-400 hover:text-primary-700"
                   >
                     <Users className="h-4 w-4 mr-2" />
                     Submissions
@@ -224,10 +224,10 @@ const AssignmentsPage: React.FC = () => {
             ))}
           </div>
         ) : (
-          <div className="text-center py-12 bg-white rounded-xl border-2 border-dashed border-gray-300">
+          <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600">
             <ClipboardList className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900">No assignments yet</h3>
-            <p className="text-gray-500 mt-1">Start by creating your first assignment for this module.</p>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white">No assignments yet</h3>
+            <p className="text-gray-500 dark:text-gray-400 mt-1">Start by creating your first assignment for this module.</p>
           </div>
         )}
       </div>

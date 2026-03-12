@@ -111,27 +111,27 @@ const ModuleDetailsPage: React.FC = () => {
           <div>
             <Link
               to="/lecturer/classes"
-              className="inline-flex items-center text-sm text-gray-500 hover:text-indigo-600 mb-2"
+              className="inline-flex items-center text-sm text-gray-500 dark:text-gray-400 hover:text-indigo-600 mb-2"
             >
               <ArrowLeft className="h-4 w-4 mr-1" />
               Back to My Classes
             </Link>
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
               {module.moduleName}
             </h1>
-            <p className="text-gray-500">
+            <p className="text-gray-500 dark:text-gray-400">
               {module.moduleCode} • Semester {module.semesterNumber} •{' '}
               {module.credits} Credits
             </p>
           </div>
 
-          <div className="flex items-center space-x-2 bg-white rounded-lg p-1 shadow-sm border border-gray-200">
+          <div className="flex items-center space-x-2 bg-white dark:bg-gray-800 rounded-lg p-1 shadow-sm border border-gray-200 dark:border-gray-700">
             <button
               onClick={() => setView('list')}
               className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
                 view === 'list'
                   ? 'bg-primary-600 text-white'
-                  : 'text-gray-600 hover:bg-gray-100'
+                  : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
               }`}
             >
               List View
@@ -141,7 +141,7 @@ const ModuleDetailsPage: React.FC = () => {
               className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
                 view === 'calendar'
                   ? 'bg-primary-600 text-white'
-                  : 'text-gray-600 hover:bg-gray-100'
+                  : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
               }`}
             >
               Calendar View
@@ -153,37 +153,37 @@ const ModuleDetailsPage: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Left Column - Module Info & Description */}
             <div className="lg:col-span-2 space-y-6">
-              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
                   <BookOpen className="h-5 w-5 mr-2 text-indigo-500" />
                   Module Overview
                 </h2>
                 <div className="prose prose-indigo max-w-none">
-                  <p className="text-gray-600 leading-relaxed">
+                  <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
                     {module.description ||
                       'No description available for this module.'}
                   </p>
                 </div>
 
                 <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="flex items-center p-3 bg-gray-50 rounded-lg">
+                  <div className="flex items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                     <GraduationCap className="h-8 w-8 text-indigo-500 mr-3" />
                     <div>
-                      <p className="text-xs text-gray-500 uppercase font-semibold">
+                      <p className="text-xs text-gray-500 dark:text-gray-400 uppercase font-semibold">
                         Program
                       </p>
-                      <p className="text-sm font-medium text-gray-900">
+                      <p className="text-sm font-medium text-gray-900 dark:text-white">
                         {module.program.programName}
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center p-3 bg-gray-50 rounded-lg">
+                  <div className="flex items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                     <Users className="h-8 w-8 text-indigo-500 mr-3" />
                     <div>
-                      <p className="text-xs text-gray-500 uppercase font-semibold">
+                      <p className="text-xs text-gray-500 dark:text-gray-400 uppercase font-semibold">
                         Enrolled Batches
                       </p>
-                      <p className="text-sm font-medium text-gray-900">
+                      <p className="text-sm font-medium text-gray-900 dark:text-white">
                         {[
                           ...new Set(
                             module.schedules.map((s) => s.batch.batchNumber)
@@ -196,49 +196,49 @@ const ModuleDetailsPage: React.FC = () => {
               </div>
 
               {/* Schedules */}
-              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
                   <Calendar className="h-5 w-5 mr-2 text-indigo-500" />
                   Schedules
                 </h2>
                 <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
+                  <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                     <thead>
                       <tr>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                           Date
                         </th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                           Time
                         </th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                           Batch
                         </th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                           Location
                         </th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                           Type
                         </th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-200">
+                    <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                       {module.schedules.length > 0 ? (
                         module.schedules.map((schedule) => (
                           <tr key={schedule.id}>
-                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                               {new Date(schedule.date).toLocaleDateString()}
                             </td>
-                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-600">
+                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
                               <div className="flex items-center">
                                 <Clock className="h-3 w-3 mr-1" />
                                 {schedule.startTime} - {schedule.endTime}
                               </div>
                             </td>
-                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
+                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white font-medium">
                               {schedule.batch.batchNumber}
                             </td>
-                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-600">
+                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
                               <div className="flex items-center">
                                 <MapPin className="h-3 w-3 mr-1" />
                                 {schedule.lectureHall}
@@ -248,8 +248,8 @@ const ModuleDetailsPage: React.FC = () => {
                               <span
                                 className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
                                   (schedule as any).type === 'ONLINE'
-                                    ? 'bg-purple-100 text-purple-700'
-                                    : 'bg-amber-100 text-amber-700'
+                                    ? 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300'
+                                    : 'bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300'
                                 }`}
                               >
                                 {(schedule as any).type || 'PHYSICAL'}
@@ -261,7 +261,7 @@ const ModuleDetailsPage: React.FC = () => {
                         <tr>
                           <td
                             colSpan={5}
-                            className="px-4 py-4 text-center text-sm text-gray-500"
+                            className="px-4 py-4 text-center text-sm text-gray-500 dark:text-gray-400"
                           >
                             No upcoming schedules found.
                           </td>
@@ -275,8 +275,8 @@ const ModuleDetailsPage: React.FC = () => {
 
             {/* Right Column - Quick Actions & Recent Materials */}
             <div className="space-y-6">
-              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                   Quick Actions
                 </h2>
                 <div className="grid grid-cols-1 gap-3">
@@ -354,8 +354,8 @@ const ModuleDetailsPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                   Recent Assignments
                 </h2>
                 <div className="space-y-4">
@@ -363,12 +363,12 @@ const ModuleDetailsPage: React.FC = () => {
                     module.assignments.map((assignment) => (
                       <div
                         key={assignment.id}
-                        className="border-b border-gray-100 pb-3 last:border-0 last:pb-0"
+                        className="border-b border-gray-100 dark:border-gray-700 pb-3 last:border-0 last:pb-0"
                       >
-                        <p className="text-sm font-medium text-gray-900">
+                        <p className="text-sm font-medium text-gray-900 dark:text-white">
                           {assignment.title}
                         </p>
-                        <p className="text-xs text-gray-500 mt-1 flex items-center">
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 flex items-center">
                           <Clock className="h-3 w-3 mr-1" />
                           Due:{' '}
                           {new Date(assignment.dueDate).toLocaleDateString()}
@@ -376,7 +376,7 @@ const ModuleDetailsPage: React.FC = () => {
                       </div>
                     ))
                   ) : (
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
                       No assignments created yet.
                     </p>
                   )}

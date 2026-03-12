@@ -8,7 +8,7 @@ import DashboardLayout from '../../components/common/Layout/DashboardLayout';
 const CreateAssignmentPage: React.FC = () => {
   const { moduleId } = useParams<{ moduleId: string }>();
   const navigate = useNavigate();
-  
+
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -57,26 +57,26 @@ const CreateAssignmentPage: React.FC = () => {
     <DashboardLayout>
       <div className="max-w-3xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
-          <button onClick={() => navigate(-1)} className="flex items-center text-gray-500 hover:text-primary-600">
+          <button onClick={() => navigate(-1)} className="flex items-center text-gray-500 dark:text-gray-400 hover:text-primary-600">
             <ArrowLeft className="h-4 w-4 mr-1" /> Back
           </button>
-          <h1 className="text-2xl font-bold">Create New Assignment</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Create New Assignment</h1>
           <div className="w-10"></div>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-white p-8 rounded-xl border border-gray-200 shadow-sm space-y-6">
+        <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 p-8 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm space-y-6">
           <div className="space-y-4">
-            <h2 className="text-lg font-bold flex items-center text-gray-900">
+            <h2 className="text-lg font-bold flex items-center text-gray-900 dark:text-white">
               <ClipboardList className="h-5 w-5 mr-2 text-primary-600" />
               Assignment Details
             </h2>
-            
+
             <div>
-              <label className="block text-sm font-medium text-gray-700">Assignment Title *</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Assignment Title *</label>
               <input
                 type="text"
                 required
-                className="mt-1 block w-full border border-gray-300 rounded-lg p-2.5 focus:ring-primary-500 focus:border-primary-500"
+                className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-lg p-2.5 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                 placeholder="e.g. Final Project Phase 1"
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
@@ -84,9 +84,9 @@ const CreateAssignmentPage: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Description</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
               <textarea
-                className="mt-1 block w-full border border-gray-300 rounded-lg p-2.5 focus:ring-primary-500 focus:border-primary-500"
+                className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-lg p-2.5 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                 rows={4}
                 placeholder="Instructions for students..."
                 value={formData.description}
@@ -96,38 +96,38 @@ const CreateAssignmentPage: React.FC = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 flex items-center">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center">
                   <Clock className="h-4 w-4 mr-1 text-gray-400" />
                   Due Date & Time *
                 </label>
                 <input
                   type="datetime-local"
                   required
-                  className="mt-1 block w-full border border-gray-300 rounded-lg p-2.5 focus:ring-primary-500 focus:border-primary-500"
+                  className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-lg p-2.5 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                   value={formData.dueDate}
                   onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 flex items-center">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center">
                   <Upload className="h-4 w-4 mr-1 text-gray-400" />
                   Assignment Brief (Optional)
                 </label>
                 <input
                   type="file"
-                  className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100 cursor-pointer"
+                  className="mt-1 block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100 cursor-pointer"
                   onChange={handleFileChange}
                 />
               </div>
             </div>
           </div>
 
-          <div className="flex justify-end space-x-4 pt-4 border-t">
+          <div className="flex justify-end space-x-4 pt-4 border-t border-gray-200 dark:border-gray-700">
             <button
               type="button"
               onClick={() => navigate(-1)}
-              className="px-6 py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition font-medium"
+              className="px-6 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition font-medium text-gray-700 dark:text-gray-300"
             >
               Cancel
             </button>

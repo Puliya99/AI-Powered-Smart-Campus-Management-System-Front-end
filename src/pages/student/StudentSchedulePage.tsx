@@ -60,13 +60,13 @@ const CATEGORY_LABELS: Record<string, string> = {
 
 const getCategoryColor = (category: string) => {
   switch (category) {
-    case 'SEMINAR': return 'bg-purple-100 text-purple-800'
-    case 'WORKSHOP': return 'bg-amber-100 text-amber-800'
-    case 'EXAM': return 'bg-red-100 text-red-800'
-    case 'SPORTS_DAY': return 'bg-emerald-100 text-emerald-800'
-    case 'GUEST_LECTURE': return 'bg-indigo-100 text-indigo-800'
-    case 'OTHER': return 'bg-gray-100 text-gray-800'
-    default: return 'bg-blue-100 text-blue-800'
+    case 'SEMINAR': return 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400'
+    case 'WORKSHOP': return 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400'
+    case 'EXAM': return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+    case 'SPORTS_DAY': return 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400'
+    case 'GUEST_LECTURE': return 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-400'
+    case 'OTHER': return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
+    default: return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
   }
 }
 
@@ -155,9 +155,9 @@ const StudentSchedulePage: React.FC = () => {
 
   // Filter for upcoming sessions
   const upcomingDates = sortedDates.filter(date => {
-      const today = new Date();
-      today.setHours(0,0,0,0);
-      return new Date(date) >= today;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return new Date(date) >= today;
   });
 
   return (
@@ -165,19 +165,19 @@ const StudentSchedulePage: React.FC = () => {
       <div className="space-y-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">My Schedule</h1>
-            <p className="text-gray-600 mt-1">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">My Schedule</h1>
+            <p className="text-gray-600 dark:text-gray-400 mt-1">
               View your upcoming classes, events, and academic sessions.
             </p>
           </div>
 
-          <div className="flex items-center space-x-2 bg-white rounded-lg p-1 shadow-sm border border-gray-200">
+          <div className="flex items-center space-x-2 bg-white dark:bg-gray-800 rounded-lg p-1 shadow-sm border border-gray-200 dark:border-gray-700">
             <button
               onClick={() => setView('list')}
               className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
                 view === 'list'
                   ? 'bg-primary-600 text-white'
-                  : 'text-gray-600 hover:bg-gray-100'
+                  : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
               }`}
             >
               List View
@@ -187,7 +187,7 @@ const StudentSchedulePage: React.FC = () => {
               className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
                 view === 'calendar'
                   ? 'bg-primary-600 text-white'
-                  : 'text-gray-600 hover:bg-gray-100'
+                  : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
               }`}
             >
               Calendar View
@@ -206,11 +206,13 @@ const StudentSchedulePage: React.FC = () => {
                 <div key={date} className="space-y-4">
                   <div className="flex items-center space-x-4">
                     <h2 className={`text-lg font-bold px-4 py-1 rounded-full ${
-                        isToday(date) ? 'bg-primary-100 text-primary-800' : 'bg-gray-100 text-gray-800'
+                      isToday(date)
+                        ? 'bg-primary-100 text-primary-800 dark:bg-primary-900/40 dark:text-primary-300'
+                        : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
                     }`}>
                       {isToday(date) ? 'Today' : formatDate(date)}
                     </h2>
-                    <div className="flex-1 h-px bg-gray-200"></div>
+                    <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700"></div>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -219,13 +221,13 @@ const StudentSchedulePage: React.FC = () => {
                       return (
                         <div
                           key={schedule.id}
-                          className={`bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-all ${
-                              isToday(date) && isUpcoming(schedule.date, schedule.startTime) ? 'ring-2 ring-primary-500 ring-offset-2' : ''
+                          className={`bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-md transition-all ${
+                            isToday(date) && isUpcoming(schedule.date, schedule.startTime) ? 'ring-2 ring-primary-500 ring-offset-2' : ''
                           }`}
                         >
                           <div className="p-5">
                             <div className="flex items-start justify-between mb-4">
-                              <div className={`p-2 rounded-lg ${isEvent ? 'bg-emerald-50' : 'bg-blue-50'}`}>
+                              <div className={`p-2 rounded-lg ${isEvent ? 'bg-emerald-50 dark:bg-emerald-900/30' : 'bg-blue-50 dark:bg-blue-900/30'}`}>
                                 {isEvent ? (
                                   <Star className="h-6 w-6 text-emerald-600" />
                                 ) : (
@@ -239,17 +241,19 @@ const StudentSchedulePage: React.FC = () => {
                                   </span>
                                 )}
                                 <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                    schedule.type === 'ONLINE' ? 'bg-purple-100 text-purple-800' : 'bg-green-100 text-green-800'
+                                  schedule.type === 'ONLINE'
+                                    ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400'
+                                    : 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
                                 }`}>
                                   {schedule.type}
                                 </span>
                               </div>
                             </div>
 
-                            <h3 className="text-lg font-bold text-gray-900 mb-1 line-clamp-1">
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1 line-clamp-1">
                               {isEvent ? schedule.title : schedule.module?.moduleName || 'Untitled'}
                             </h3>
-                            <p className="text-sm text-gray-500 mb-4">
+                            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
                               {isEvent
                                 ? schedule.description
                                   ? <span className="line-clamp-1">{schedule.description}</span>
@@ -261,18 +265,18 @@ const StudentSchedulePage: React.FC = () => {
                             </p>
 
                             <div className="space-y-3">
-                              <div className="flex items-center text-sm text-gray-600">
+                              <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
                                 <Clock className="h-4 w-4 mr-2 text-gray-400" />
                                 <span>
                                   {formatTime(schedule.startTime)} - {formatTime(schedule.endTime)}
                                 </span>
                               </div>
-                              <div className="flex items-center text-sm text-gray-600">
+                              <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
                                 <MapPin className="h-4 w-4 mr-2 text-gray-400" />
                                 <span>{schedule.lectureHall} • {schedule.center.centerName}</span>
                               </div>
                               {schedule.lecturer && (
-                                <div className="flex items-center text-sm text-gray-600">
+                                <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
                                   <User className="h-4 w-4 mr-2 text-gray-400" />
                                   <span>
                                     {schedule.lecturer.user.firstName} {schedule.lecturer.user.lastName}
@@ -283,11 +287,11 @@ const StudentSchedulePage: React.FC = () => {
                           </div>
 
                           {schedule.type === 'ONLINE' && isUpcoming(schedule.date, schedule.startTime) && (
-                              <div className="px-5 py-3 bg-purple-50 border-t border-purple-100">
-                                  <button className="w-full text-center text-sm font-bold text-purple-700 hover:text-purple-800">
-                                      JOIN ONLINE CLASS
-                                  </button>
-                              </div>
+                            <div className="px-5 py-3 bg-purple-50 dark:bg-purple-900/20 border-t border-purple-100 dark:border-purple-800">
+                              <button className="w-full text-center text-sm font-bold text-purple-700 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300">
+                                JOIN ONLINE CLASS
+                              </button>
+                            </div>
                           )}
                         </div>
                       );
@@ -296,13 +300,13 @@ const StudentSchedulePage: React.FC = () => {
                 </div>
               ))
             ) : (
-              <div className="bg-white rounded-xl border-2 border-dashed border-gray-300 py-12 text-center">
+              <div className="bg-white dark:bg-gray-800 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 py-12 text-center">
                 <CalendarIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900">No upcoming schedules</h3>
-                <p className="text-gray-500 mt-1">You have no classes or events scheduled for the upcoming days.</p>
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white">No upcoming schedules</h3>
+                <p className="text-gray-500 dark:text-gray-400 mt-1">You have no classes or events scheduled for the upcoming days.</p>
               </div>
             )}
-            
+
             {/* Past Classes Toggle/Section could be added here */}
           </div>
         ) : (

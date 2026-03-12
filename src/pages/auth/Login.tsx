@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Eye, EyeOff, Loader2, GraduationCap, Lock, Mail } from 'lucide-react'
+import { Eye, EyeOff, Loader2, GraduationCap, Lock, Mail, AlertCircle } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 
 const Login: React.FC = () => {
@@ -12,9 +12,11 @@ const Login: React.FC = () => {
   })
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target
+    if (errorMessage) setErrorMessage(null)
     setFormData({
       ...formData,
       [name]: type === 'checkbox' ? checked : value,
@@ -24,14 +26,14 @@ const Login: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
+    setErrorMessage(null)
 
     try {
       // Use the login method from AuthContext
       await login(formData.email, formData.password)
       // Navigation is handled in the AuthContext
-    } catch (error) {
-      // Error toast is shown in AuthContext
-      console.error('Login error:', error)
+    } catch (error: any) {
+      setErrorMessage(error?.message || 'Incorrect email or password. Please try again.')
     } finally {
       setIsLoading(false)
     }
@@ -40,7 +42,7 @@ const Login: React.FC = () => {
   return (
     <div className="min-h-screen flex">
       {/* Left Side - Login Form */}
-      <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-white">
+      <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-800">
         <div className="max-w-md w-full space-y-8">
           {/* Header */}
           <div className="text-center">
@@ -49,10 +51,10 @@ const Login: React.FC = () => {
                 <GraduationCap className="w-12 h-12 text-white" />
               </div>
             </div>
-            <h2 className="text-4xl font-bold text-gray-900 tracking-tight">
+            <h2 className="text-4xl font-bold text-gray-900 dark:text-white tracking-tight">
               Welcome Back
             </h2>
-            <p className="mt-3 text-base text-gray-600">
+            <p className="mt-3 text-base text-gray-600 dark:text-gray-400">
               Sign in to access your Smart Campus account
             </p>
           </div>
@@ -63,7 +65,7 @@ const Login: React.FC = () => {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-semibold text-gray-700 mb-2"
+                className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2"
               >
                 Email Address
               </label>
@@ -79,7 +81,7 @@ const Login: React.FC = () => {
                   required
                   value={formData.email}
                   onChange={handleChange}
-                  className="block w-full pl-12 pr-4 py-3.5 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-200 text-base"
+                  className="block w-full pl-12 pr-4 py-3.5 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-200 text-base"
                   placeholder="your.email@example.com"
                 />
               </div>
@@ -89,7 +91,7 @@ const Login: React.FC = () => {
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-semibold text-gray-700 mb-2"
+                className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2"
               >
                 Password
               </label>
@@ -105,7 +107,11 @@ const Login: React.FC = () => {
                   required
                   value={formData.password}
                   onChange={handleChange}
-                  className="block w-full pl-12 pr-12 py-3.5 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-200 text-base"
+                  className={`block w-full pl-12 pr-12 py-3.5 border rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:border-transparent transition duration-200 text-base ${
+                    errorMessage
+                      ? 'border-red-400 focus:ring-red-400'
+                      : 'border-gray-300 dark:border-gray-600 focus:ring-primary-500'
+                  }`}
                   placeholder="Enter your password"
                 />
                 <button
@@ -122,6 +128,14 @@ const Login: React.FC = () => {
               </div>
             </div>
 
+            {/* Inline error message */}
+            {errorMessage && (
+              <div className="flex items-start gap-3 rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+                <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
+                <span>{errorMessage}</span>
+              </div>
+            )}
+
             {/* Remember me & Forgot password */}
             <div className="flex items-center justify-between">
               <div className="flex items-center">
@@ -131,11 +145,11 @@ const Login: React.FC = () => {
                   type="checkbox"
                   checked={formData.rememberMe}
                   onChange={handleChange}
-                  className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded cursor-pointer"
+                  className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 dark:border-gray-600 rounded cursor-pointer"
                 />
                 <label
                   htmlFor="rememberMe"
-                  className="ml-2 block text-sm text-gray-700 cursor-pointer"
+                  className="ml-2 block text-sm text-gray-700 dark:text-gray-300 cursor-pointer"
                 >
                   Remember me
                 </label>

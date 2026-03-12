@@ -158,47 +158,35 @@ Defined in `.env.local` (copy from `.env.example`):
 src/
 ├── main.tsx                 # Entry point — PWA service worker registration
 ├── App.tsx                  # Root: BrowserRouter + ThemeProvider + AuthProvider + AppRoutes
-├── config/
-│   └── api.config.ts        # Base URL, timeout, endpoint constants
+├── config/                  # Firebase config, API constants
 ├── context/
 │   ├── AuthContext.tsx       # Auth state, login/logout/register, localStorage persistence
-│   └── ThemeContext.tsx      # Dark/light theme toggle
+│   └── ThemeContext.tsx      # Dark/light theme toggle (class-based, localStorage persisted)
 ├── routes/
 │   ├── AppRoutes.tsx         # All route definitions (lazy-loaded, role-protected)
 │   ├── ProtectedRoute.tsx    # Role-based route guard
 │   └── PublicRoute.tsx       # Redirect authenticated users away from auth pages
 ├── pages/
 │   ├── auth/                # Login, Register, ForgotPassword, ResetPassword
-│   ├── admin/               # Admin portal (~20 pages)
-│   ├── student/             # Student portal (~19 pages)
-│   ├── lecturer/            # Lecturer portal (~20 pages)
+│   ├── admin/               # Admin portal pages
+│   ├── student/             # Student portal pages
+│   ├── lecturer/            # Lecturer portal pages
 │   ├── staff/               # Staff dashboard
 │   └── common/              # Profile, Notifications, VideoRoom, LectureMaterials, Kiosk
 ├── components/
-│   ├── admin/               # Admin-specific UI components
+│   ├── admin/               # Admin-specific UI components and modals
 │   ├── student/             # Student-specific UI components
 │   ├── lecturer/            # Lecturer-specific UI components
-│   ├── shared/              # AI, Chatbot, VideoMeeting, Notifications
-│   └── common/              # Reusable: Button, Card, Modal, Table, Form,
-│                            # Input, Layout, Loading, SearchBar, Alert, Badge
+│   ├── shared/              # AI risk components, ChatBot
+│   └── common/              # Layout (DashboardLayout), ChatBot, shared widgets
 ├── services/
 │   ├── api/
 │   │   ├── axios.config.ts  # Axios instance with JWT interceptors
 │   │   └── ai.service.ts    # AI prediction & RAG chat calls
 │   ├── auth.service.ts      # Login, register, getCurrentUser
-│   ├── attendance.service.ts
 │   ├── notification.service.ts
-│   ├── webauthn.service.ts  # Passkey/biometric auth
+│   ├── kiosk.service.ts     # Kiosk attendance (passkey + WebAuthn)
 │   └── ...                  # student, lecturer, module, assignment, payment, etc.
-├── store/
-│   ├── store.ts             # Zustand store configuration
-│   └── slices/              # auth, student, user, notification slices
-├── hooks/                   # useAuth, useForm, useDebounce, useWebSocket,
-│                            # useLocalStorage, useModal, usePagination, useSearch
-├── types/                   # TypeScript type definitions
-├── enums/                   # Shared enum constants
-├── utils/                   # Utility/helper functions
-├── assets/                  # Static assets (images, icons, fonts)
 ├── styles/
 │   └── index.css            # Global styles + Tailwind directives
 └── tests/
@@ -237,9 +225,10 @@ All page components use `React.lazy()` for code splitting.
 
 ## State Management
 
-- **Zustand** store with slices for auth, student, user, and notifications.
 - **React Context** for authentication (login/logout/token persistence) and theme (dark/light mode).
 - Auth state persisted to `localStorage` and validated against `/auth/me` on app load.
+
+<!-- TODO: Zustand store (`src/store/`) is listed as a dependency but the directory does not currently exist — verify whether slices were integrated into Context or are planned. -->
 
 ---
 
@@ -252,11 +241,7 @@ All page components use `React.lazy()` for code splitting.
 
 ---
 
-## Path Aliases
-
-13 TypeScript/Vite path aliases configured for clean imports:
-
-`@components`, `@pages`, `@services`, `@hooks`, `@context`, `@store`, `@types`, `@enums`, `@utils`, `@routes`, `@assets`, `@styles`, `@config`
+<!-- TODO: Verify configured path aliases in vite.config.ts / tsconfig.json — update this section once confirmed. -->
 
 ---
 

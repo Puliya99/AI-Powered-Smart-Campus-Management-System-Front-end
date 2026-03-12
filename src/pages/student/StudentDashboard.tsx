@@ -101,10 +101,10 @@ const StudentDashboard: React.FC = () => {
     <DashboardLayout>
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
             Student Dashboard
           </h1>
-          <p className="text-gray-600 mt-1">
+          <p className="text-gray-600 dark:text-gray-400 mt-1">
             Welcome back,{' '}
             {dashboardData?.profile?.nameWithInitials ||
               dashboardData?.profile?.name}
@@ -115,14 +115,14 @@ const StudentDashboard: React.FC = () => {
         {/* Stats Grid */}
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {statCards.map((stat) => (
-            <div key={stat.name} className="bg-white p-5 shadow rounded-lg">
+            <div key={stat.name} className="bg-white dark:bg-gray-800 p-5 shadow rounded-lg">
               <div className="flex items-center">
                 <div className={`p-3 rounded-full bg-${stat.color}-100`}>
                   <stat.icon className={`h-6 w-6 text-${stat.color}-600`} />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm text-gray-500">{stat.name}</p>
-                  <p className="text-2xl font-semibold">{stat.value}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">{stat.name}</p>
+                  <p className="text-2xl font-semibold dark:text-white">{stat.value}</p>
                 </div>
               </div>
             </div>
@@ -138,10 +138,10 @@ const StudentDashboard: React.FC = () => {
                   <Brain className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-gray-900">
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white">
                     AI Study Recommendations
                   </h3>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
                     Personalized insights based on your recent activity
                   </p>
                 </div>
@@ -168,14 +168,14 @@ const StudentDashboard: React.FC = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
           {/* Upcoming Classes */}
-          <div className="bg-white shadow rounded-lg">
-            <div className="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
-              <h3 className="text-lg font-medium text-gray-900">
+          <div className="bg-white dark:bg-gray-800 shadow rounded-lg">
+            <div className="px-5 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white">
                 Upcoming Classes
               </h3>
               <Link
                 to="/student/schedule"
-                className="text-sm text-primary-600 hover:text-primary-500"
+                className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-500"
               >
                 View Schedule
               </Link>
@@ -186,25 +186,25 @@ const StudentDashboard: React.FC = () => {
                   {upcomingClasses.map((item: any) => (
                     <div
                       key={item.id}
-                      className="flex items-center p-3 bg-gray-50 rounded-lg"
+                      className="flex items-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg"
                     >
                       <Clock className="h-5 w-5 text-gray-400 mr-3" />
                       <div className="flex-1">
-                        <p className="text-sm font-medium text-gray-900">
+                        <p className="text-sm font-medium text-gray-900 dark:text-white">
                           {item.module?.name}
                         </p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
                           {item.startTime} - {item.endTime}
                         </p>
                       </div>
-                      <span className="text-xs font-medium text-primary-600 bg-primary-50 px-2 py-1 rounded">
+                      <span className="text-xs font-medium text-primary-600 dark:text-primary-400 bg-primary-50 px-2 py-1 rounded">
                         {item.location || 'Online'} | {item.type || 'PHYSICAL'}
                       </span>
                     </div>
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-6 text-gray-500">
+                <div className="text-center py-6 text-gray-500 dark:text-gray-400">
                   <p>No upcoming classes today.</p>
                 </div>
               )}
@@ -212,14 +212,14 @@ const StudentDashboard: React.FC = () => {
           </div>
 
           {/* Recent Results */}
-          <div className="bg-white shadow rounded-lg">
-            <div className="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
-              <h3 className="text-lg font-medium text-gray-900">
+          <div className="bg-white dark:bg-gray-800 shadow rounded-lg">
+            <div className="px-5 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white">
                 Recent Results
               </h3>
               <Link
                 to="/student/results"
-                className="text-sm text-primary-600 hover:text-primary-500"
+                className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-500"
               >
                 View All
               </Link>
@@ -230,19 +230,19 @@ const StudentDashboard: React.FC = () => {
                   {recentResults.map((result: any) => (
                     <div
                       key={result.id}
-                      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                      className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg"
                     >
                       <div>
-                        <p className="text-sm font-medium text-gray-900">
+                        <p className="text-sm font-medium text-gray-900 dark:text-white">
                           {result.module?.name}
                         </p>
-                        <p className="text-xs text-gray-500">{result.type}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">{result.type}</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm font-bold text-gray-900">
+                        <p className="text-sm font-bold text-gray-900 dark:text-white">
                           {result.marks}/{result.maxMarks}
                         </p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
                           {Math.round((result.marks / result.maxMarks) * 100)}%
                         </p>
                       </div>
@@ -250,7 +250,7 @@ const StudentDashboard: React.FC = () => {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-6 text-gray-500">
+                <div className="text-center py-6 text-gray-500 dark:text-gray-400">
                   <p>No recent results found.</p>
                 </div>
               )}
@@ -259,49 +259,47 @@ const StudentDashboard: React.FC = () => {
         </div>
 
         {/* Quick Links */}
-        <div className="bg-white shadow rounded-lg p-5">
-          <h3 className="text-lg font-medium mb-4">Quick Links</h3>
+        <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-5">
+          <h3 className="text-lg font-medium mb-4 dark:text-white">Quick Links</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <Link
               to="/student/assignments"
-              className="flex flex-col items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+              className="flex flex-col items-center p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
             >
               <FileText className="h-6 w-6 text-blue-600 mb-2" />
-              <span className="text-sm font-medium">Assignments</span>
+              <span className="text-sm font-medium dark:text-gray-300">Assignments</span>
             </Link>
             <Link
               to="/student/payments"
-              className="flex flex-col items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+              className="flex flex-col items-center p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
             >
               <CreditCard className="h-6 w-6 text-purple-600 mb-2" />
-              <span className="text-sm font-medium">Payments</span>
+              <span className="text-sm font-medium dark:text-gray-300">Payments</span>
             </Link>
             <Link
               to="/student/courses"
-              className="flex flex-col items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+              className="flex flex-col items-center p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
             >
               <BookOpen className="h-6 w-6 text-orange-600 mb-2" />
-              <span className="text-sm font-medium">Courses</span>
+              <span className="text-sm font-medium dark:text-gray-300">Courses</span>
             </Link>
             <Link
               to="/student/online-classes"
-              className="flex flex-col items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+              className="flex flex-col items-center p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
             >
               <Video className="h-6 w-6 text-red-600 mb-2" />
-              <span className="text-sm font-medium">Online Classes</span>
+              <span className="text-sm font-medium dark:text-gray-300">Online Classes</span>
             </Link>
             <Link
               to="/student/results"
-              className="flex flex-col items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+              className="flex flex-col items-center p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
             >
               <Award className="h-6 w-6 text-yellow-600 mb-2" />
-              <span className="text-sm font-medium">Results</span>
+              <span className="text-sm font-medium dark:text-gray-300">Results</span>
             </Link>
           </div>
         </div>
       </div>
-      {/* RAG Chatbot */}
-      <ChatBot courseId={dashboardData?.upcomingClasses?.[0]?.module?.id} />
     </DashboardLayout>
   )
 }

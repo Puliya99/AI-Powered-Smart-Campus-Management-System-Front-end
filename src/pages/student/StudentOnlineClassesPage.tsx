@@ -79,21 +79,21 @@ const StudentOnlineClassesPage: React.FC = () => {
       <div className="space-y-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Online Classes</h1>
-            <p className="text-gray-600 mt-1">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Online Classes</h1>
+            <p className="text-gray-600 dark:text-gray-400 mt-1">
               Join your virtual lectures and view past meeting history.
             </p>
           </div>
         </div>
 
         {/* Tabs */}
-        <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg w-fit">
+        <div className="flex space-x-1 bg-gray-100 dark:bg-gray-700 p-1 rounded-lg w-fit">
           <button
             onClick={() => setActiveTab('active')}
             className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${
               activeTab === 'active'
-                ? 'bg-white text-primary-600 shadow-sm'
-                : 'text-gray-500 hover:text-gray-700'
+                ? 'bg-white dark:bg-gray-800 text-primary-600 shadow-sm'
+                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
             }`}
           >
             Active Classes
@@ -107,8 +107,8 @@ const StudentOnlineClassesPage: React.FC = () => {
             onClick={() => setActiveTab('history')}
             className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${
               activeTab === 'history'
-                ? 'bg-white text-primary-600 shadow-sm'
-                : 'text-gray-500 hover:text-gray-700'
+                ? 'bg-white dark:bg-gray-800 text-primary-600 shadow-sm'
+                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
             }`}
           >
             Meeting History
@@ -125,26 +125,26 @@ const StudentOnlineClassesPage: React.FC = () => {
               {activeMeetings.map((meeting) => (
                 <div
                   key={meeting.id}
-                  className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow"
+                  className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-md transition-shadow"
                 >
                   <div className="p-5">
                     <div className="flex items-center justify-between mb-4">
                       <div className="p-2 bg-primary-50 rounded-lg">
                         <Video className="h-6 w-6 text-primary-600" />
                       </div>
-                      <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 flex items-center">
+                      <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 flex items-center">
                         <span className="w-1.5 h-1.5 rounded-full bg-green-500 mr-1.5 animate-pulse"></span>
                         Live Now
                       </span>
                     </div>
-                    <h3 className="text-lg font-bold text-gray-900 mb-1">
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">
                       {meeting.title}
                     </h3>
                     <div className="flex items-center text-sm text-primary-600 font-medium mb-1">
                       <BookOpen className="h-4 w-4 mr-1.5" />
                       {meeting.module?.moduleCode}
                     </div>
-                    <p className="text-sm text-gray-500 mb-2">
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
                       {meeting.module?.moduleName}
                     </p>
                     {meeting.batch && (
@@ -154,12 +154,12 @@ const StudentOnlineClassesPage: React.FC = () => {
                       </div>
                     )}
 
-                    <div className="space-y-2 mb-6 border-t border-gray-100 pt-4">
-                      <div className="flex items-center text-xs text-gray-500">
+                    <div className="space-y-2 mb-6 border-t border-gray-100 dark:border-gray-700 pt-4">
+                      <div className="flex items-center text-xs text-gray-500 dark:text-gray-400">
                         <Users className="h-3.5 w-3.5 mr-2" />
                         Lecturer: {meeting.lecturer.user.firstName} {meeting.lecturer.user.lastName}
                       </div>
-                      <div className="flex items-center text-xs text-gray-500">
+                      <div className="flex items-center text-xs text-gray-500 dark:text-gray-400">
                         <Clock className="h-3.5 w-3.5 mr-2" />
                         Started {new Date(meeting.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </div>
@@ -177,12 +177,12 @@ const StudentOnlineClassesPage: React.FC = () => {
               ))}
             </div>
           ) : (
-            <div className="text-center py-16 bg-white rounded-xl border-2 border-dashed border-gray-300">
-              <Video className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900">
+            <div className="text-center py-16 bg-white dark:bg-gray-800 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600">
+              <Video className="h-12 w-12 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white">
                 No active online classes
               </h3>
-              <p className="text-gray-500 mt-1">
+              <p className="text-gray-500 dark:text-gray-400 mt-1">
                 When your lecturers start an online session, it will appear here.
               </p>
               <button 
@@ -194,58 +194,58 @@ const StudentOnlineClassesPage: React.FC = () => {
             </div>
           )
         ) : (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead className="bg-gray-50 dark:bg-gray-700">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Class Info
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Module
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Date & Time
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Duration
                     </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Actions
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                   {historyMeetings.length > 0 ? (
                     historyMeetings.map((meeting) => (
-                      <tr key={meeting.id} className="hover:bg-gray-50 transition-colors">
+                      <tr key={meeting.id} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
-                            <div className="p-2 bg-gray-100 rounded-lg mr-3">
-                              <History className="h-5 w-5 text-gray-500" />
+                            <div className="p-2 bg-gray-100 dark:bg-gray-700 rounded-lg mr-3">
+                              <History className="h-5 w-5 text-gray-500 dark:text-gray-400" />
                             </div>
                             <div>
-                              <div className="text-sm font-medium text-gray-900">{meeting.title}</div>
-                              <div className="text-xs text-gray-500">
+                              <div className="text-sm font-medium text-gray-900 dark:text-white">{meeting.title}</div>
+                              <div className="text-xs text-gray-500 dark:text-gray-400">
                                 Host: {meeting.lecturer.user.firstName} {meeting.lecturer.user.lastName}
                               </div>
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">{meeting.module?.moduleCode}</div>
-                          <div className="text-xs text-gray-500">{meeting.module?.moduleName}</div>
+                          <div className="text-sm text-gray-900 dark:text-white">{meeting.module?.moduleCode}</div>
+                          <div className="text-xs text-gray-500 dark:text-gray-400">{meeting.module?.moduleName}</div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">
+                          <div className="text-sm text-gray-900 dark:text-white">
                             {new Date(meeting.startTime).toLocaleDateString()}
                           </div>
-                          <div className="text-xs text-gray-500">
+                          <div className="text-xs text-gray-500 dark:text-gray-400">
                             {new Date(meeting.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                           {meeting.endTime ? (
                             (() => {
                               const start = new Date(meeting.startTime);
@@ -264,7 +264,7 @@ const StudentOnlineClassesPage: React.FC = () => {
                               Join Now
                             </button>
                           ) : (
-                            <span className="text-gray-400">Finished</span>
+                            <span className="text-gray-400 dark:text-gray-500">Finished</span>
                           )}
                         </td>
                       </tr>
@@ -273,8 +273,8 @@ const StudentOnlineClassesPage: React.FC = () => {
                     <tr>
                       <td colSpan={5} className="px-6 py-12 text-center">
                         <div className="flex flex-col items-center">
-                          <AlertCircle className="h-10 w-10 text-gray-300 mb-2" />
-                          <p className="text-gray-500">No meeting history found.</p>
+                          <AlertCircle className="h-10 w-10 text-gray-300 dark:text-gray-600 mb-2" />
+                          <p className="text-gray-500 dark:text-gray-400">No meeting history found.</p>
                         </div>
                       </td>
                     </tr>

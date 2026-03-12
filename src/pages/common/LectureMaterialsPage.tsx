@@ -147,7 +147,7 @@ const LectureMaterialsPage: React.FC = () => {
       case 'FILE':
         return <File className="h-6 w-6 text-orange-500" />;
       default:
-        return <File className="h-6 w-6 text-gray-500" />;
+        return <File className="h-6 w-6 text-gray-500 dark:text-gray-400" />;
     }
   };
 
@@ -176,27 +176,27 @@ const LectureMaterialsPage: React.FC = () => {
             <div>
               <button
                 onClick={() => window.history.back()}
-                className="inline-flex items-center text-sm text-gray-500 hover:text-primary-600 mb-2"
+                className="inline-flex items-center text-sm text-gray-500 dark:text-gray-400 hover:text-primary-600 mb-2"
               >
                 <ArrowLeft className="h-4 w-4 mr-1" />
                 Back
               </button>
-              <h1 className="text-2xl font-bold text-gray-900">
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
                 Lecture Materials
               </h1>
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-gray-400">
                 Please select a module to view materials.
               </p>
             </div>
           </div>
 
-          <div className="max-w-md mx-auto bg-white p-8 rounded-xl shadow-sm border border-gray-200">
+          <div className="max-w-md mx-auto bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
             <div className="text-center mb-6">
               <div className="p-3 bg-primary-50 rounded-full inline-block mb-4">
                 <FileText className="h-8 w-8 text-primary-600" />
               </div>
-              <h3 className="text-lg font-medium text-gray-900">Select a Module</h3>
-              <p className="text-gray-500 mt-1 text-sm">
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white">Select a Module</h3>
+              <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">
                 Choose one of your assigned modules to view its materials.
               </p>
             </div>
@@ -204,7 +204,7 @@ const LectureMaterialsPage: React.FC = () => {
             <div className="space-y-4">
               <div className="relative">
                 <select
-                  className="block w-full pl-3 pr-10 py-3 text-base border-gray-300 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm rounded-lg appearance-none bg-white border cursor-pointer"
+                  className="block w-full pl-3 pr-10 py-3 text-base border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm rounded-lg appearance-none bg-white dark:bg-gray-700 dark:text-white border cursor-pointer"
                   onChange={handleModuleChange}
                   value=""
                 >
@@ -215,13 +215,13 @@ const LectureMaterialsPage: React.FC = () => {
                     </option>
                   ))}
                 </select>
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400 dark:text-gray-500">
                   <ChevronDown className="h-5 w-5" />
                 </div>
               </div>
 
               <div className="text-center">
-                <span className="text-xs text-gray-400">OR</span>
+                <span className="text-xs text-gray-400 dark:text-gray-500">OR</span>
               </div>
 
               <Link
@@ -245,12 +245,12 @@ const LectureMaterialsPage: React.FC = () => {
             <div className="flex items-center space-x-2 mb-2">
               <button
                 onClick={() => window.history.back()}
-                className="inline-flex items-center text-sm text-gray-500 hover:text-primary-600"
+                className="inline-flex items-center text-sm text-gray-500 dark:text-gray-400 hover:text-primary-600"
               >
                 <ArrowLeft className="h-4 w-4 mr-1" />
                 Back
               </button>
-              <span className="text-gray-300">|</span>
+              <span className="text-gray-300 dark:text-gray-600">|</span>
               <div className="relative inline-block">
                 <select
                   className="bg-transparent border-none text-sm text-primary-600 font-medium focus:ring-0 p-0 pr-8 appearance-none cursor-pointer hover:text-primary-700"
@@ -266,11 +266,11 @@ const LectureMaterialsPage: React.FC = () => {
                 <ChevronDown className="h-3 w-3 absolute right-2 top-1/2 -translate-y-1/2 text-primary-600 pointer-events-none" />
               </div>
             </div>
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
               Lecture Materials
             </h1>
             {module && (
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-gray-400">
                 {module.moduleCode} - {module.moduleName}
               </p>
             )}
@@ -296,11 +296,11 @@ const LectureMaterialsPage: React.FC = () => {
             {materials.map((material) => (
               <div
                 key={material.id}
-                className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow flex flex-col"
+                className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-md transition-shadow flex flex-col"
               >
                 <div className="p-5 flex-1">
                   <div className="flex items-start justify-between">
-                    <div className="p-2 bg-gray-50 rounded-lg">
+                    <div className="p-2 bg-gray-50 dark:bg-gray-700 rounded-lg">
                       {getIcon(material.type)}
                     </div>
                     <div className="flex items-center space-x-1">
@@ -311,7 +311,7 @@ const LectureMaterialsPage: React.FC = () => {
                         className={`p-1.5 rounded-lg transition-colors ${
                           processingId === material.id
                             ? 'bg-indigo-50 text-indigo-400'
-                            : 'text-gray-400 hover:text-indigo-600 hover:bg-indigo-50'
+                            : 'text-gray-400 dark:text-gray-500 hover:text-indigo-600 hover:bg-indigo-50'
                         }`}
                       >
                         {processingId === material.id ? (
@@ -323,7 +323,7 @@ const LectureMaterialsPage: React.FC = () => {
                       {isLecturer && (
                         <button
                           onClick={() => handleDelete(material.id)}
-                          className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                          className="p-1.5 text-gray-400 dark:text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>
@@ -332,15 +332,15 @@ const LectureMaterialsPage: React.FC = () => {
                   </div>
 
                   <div className="mt-4">
-                    <h3 className="text-lg font-bold text-gray-900 line-clamp-2">
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white line-clamp-2">
                       {material.title}
                     </h3>
                     <div className="mt-2 space-y-1">
-                      <div className="flex items-center text-xs text-gray-500">
+                      <div className="flex items-center text-xs text-gray-500 dark:text-gray-400">
                         <User className="h-3 w-3 mr-1" />
                         {material.lecturer.user.firstName} {material.lecturer.user.lastName}
                       </div>
-                      <div className="flex items-center text-xs text-gray-500">
+                      <div className="flex items-center text-xs text-gray-500 dark:text-gray-400">
                         <Calendar className="h-3 w-3 mr-1" />
                         {formatDate(material.uploadDate)}
                       </div>
@@ -348,13 +348,13 @@ const LectureMaterialsPage: React.FC = () => {
                   </div>
 
                   {material.type === 'TEXT' && material.content && (
-                    <div className="mt-4 p-3 bg-gray-50 rounded-lg text-sm text-gray-600 line-clamp-3 italic">
+                    <div className="mt-4 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg text-sm text-gray-600 dark:text-gray-400 line-clamp-3 italic">
                       {material.content}
                     </div>
                   )}
                 </div>
 
-                <div className="px-5 py-4 bg-gray-50 border-t border-gray-200">
+                <div className="px-5 py-4 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600">
                   {material.type === 'LINK' ? (
                     <a
                       href={material.content}
@@ -385,7 +385,7 @@ const LectureMaterialsPage: React.FC = () => {
                       )}
                     </a>
                   ) : (
-                    <div className="text-center text-sm text-gray-500 py-2">
+                    <div className="text-center text-sm text-gray-500 dark:text-gray-400 py-2">
                       No attachment
                     </div>
                   )}
@@ -394,10 +394,10 @@ const LectureMaterialsPage: React.FC = () => {
             ))}
           </div>
         ) : (
-          <div className="text-center py-12 bg-white rounded-xl border-2 border-dashed border-gray-300">
-            <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900">No materials found</h3>
-            <p className="text-gray-500 mt-1">
+          <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600">
+            <FileText className="h-12 w-12 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white">No materials found</h3>
+            <p className="text-gray-500 dark:text-gray-400 mt-1">
               {isLecturer
                 ? "You haven't shared any materials for this module yet."
                 : "Your lecturer hasn't shared any materials for this module yet."}

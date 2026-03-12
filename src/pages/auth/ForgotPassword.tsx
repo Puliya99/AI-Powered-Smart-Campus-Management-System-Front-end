@@ -40,22 +40,22 @@ const ForgotPassword: React.FC = () => {
 
   if (isSubmitted) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-primary-100 px-4">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-primary-100 dark:bg-gray-900 px-4">
         <div className="max-w-md w-full">
-          <div className="bg-white rounded-2xl shadow-xl p-8">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8">
             <div className="text-center">
               <div className="flex justify-center mb-6">
                 <div className="bg-green-100 p-4 rounded-full">
                   <CheckCircle className="w-16 h-16 text-green-600" />
                 </div>
               </div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-3">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-3">
                 Check Your Email
               </h2>
-              <p className="text-gray-600 mb-6">
+              <p className="text-gray-600 dark:text-gray-400 mb-6">
                 We've sent a password reset link to <strong>{email}</strong>
               </p>
-              <p className="text-sm text-gray-500 mb-8">
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-8">
                 Click the link in the email to reset your password. The link
                 will expire in 1 hour.
               </p>
@@ -73,7 +73,7 @@ const ForgotPassword: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-primary-100 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-primary-100 dark:bg-gray-900 px-4">
       <div className="max-w-md w-full">
         {/* Header */}
         <div className="text-center mb-8">
@@ -82,22 +82,22 @@ const ForgotPassword: React.FC = () => {
               <GraduationCap className="w-12 h-12 text-white" />
             </div>
           </div>
-          <h2 className="text-4xl font-bold text-gray-900 tracking-tight">
+          <h2 className="text-4xl font-bold text-gray-900 dark:text-white tracking-tight">
             Forgot Password?
           </h2>
-          <p className="mt-3 text-base text-gray-600">
+          <p className="mt-3 text-base text-gray-600 dark:text-gray-400">
             No worries, we'll send you reset instructions
           </p>
         </div>
 
         {/* Form */}
-        <div className="bg-white rounded-2xl shadow-xl p-8">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8">
           <form className="space-y-6" onSubmit={handleSubmit}>
             {/* Email */}
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-semibold text-gray-700 mb-2"
+                className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2"
               >
                 Email Address
               </label>
@@ -113,7 +113,7 @@ const ForgotPassword: React.FC = () => {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full pl-12 pr-4 py-3.5 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-200 text-base"
+                  className="block w-full pl-12 pr-4 py-3.5 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-200 text-base"
                   placeholder="Enter your email"
                 />
               </div>

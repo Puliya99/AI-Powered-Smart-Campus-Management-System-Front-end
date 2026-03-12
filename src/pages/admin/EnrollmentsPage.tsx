@@ -110,15 +110,15 @@ const EnrollmentsPage: React.FC = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'ACTIVE':
-        return 'bg-green-100 text-green-800'
+        return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
       case 'COMPLETED':
-        return 'bg-blue-100 text-blue-800'
+        return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
       case 'WITHDRAWN':
-        return 'bg-red-100 text-red-800'
+        return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
       case 'SUSPENDED':
-        return 'bg-yellow-100 text-yellow-800'
+        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
       default:
-        return 'bg-gray-100 text-gray-800'
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-100'
     }
   }
 
@@ -127,16 +127,16 @@ const EnrollmentsPage: React.FC = () => {
       <div className="p-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+            <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-2">
               <UserCheck className="h-6 w-6 text-indigo-600" />
               User Enrollments
             </h1>
-            <p className="text-gray-600">Manage student enrollments in programs and batches</p>
+            <p className="text-gray-600 dark:text-gray-400">Manage student enrollments in programs and batches</p>
           </div>
         </div>
 
         {/* Filters */}
-        <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6">
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 mb-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -145,14 +145,14 @@ const EnrollmentsPage: React.FC = () => {
                 placeholder="Search students..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full pl-10 pr-4 py-2 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
               />
             </div>
 
             <select
               value={filters.programId}
               onChange={(e) => setFilters({ ...filters, programId: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white"
             >
               <option value="">All Programs</option>
               {programs.map((p) => (
@@ -165,7 +165,7 @@ const EnrollmentsPage: React.FC = () => {
             <select
               value={filters.batchId}
               onChange={(e) => setFilters({ ...filters, batchId: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white"
             >
               <option value="">All Batches</option>
               {batches.map((b) => (
@@ -178,7 +178,7 @@ const EnrollmentsPage: React.FC = () => {
             <select
               value={filters.status}
               onChange={(e) => setFilters({ ...filters, status: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white"
             >
               <option value="">All Statuses</option>
               <option value="ACTIVE">Active</option>
@@ -191,7 +191,7 @@ const EnrollmentsPage: React.FC = () => {
               <select
                 value={filters.centerId}
                 onChange={(e) => setFilters({ ...filters, centerId: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-4 py-2 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white"
               >
                 <option value="">All Centers</option>
                 {centers.map((center) => (
@@ -205,19 +205,19 @@ const EnrollmentsPage: React.FC = () => {
         </div>
 
         {/* Table */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-gray-50 border-bottom border-gray-100">
-                  <th className="px-6 py-4 text-sm font-semibold text-gray-600">Student</th>
-                  <th className="px-6 py-4 text-sm font-semibold text-gray-600">Program</th>
-                  <th className="px-6 py-4 text-sm font-semibold text-gray-600">Batch</th>
-                  <th className="px-6 py-4 text-sm font-semibold text-gray-600">Enrollment Date</th>
-                  <th className="px-6 py-4 text-sm font-semibold text-gray-600">Status</th>
+                <tr className="bg-gray-50 dark:bg-gray-700/50 border-bottom border-gray-100 dark:border-gray-700">
+                  <th className="px-6 py-4 text-sm font-semibold text-gray-600 dark:text-gray-400">Student</th>
+                  <th className="px-6 py-4 text-sm font-semibold text-gray-600 dark:text-gray-400">Program</th>
+                  <th className="px-6 py-4 text-sm font-semibold text-gray-600 dark:text-gray-400">Batch</th>
+                  <th className="px-6 py-4 text-sm font-semibold text-gray-600 dark:text-gray-400">Enrollment Date</th>
+                  <th className="px-6 py-4 text-sm font-semibold text-gray-600 dark:text-gray-400">Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
                 {loading ? (
                   <tr>
                     <td colSpan={6} className="px-6 py-10 text-center">
@@ -228,13 +228,13 @@ const EnrollmentsPage: React.FC = () => {
                   </tr>
                 ) : enrollments.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="px-6 py-10 text-center text-gray-500">
+                    <td colSpan={6} className="px-6 py-10 text-center text-gray-500 dark:text-gray-400">
                       No enrollments found
                     </td>
                   </tr>
                 ) : (
                   enrollments.map((enrollment) => (
-                    <tr key={enrollment.id} className="hover:bg-gray-50 transition-colors">
+                    <tr key={enrollment.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
                           <div className="h-10 w-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 font-semibold">
@@ -242,23 +242,23 @@ const EnrollmentsPage: React.FC = () => {
                             {enrollment.student.user.lastName[0]}
                           </div>
                           <div>
-                            <div className="font-medium text-gray-900">
+                            <div className="font-medium text-gray-900 dark:text-white">
                               {enrollment.student.user.firstName} {enrollment.student.user.lastName}
                             </div>
-                            <div className="text-xs text-gray-500">{enrollment.student.universityNumber}</div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400">{enrollment.student.universityNumber}</div>
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="text-sm font-medium text-gray-900">{enrollment.program.programName}</div>
-                        <div className="text-xs text-gray-500">{enrollment.program.programCode}</div>
+                        <div className="text-sm font-medium text-gray-900 dark:text-white">{enrollment.program.programName}</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">{enrollment.program.programCode}</div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                        <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400">
                           {enrollment.batch.batchNumber}
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-600">
+                      <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
                         {format(new Date(enrollment.enrollmentDate), 'MMM dd, yyyy')}
                       </td>
                       <td className="px-6 py-4">
@@ -275,21 +275,21 @@ const EnrollmentsPage: React.FC = () => {
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex items-center justify-between">
+            <div className="px-6 py-4 bg-gray-50 dark:bg-gray-900 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between">
               <button
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage(currentPage - 1)}
-                className="px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-600 hover:bg-white disabled:opacity-50 transition-colors"
+                className="px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-white dark:hover:bg-gray-700/50 disabled:opacity-50 transition-colors"
               >
                 Previous
               </button>
-              <span className="text-sm text-gray-600">
+              <span className="text-sm text-gray-600 dark:text-gray-400">
                 Page {currentPage} of {totalPages}
               </span>
               <button
                 disabled={currentPage === totalPages}
                 onClick={() => setCurrentPage(currentPage + 1)}
-                className="px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-600 hover:bg-white disabled:opacity-50 transition-colors"
+                className="px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-white dark:hover:bg-gray-700/50 disabled:opacity-50 transition-colors"
               >
                 Next
               </button>

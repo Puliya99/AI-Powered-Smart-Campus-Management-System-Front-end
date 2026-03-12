@@ -193,7 +193,7 @@ const BatchModal: React.FC<BatchModalProps> = ({
         ></div>
 
         {/* Modal panel */}
-        <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
+        <div className="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
           {/* Header */}
           <div className="bg-primary-600 px-6 py-4 flex justify-between items-center">
             <h3 className="text-xl font-semibold text-white">
@@ -209,7 +209,7 @@ const BatchModal: React.FC<BatchModalProps> = ({
 
           {/* Form */}
           <form onSubmit={handleSubmit}>
-            <div className="bg-white px-6 py-5 space-y-6">
+            <div className="bg-white dark:bg-gray-800 px-6 py-5 space-y-6">
               {loadingData ? (
                 <div className="flex justify-center items-center py-8">
                   <Loader2 className="w-8 h-8 animate-spin text-primary-600" />
@@ -218,7 +218,7 @@ const BatchModal: React.FC<BatchModalProps> = ({
                 <>
                   {/* Batch Number */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Batch Number <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -228,17 +228,17 @@ const BatchModal: React.FC<BatchModalProps> = ({
                       onChange={handleChange}
                       required
                       disabled={!!batch}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:bg-gray-100"
+                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:bg-gray-100 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                       placeholder="e.g., BATCH_2024_01"
                     />
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                       Unique identifier for the batch
                     </p>
                   </div>
 
                   {/* Program Selection */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Program <span className="text-red-500">*</span>
                     </label>
                     <select
@@ -246,7 +246,7 @@ const BatchModal: React.FC<BatchModalProps> = ({
                       value={formData.programId}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                     >
                       <option value="">Select a program</option>
                       {programs.map((program) => (
@@ -260,7 +260,7 @@ const BatchModal: React.FC<BatchModalProps> = ({
                   {/* Dates */}
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Start Date <span className="text-red-500">*</span>
                       </label>
                       <input
@@ -269,12 +269,12 @@ const BatchModal: React.FC<BatchModalProps> = ({
                         value={formData.startDate}
                         onChange={handleChange}
                         required
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         End Date
                       </label>
                       <input
@@ -282,16 +282,16 @@ const BatchModal: React.FC<BatchModalProps> = ({
                         name="endDate"
                         value={formData.endDate}
                         onChange={handleChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                       />
-                      <p className="text-xs text-gray-500 mt-1">Optional</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Optional</p>
                     </div>
                   </div>
 
                   {/* Center Selection */}
                   {isAdmin ? (
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Center <span className="text-red-500">*</span>
                       </label>
                       <select
@@ -299,7 +299,7 @@ const BatchModal: React.FC<BatchModalProps> = ({
                         value={formData.centerId}
                         onChange={handleChange}
                         required
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                       >
                         <option value="">Select a center</option>
                         {centers.map((center) => (
@@ -311,8 +311,8 @@ const BatchModal: React.FC<BatchModalProps> = ({
                     </div>
                   ) : formData.centerId && centers.length > 0 ? (
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Center</label>
-                      <p className="px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-700">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Center</label>
+                      <p className="px-4 py-2 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-700 dark:text-gray-300">
                         {centers.find(c => c.id === formData.centerId)?.centerName || 'Your Center'}
                       </p>
                     </div>
@@ -320,7 +320,7 @@ const BatchModal: React.FC<BatchModalProps> = ({
 
                   {/* Status */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Status <span className="text-red-500">*</span>
                     </label>
                     <select
@@ -328,7 +328,7 @@ const BatchModal: React.FC<BatchModalProps> = ({
                       value={formData.status}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                     >
                       <option value="UPCOMING">Upcoming</option>
                       <option value="ACTIVE">Active</option>
@@ -337,8 +337,8 @@ const BatchModal: React.FC<BatchModalProps> = ({
                   </div>
 
                   {/* Info Box */}
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <p className="text-sm text-blue-800">
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 dark:bg-blue-900/30 dark:border-blue-800">
+                    <p className="text-sm text-blue-800 dark:text-blue-400">
                       <strong>Note:</strong> Once created, the batch number
                       cannot be changed. Students can be enrolled in this batch
                       after creation.
@@ -349,11 +349,11 @@ const BatchModal: React.FC<BatchModalProps> = ({
             </div>
 
             {/* Footer */}
-            <div className="bg-gray-50 px-6 py-4 flex justify-end space-x-3">
+            <div className="bg-gray-50 dark:bg-gray-700/50 px-6 py-4 flex justify-end space-x-3">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition"
+                className="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
                 disabled={loading}
               >
                 Cancel

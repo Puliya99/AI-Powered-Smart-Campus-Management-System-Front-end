@@ -59,19 +59,15 @@ const LecturerViewModal: React.FC<LecturerViewModalProps> = ({
           onClick={onClose}
         ></div>
 
-        <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
-          {/* Header */}
+        <div className="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
           <div className="bg-primary-600 px-6 py-4 flex justify-between items-center">
             <h3 className="text-xl font-semibold text-white">Lecturer Details</h3>
-            <button
-              onClick={onClose}
-              className="text-white hover:text-gray-200 transition"
-            >
+            <button onClick={onClose} className="text-white hover:text-gray-200 transition">
               <X className="w-6 h-6" />
             </button>
           </div>
 
-          <div className="bg-white px-6 py-5 max-h-[calc(100vh-200px)] overflow-y-auto">
+          <div className="bg-white dark:bg-gray-800 px-6 py-5 max-h-[calc(100vh-200px)] overflow-y-auto">
             {loading ? (
               <div className="flex justify-center items-center py-20">
                 <Loader2 className="w-12 h-12 text-primary-600 animate-spin" />
@@ -79,29 +75,27 @@ const LecturerViewModal: React.FC<LecturerViewModalProps> = ({
             ) : lecturer ? (
               <div className="space-y-8">
                 {/* Profile Header */}
-                <div className="flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-6 pb-6 border-b">
+                <div className="flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-6 pb-6 border-b dark:border-gray-700">
                   <div className="w-24 h-24 bg-primary-100 rounded-full flex items-center justify-center text-primary-600 text-3xl font-bold">
                     {lecturer.user.firstName.charAt(0)}
                     {lecturer.user.lastName.charAt(0)}
                   </div>
                   <div className="text-center md:text-left">
-                    <h2 className="text-2xl font-bold text-gray-900">
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
                       {lecturer.user.title} {lecturer.user.firstName} {lecturer.user.lastName}
                     </h2>
-                    <p className="text-gray-500 font-medium">
+                    <p className="text-gray-500 dark:text-gray-400 font-medium">
                       {lecturer.specialization || 'No Specialization'}
                     </p>
                     <div className="mt-2 flex flex-wrap justify-center md:justify-start gap-2">
-                      <span
-                        className={`px-3 py-1 text-xs font-semibold rounded-full ${
-                          lecturer.user.isActive
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-red-100 text-red-800'
-                        }`}
-                      >
+                      <span className={`px-3 py-1 text-xs font-semibold rounded-full ${
+                        lecturer.user.isActive
+                          ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                          : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                      }`}>
                         {lecturer.user.isActive ? 'Active' : 'Inactive'}
                       </span>
-                      <span className="px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                      <span className="px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
                         Lecturer
                       </span>
                     </div>
@@ -111,30 +105,30 @@ const LecturerViewModal: React.FC<LecturerViewModalProps> = ({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   {/* Personal Information */}
                   <div className="space-y-4">
-                    <h4 className="text-lg font-semibold text-gray-900 flex items-center">
+                    <h4 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
                       <User className="w-5 h-5 mr-2 text-primary-600" />
                       Personal Information
                     </h4>
                     <div className="grid grid-cols-1 gap-3">
                       <div className="flex items-center text-sm">
-                        <span className="text-gray-500 w-32">NIC:</span>
-                        <span className="text-gray-900 font-medium">{lecturer.user.nic}</span>
+                        <span className="text-gray-500 dark:text-gray-400 w-32">NIC:</span>
+                        <span className="text-gray-900 dark:text-white font-medium">{lecturer.user.nic}</span>
                       </div>
                       <div className="flex items-center text-sm">
-                        <span className="text-gray-500 w-32">Gender:</span>
-                        <span className="text-gray-900 font-medium capitalize">
+                        <span className="text-gray-500 dark:text-gray-400 w-32">Gender:</span>
+                        <span className="text-gray-900 dark:text-white font-medium capitalize">
                           {lecturer.user.gender.toLowerCase()}
                         </span>
                       </div>
                       <div className="flex items-center text-sm">
-                        <span className="text-gray-500 w-32">Date of Birth:</span>
-                        <span className="text-gray-900 font-medium">
+                        <span className="text-gray-500 dark:text-gray-400 w-32">Date of Birth:</span>
+                        <span className="text-gray-900 dark:text-white font-medium">
                           {new Date(lecturer.user.dateOfBirth).toLocaleDateString()}
                         </span>
                       </div>
                       <div className="flex items-center text-sm">
-                        <span className="text-gray-500 w-32">Join Date:</span>
-                        <span className="text-gray-900 font-medium">
+                        <span className="text-gray-500 dark:text-gray-400 w-32">Join Date:</span>
+                        <span className="text-gray-900 dark:text-white font-medium">
                           {new Date(lecturer.user.createdAt).toLocaleDateString()}
                         </span>
                       </div>
@@ -143,7 +137,7 @@ const LecturerViewModal: React.FC<LecturerViewModalProps> = ({
 
                   {/* Contact Information */}
                   <div className="space-y-4">
-                    <h4 className="text-lg font-semibold text-gray-900 flex items-center">
+                    <h4 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
                       <Mail className="w-5 h-5 mr-2 text-primary-600" />
                       Contact Information
                     </h4>
@@ -151,28 +145,28 @@ const LecturerViewModal: React.FC<LecturerViewModalProps> = ({
                       <div className="flex items-start text-sm">
                         <Mail className="w-4 h-4 mr-2 mt-0.5 text-gray-400" />
                         <div>
-                          <p className="text-gray-500 text-xs">Email Address</p>
-                          <p className="text-gray-900 font-medium">{lecturer.user.email}</p>
+                          <p className="text-gray-500 dark:text-gray-400 text-xs">Email Address</p>
+                          <p className="text-gray-900 dark:text-white font-medium">{lecturer.user.email}</p>
                         </div>
                       </div>
                       <div className="flex items-start text-sm">
                         <Phone className="w-4 h-4 mr-2 mt-0.5 text-gray-400" />
                         <div className="grid grid-cols-2 gap-4">
                           <div>
-                            <p className="text-gray-500 text-xs">Mobile</p>
-                            <p className="text-gray-900 font-medium">{lecturer.user.mobileNumber}</p>
+                            <p className="text-gray-500 dark:text-gray-400 text-xs">Mobile</p>
+                            <p className="text-gray-900 dark:text-white font-medium">{lecturer.user.mobileNumber}</p>
                           </div>
                           <div>
-                            <p className="text-gray-500 text-xs">Home</p>
-                            <p className="text-gray-900 font-medium">{lecturer.user.homeNumber || 'N/A'}</p>
+                            <p className="text-gray-500 dark:text-gray-400 text-xs">Home</p>
+                            <p className="text-gray-900 dark:text-white font-medium">{lecturer.user.homeNumber || 'N/A'}</p>
                           </div>
                         </div>
                       </div>
                       <div className="flex items-start text-sm">
                         <MapPin className="w-4 h-4 mr-2 mt-0.5 text-gray-400" />
                         <div>
-                          <p className="text-gray-500 text-xs">Current Address</p>
-                          <p className="text-gray-900 font-medium leading-relaxed">
+                          <p className="text-gray-500 dark:text-gray-400 text-xs">Current Address</p>
+                          <p className="text-gray-900 dark:text-white font-medium leading-relaxed">
                             {lecturer.user.address}
                           </p>
                         </div>
@@ -182,28 +176,28 @@ const LecturerViewModal: React.FC<LecturerViewModalProps> = ({
 
                   {/* Academic Information */}
                   <div className="space-y-4">
-                    <h4 className="text-lg font-semibold text-gray-900 flex items-center">
+                    <h4 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
                       <Award className="w-5 h-5 mr-2 text-primary-600" />
                       Academic Information
                     </h4>
                     <div className="grid grid-cols-1 gap-3">
                       <div className="flex items-center text-sm">
                         <Building className="w-4 h-4 mr-2 text-gray-400" />
-                        <span className="text-gray-500 w-32">Assigned Center:</span>
-                        <span className="text-gray-900 font-medium">
+                        <span className="text-gray-500 dark:text-gray-400 w-32">Assigned Center:</span>
+                        <span className="text-gray-900 dark:text-white font-medium">
                           {lecturer.user.center?.centerName || 'Not Assigned'}
                         </span>
                       </div>
                       <div className="flex items-center text-sm">
                         <Hash className="w-4 h-4 mr-2 text-gray-400" />
-                        <span className="text-gray-500 w-32">Reg Number:</span>
-                        <span className="text-gray-900 font-medium">{lecturer.user.registrationNumber}</span>
+                        <span className="text-gray-500 dark:text-gray-400 w-32">Reg Number:</span>
+                        <span className="text-gray-900 dark:text-white font-medium">{lecturer.user.registrationNumber}</span>
                       </div>
                       <div className="flex items-start text-sm">
                         <Briefcase className="w-4 h-4 mr-2 mt-0.5 text-gray-400" />
                         <div>
-                          <p className="text-gray-500 text-xs">Qualification</p>
-                          <p className="text-gray-900 font-medium leading-relaxed">
+                          <p className="text-gray-500 dark:text-gray-400 text-xs">Qualification</p>
+                          <p className="text-gray-900 dark:text-white font-medium leading-relaxed">
                             {lecturer.qualification || 'No Qualification Listed'}
                           </p>
                         </div>
@@ -213,21 +207,21 @@ const LecturerViewModal: React.FC<LecturerViewModalProps> = ({
 
                   {/* Quick Stats */}
                   <div className="space-y-4">
-                    <h4 className="text-lg font-semibold text-gray-900 flex items-center">
+                    <h4 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
                       <Calendar className="w-5 h-5 mr-2 text-primary-600" />
                       Workload Summary
                     </h4>
                     <div className="grid grid-cols-2 gap-4">
-                      <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-                        <p className="text-gray-500 text-xs uppercase tracking-wider font-semibold">
+                      <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg border border-gray-100 dark:border-gray-700">
+                        <p className="text-gray-500 dark:text-gray-400 text-xs uppercase tracking-wider font-semibold">
                           Modules
                         </p>
                         <p className="text-2xl font-bold text-primary-600 mt-1">
                           {lecturer.stats?.moduleCount || 0}
                         </p>
                       </div>
-                      <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-                        <p className="text-gray-500 text-xs uppercase tracking-wider font-semibold">
+                      <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg border border-gray-100 dark:border-gray-700">
+                        <p className="text-gray-500 dark:text-gray-400 text-xs uppercase tracking-wider font-semibold">
                           Schedules
                         </p>
                         <p className="text-2xl font-bold text-blue-600 mt-1">
@@ -240,43 +234,43 @@ const LecturerViewModal: React.FC<LecturerViewModalProps> = ({
 
                 {/* Assigned Modules */}
                 <div className="space-y-4 pb-4">
-                  <h4 className="text-lg font-semibold text-gray-900 flex items-center">
+                  <h4 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
                     <BookOpen className="w-5 h-5 mr-2 text-primary-600" />
                     Assigned Modules
                   </h4>
-                  <div className="bg-white border rounded-lg overflow-hidden">
-                    <table className="min-w-full divide-y divide-gray-200">
-                      <thead className="bg-gray-50">
+                  <div className="bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-lg overflow-hidden">
+                    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                      <thead className="bg-gray-50 dark:bg-gray-900">
                         <tr>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                             Module Code
                           </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                             Module Name
                           </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                             Program
                           </th>
                         </tr>
                       </thead>
-                      <tbody className="bg-white divide-y divide-gray-200">
+                      <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                         {lecturer.modules && lecturer.modules.length > 0 ? (
                           lecturer.modules.map((module: any) => (
-                            <tr key={module.id} className="hover:bg-gray-50 transition">
-                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            <tr key={module.id} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
                                 {module.moduleCode}
                               </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
                                 {module.moduleName}
                               </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
                                 {module.program?.programName || 'N/A'}
                               </td>
                             </tr>
                           ))
                         ) : (
                           <tr>
-                            <td colSpan={3} className="px-6 py-4 text-center text-sm text-gray-500">
+                            <td colSpan={3} className="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
                               No modules assigned yet.
                             </td>
                           </tr>
@@ -288,16 +282,15 @@ const LecturerViewModal: React.FC<LecturerViewModalProps> = ({
               </div>
             ) : (
               <div className="text-center py-20">
-                <p className="text-gray-500 italic">No lecturer data available.</p>
+                <p className="text-gray-500 dark:text-gray-400 italic">No lecturer data available.</p>
               </div>
             )}
           </div>
 
-          {/* Footer */}
-          <div className="bg-gray-50 px-6 py-4 flex justify-end">
+          <div className="bg-gray-50 dark:bg-gray-900 px-6 py-4 flex justify-end">
             <button
               onClick={onClose}
-              className="px-6 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition font-medium"
+              className="px-6 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition font-medium"
             >
               Close
             </button>

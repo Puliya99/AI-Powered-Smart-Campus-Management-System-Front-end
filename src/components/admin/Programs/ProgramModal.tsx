@@ -179,7 +179,7 @@ const ProgramModal: React.FC<ProgramModalProps> = ({
         ></div>
 
         {/* Modal panel */}
-        <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
+        <div className="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
           {/* Header */}
           <div className="bg-primary-600 px-6 py-4 flex justify-between items-center">
             <h3 className="text-xl font-semibold text-white">
@@ -195,10 +195,10 @@ const ProgramModal: React.FC<ProgramModalProps> = ({
 
           {/* Form */}
           <form onSubmit={handleSubmit}>
-            <div className="bg-white px-6 py-5 space-y-6">
+            <div className="bg-white dark:bg-gray-800 px-6 py-5 space-y-6">
               {/* Program Code */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Program Code <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -208,17 +208,17 @@ const ProgramModal: React.FC<ProgramModalProps> = ({
                   onChange={handleChange}
                   required
                   disabled={!!program}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:bg-gray-100"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:bg-gray-100 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:disabled:bg-gray-600"
                   placeholder="e.g., BSC-CS-2024"
                 />
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                   Unique identifier for the program
                 </p>
               </div>
 
               {/* Program Name */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Program Name <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -227,14 +227,14 @@ const ProgramModal: React.FC<ProgramModalProps> = ({
                   value={formData.programName}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                   placeholder="e.g., Bachelor of Science in Computer Science"
                 />
               </div>
 
               {/* Duration */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Duration <span className="text-red-500">*</span>
                 </label>
                 <select
@@ -242,7 +242,7 @@ const ProgramModal: React.FC<ProgramModalProps> = ({
                   value={formData.duration}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                 >
                   <option value="">Select duration</option>
                   <option value="3 months">3 months</option>
@@ -257,7 +257,7 @@ const ProgramModal: React.FC<ProgramModalProps> = ({
 
               {/* Program Fee */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Program Fee (LKR) <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -268,14 +268,14 @@ const ProgramModal: React.FC<ProgramModalProps> = ({
                   required
                   min="0"
                   step="0.01"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                   placeholder="e.g., 5000.00"
                 />
               </div>
 
               {/* Description */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Description
                 </label>
                 <textarea
@@ -283,7 +283,7 @@ const ProgramModal: React.FC<ProgramModalProps> = ({
                   value={formData.description}
                   onChange={handleChange}
                   rows={4}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                   placeholder="Enter program description, objectives, and key features..."
                 />
               </div>
@@ -291,24 +291,24 @@ const ProgramModal: React.FC<ProgramModalProps> = ({
               {/* Centers */}
               {isAdmin ? (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Available Centers <span className="text-red-500">*</span>
                   </label>
-                  <div className="grid grid-cols-2 gap-3 border border-gray-300 rounded-lg p-4 max-h-48 overflow-y-auto">
+                  <div className="grid grid-cols-2 gap-3 border border-gray-300 dark:border-gray-600 rounded-lg p-4 max-h-48 overflow-y-auto dark:bg-gray-700/50">
                     {centers.length > 0 ? (
                       centers.map((center) => (
-                        <label key={center.id} className="flex items-center space-x-3 cursor-pointer p-2 hover:bg-gray-50 rounded transition">
+                        <label key={center.id} className="flex items-center space-x-3 cursor-pointer p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded transition">
                           <input
                             type="checkbox"
                             checked={formData.centerIds.includes(center.id)}
                             onChange={() => handleCenterChange(center.id)}
-                            className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                            className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 dark:border-gray-600 rounded"
                           />
-                          <span className="text-sm text-gray-700">{center.centerName}</span>
+                          <span className="text-sm text-gray-700 dark:text-gray-300">{center.centerName}</span>
                         </label>
                       ))
                     ) : (
-                      <p className="col-span-2 text-sm text-gray-500 italic">No centers available</p>
+                      <p className="col-span-2 text-sm text-gray-500 dark:text-gray-400 italic">No centers available</p>
                     )}
                   </div>
                   {formData.centerIds.length === 0 && (
@@ -317,8 +317,8 @@ const ProgramModal: React.FC<ProgramModalProps> = ({
                 </div>
               ) : formData.centerIds.length > 0 && centers.length > 0 ? (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Center</label>
-                  <p className="px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-700">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Center</label>
+                  <p className="px-4 py-2 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-700 dark:text-gray-300">
                     {centers.find(c => c.id === formData.centerIds[0])?.centerName || 'Your Center'}
                   </p>
                 </div>
@@ -326,11 +326,11 @@ const ProgramModal: React.FC<ProgramModalProps> = ({
             </div>
 
             {/* Footer */}
-            <div className="bg-gray-50 px-6 py-4 flex justify-end space-x-3">
+            <div className="bg-gray-50 dark:bg-gray-700/50 px-6 py-4 flex justify-end space-x-3">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition"
+                className="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:bg-gray-700 transition"
                 disabled={loading}
               >
                 Cancel
