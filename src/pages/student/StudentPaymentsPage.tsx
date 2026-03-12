@@ -203,19 +203,19 @@ const StudentPaymentsPage: React.FC = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'PAID':
-        return 'bg-green-100 text-green-800';
+        return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400';
       case 'PENDING':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400';
       case 'REJECTED':
-        return 'bg-red-100 text-red-800';
+        return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400';
       case 'PARTIAL':
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400';
       case 'OVERDUE':
-        return 'bg-red-100 text-red-800';
+        return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400';
       case 'UNPAID':
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
     }
   };
 
@@ -264,8 +264,8 @@ const StudentPaymentsPage: React.FC = () => {
       <div className="space-y-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">My Payments</h1>
-            <p className="text-gray-600 mt-1">View your payment history and manage receipts.</p>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">My Payments</h1>
+            <p className="text-gray-600 dark:text-gray-400 mt-1">View your payment history and manage receipts.</p>
           </div>
           <button
             onClick={() => setShowAddModal(true)}
@@ -278,47 +278,47 @@ const StudentPaymentsPage: React.FC = () => {
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-gray-500">Total Paid</span>
-              <div className="p-2 bg-green-50 rounded-lg">
+              <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Total Paid</span>
+              <div className="p-2 bg-green-50 dark:bg-green-900/30 rounded-lg">
                 <CheckCircle className="h-5 w-5 text-green-600" />
               </div>
             </div>
-            <p className="text-2xl font-bold text-gray-900">{formatCurrency(stats.totalPaid)}</p>
+            <p className="text-2xl font-bold text-gray-900 dark:text-white">{formatCurrency(stats.totalPaid)}</p>
           </div>
 
-          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-gray-500">Total Outstanding</span>
-              <div className="p-2 bg-red-50 rounded-lg">
+              <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Total Outstanding</span>
+              <div className="p-2 bg-red-50 dark:bg-red-900/30 rounded-lg">
                 <AlertCircle className="h-5 w-5 text-red-600" />
               </div>
             </div>
-            <p className="text-2xl font-bold text-gray-900">{formatCurrency(stats.totalOutstanding)}</p>
+            <p className="text-2xl font-bold text-gray-900 dark:text-white">{formatCurrency(stats.totalOutstanding)}</p>
           </div>
 
-          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-gray-500">Next Payment Due</span>
-              <div className="p-2 bg-blue-50 rounded-lg">
+              <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Next Payment Due</span>
+              <div className="p-2 bg-blue-50 dark:bg-blue-900/30 rounded-lg">
                 <Calendar className="h-5 w-5 text-blue-600" />
               </div>
             </div>
-            <p className="text-2xl font-bold text-gray-900">
+            <p className="text-2xl font-bold text-gray-900 dark:text-white">
               {stats.nextPayment ? formatDate(stats.nextPayment) : 'No pending payments'}
             </p>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-          <div className="p-4 border-b border-gray-100">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+          <div className="p-4 border-b border-gray-100 dark:border-gray-700">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
               <input
                 type="text"
                 placeholder="Search by program or transaction ID..."
-                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all"
+                className="w-full pl-10 pr-4 py-2 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all dark:bg-gray-700 dark:text-white"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -327,16 +327,16 @@ const StudentPaymentsPage: React.FC = () => {
 
           <div className="overflow-x-auto">
             <table className="w-full text-left">
-              <thead className="bg-gray-50">
+              <thead className="bg-gray-50 dark:bg-gray-900">
                 <tr>
-                  <th className="px-6 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Date</th>
-                  <th className="px-6 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Program</th>
-                  <th className="px-6 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Amount</th>
-                  <th className="px-6 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
+                  <th className="px-6 py-3 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">Date</th>
+                  <th className="px-6 py-3 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">Program</th>
+                  <th className="px-6 py-3 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">Amount</th>
+                  <th className="px-6 py-3 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-3 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
                 {loading ? (
                   <tr>
                     <td colSpan={5} className="px-6 py-10 text-center">
@@ -347,21 +347,21 @@ const StudentPaymentsPage: React.FC = () => {
                   </tr>
                 ) : filteredPayments.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="px-6 py-10 text-center text-gray-500">
+                    <td colSpan={5} className="px-6 py-10 text-center text-gray-500 dark:text-gray-400">
                       No payments found
                     </td>
                   </tr>
                 ) : (
                   filteredPayments.map((payment) => (
-                    <tr key={payment.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <tr key={payment.id} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                         {formatDate(payment.paymentDate)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">{payment.program.programName}</div>
-                        <div className="text-xs text-gray-500">{payment.transactionId || 'No Transaction ID'}</div>
+                        <div className="text-sm font-medium text-gray-900 dark:text-white">{payment.program.programName}</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">{payment.transactionId || 'No Transaction ID'}</div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900 dark:text-white">
                         {formatCurrency(payment.amount)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -374,7 +374,7 @@ const StudentPaymentsPage: React.FC = () => {
                           {payment.status}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                         <div className="flex items-center space-x-3">
                           <button
                             onClick={() => handleViewDetails(payment.id)}
@@ -383,7 +383,7 @@ const StudentPaymentsPage: React.FC = () => {
                           >
                             <Eye className="w-5 h-5" />
                           </button>
-                          
+
                           <label className={`cursor-pointer p-1 hover:text-primary-600 transition-colors ${isUploading === payment.id ? 'animate-pulse' : ''}`} title="Upload Receipt">
                             <Upload className="w-5 h-5" />
                             <input
@@ -428,17 +428,17 @@ const StudentPaymentsPage: React.FC = () => {
 
             <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
-            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <div className="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
               <form onSubmit={handleAddPayment}>
-                <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                  <h3 className="text-lg font-medium leading-6 text-gray-900 mb-4">Add New Payment</h3>
-                  
+                <div className="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                  <h3 className="text-lg font-medium leading-6 text-gray-900 dark:text-white mb-4">Add New Payment</h3>
+
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Program *</label>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Program *</label>
                       <select
                         required
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
                         value={newPayment.programId}
                         onChange={(e) => setNewPayment({ ...newPayment, programId: e.target.value })}
                       >
@@ -448,7 +448,7 @@ const StudentPaymentsPage: React.FC = () => {
                         ))}
                       </select>
                       {newPayment.programId && (
-                        <p className="mt-1 text-xs text-gray-500 flex items-center">
+                        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400 flex items-center">
                           <AlertCircle className="w-3 h-3 mr-1" />
                           Current Outstanding: {formatCurrency(selectedProgramOutstanding)}
                         </p>
@@ -456,21 +456,21 @@ const StudentPaymentsPage: React.FC = () => {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Amount (LKR) *</label>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Amount (LKR) *</label>
                       <input
                         type="number"
                         required
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
                         value={newPayment.amount}
                         onChange={(e) => setNewPayment({ ...newPayment, amount: e.target.value })}
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Payment Method *</label>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Payment Method *</label>
                       <select
                         required
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
                         value={newPayment.paymentMethod}
                         onChange={(e) => setNewPayment({ ...newPayment, paymentMethod: e.target.value })}
                       >
@@ -481,19 +481,19 @@ const StudentPaymentsPage: React.FC = () => {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Transaction ID / Reference</label>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Transaction ID / Reference</label>
                       <input
                         type="text"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
                         value={newPayment.transactionId}
                         onChange={(e) => setNewPayment({ ...newPayment, transactionId: e.target.value })}
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Remarks</label>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Remarks</label>
                       <textarea
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
                         rows={3}
                         value={newPayment.remarks}
                         onChange={(e) => setNewPayment({ ...newPayment, remarks: e.target.value })}
@@ -501,17 +501,17 @@ const StudentPaymentsPage: React.FC = () => {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Payment Receipt</label>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Payment Receipt</label>
                       <input
                         type="file"
                         accept=".pdf,.jpg,.jpeg,.png"
-                        className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100"
+                        className="w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100"
                         onChange={(e) => setNewPayment({ ...newPayment, receipt: e.target.files?.[0] || null })}
                       />
                     </div>
                   </div>
                 </div>
-                <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <div className="bg-gray-50 dark:bg-gray-900 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                   <button
                     type="submit"
                     disabled={loading}
@@ -521,7 +521,7 @@ const StudentPaymentsPage: React.FC = () => {
                   </button>
                   <button
                     type="button"
-                    className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                    className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
                     onClick={() => setShowAddModal(false)}
                   >
                     Cancel

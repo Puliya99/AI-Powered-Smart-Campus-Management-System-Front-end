@@ -29,7 +29,7 @@ interface Quiz {
 const QuizAttemptPage: React.FC = () => {
   const { quizId } = useParams<{ quizId: string }>();
   const navigate = useNavigate();
-  
+
   const [quiz, setQuiz] = useState<Quiz | null>(null);
   const [attempt, setAttempt] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -204,12 +204,12 @@ const QuizAttemptPage: React.FC = () => {
       const remainingSeconds = Math.max(0, totalDurationSeconds - totalElapsedSeconds);
 
       setTimeLeft(remainingSeconds);
-      
+
       if (remainingSeconds <= 0) {
         autoSubmit();
         return;
       }
-      
+
       timerRef.current = setInterval(() => {
         setTimeLeft((prev) => {
           if (prev <= 1) {
@@ -256,7 +256,7 @@ const QuizAttemptPage: React.FC = () => {
       else if (type === 'HEAD_POSE') message = "Suspicious head movement!";
 
       setViolationWarning({ message, countdown: 10 });
-      
+
       warningTimerRef.current = setInterval(() => {
         setViolationWarning(prev => {
           if (!prev || prev.countdown <= 1) {
@@ -307,8 +307,8 @@ const QuizAttemptPage: React.FC = () => {
   };
 
   // Clear warning when correction is detected (FaceDetectionCamera resets count)
-  // Actually FaceDetectionCamera doesn't tell us when it's corrected, 
-  // but it stops calling handleViolation. 
+  // Actually FaceDetectionCamera doesn't tell us when it's corrected,
+  // but it stops calling handleViolation.
   // We can add a "CLEAR_VIOLATION" or just detect it in FaceDetectionCamera.
   // Let's refine FaceDetectionCamera to call onViolation with type 'NONE' when corrected.
 
@@ -320,7 +320,7 @@ const QuizAttemptPage: React.FC = () => {
   const submitQuiz = async (isFinal = false) => {
     if (submitting) return;
     setSubmitting(true);
-    
+
     try {
       const formattedAnswers = Object.entries(answers).map(([questionId, selectedOption]) => ({
         questionId,
@@ -335,7 +335,7 @@ const QuizAttemptPage: React.FC = () => {
 
       if (isFinal) {
         toast.success('Quiz submitted successfully!');
-        
+
         // If time is still remaining, don't show results yet, just go back to list
         if (timeLeft > 10) {
           toast('Results will be available once the quiz time is up.', { icon: 'ℹ️' });
@@ -362,10 +362,10 @@ const QuizAttemptPage: React.FC = () => {
 
   if (checkingEnrollment) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600 font-medium">Checking identity requirements...</p>
+          <p className="mt-4 text-gray-600 dark:text-gray-400 font-medium">Checking identity requirements...</p>
         </div>
       </div>
     );
@@ -395,8 +395,8 @@ const QuizAttemptPage: React.FC = () => {
 
   if (!preExamReady) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <div className="max-w-2xl w-full bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center p-4">
+        <div className="max-w-2xl w-full bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
           {/* Header */}
           <div className="bg-primary-600 text-white px-6 py-5">
             <h1 className="text-xl font-bold flex items-center">
@@ -409,7 +409,7 @@ const QuizAttemptPage: React.FC = () => {
           <div className="p-6">
             {/* Camera Check Section */}
             <div className="mb-6">
-              <h2 className="text-lg font-bold text-gray-900 mb-3 flex items-center">
+              <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-3 flex items-center">
                 <Camera className="h-5 w-5 mr-2 text-primary-600" />
                 Camera Access Required
               </h2>
@@ -461,12 +461,12 @@ const QuizAttemptPage: React.FC = () => {
 
             {/* Exam Rules Section */}
             <div className="mb-6">
-              <h2 className="text-lg font-bold text-gray-900 mb-3 flex items-center">
+              <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-3 flex items-center">
                 <BookOpen className="h-5 w-5 mr-2 text-primary-600" />
                 Exam Rules
               </h2>
-              <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
-                <p className="text-gray-600 text-sm mb-3">
+              <div className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-4">
+                <p className="text-gray-600 dark:text-gray-400 text-sm mb-3">
                   This exam is AI-proctored. The following actions are <strong>strictly prohibited</strong> and will be recorded as violations:
                 </p>
                 <div className="space-y-2.5">
@@ -475,8 +475,8 @@ const QuizAttemptPage: React.FC = () => {
                       <CameraOff className="h-4 w-4 text-red-600" />
                     </div>
                     <div>
-                      <p className="font-medium text-gray-800">Do not turn off your camera</p>
-                      <p className="text-gray-500 text-xs">Your camera must remain on throughout the entire exam.</p>
+                      <p className="font-medium text-gray-800 dark:text-white">Do not turn off your camera</p>
+                      <p className="text-gray-500 dark:text-gray-400 text-xs">Your camera must remain on throughout the entire exam.</p>
                     </div>
                   </div>
                   <div className="flex items-start text-sm">
@@ -484,8 +484,8 @@ const QuizAttemptPage: React.FC = () => {
                       <EyeOff className="h-4 w-4 text-red-600" />
                     </div>
                     <div>
-                      <p className="font-medium text-gray-800">Do not look away from the screen</p>
-                      <p className="text-gray-500 text-xs">Keep your eyes focused on the exam at all times.</p>
+                      <p className="font-medium text-gray-800 dark:text-white">Do not look away from the screen</p>
+                      <p className="text-gray-500 dark:text-gray-400 text-xs">Keep your eyes focused on the exam at all times.</p>
                     </div>
                   </div>
                   <div className="flex items-start text-sm">
@@ -493,8 +493,8 @@ const QuizAttemptPage: React.FC = () => {
                       <MonitorOff className="h-4 w-4 text-red-600" />
                     </div>
                     <div>
-                      <p className="font-medium text-gray-800">Do not switch tabs or leave this window</p>
-                      <p className="text-gray-500 text-xs">Switching tabs or minimizing the browser will be recorded.</p>
+                      <p className="font-medium text-gray-800 dark:text-white">Do not switch tabs or leave this window</p>
+                      <p className="text-gray-500 dark:text-gray-400 text-xs">Switching tabs or minimizing the browser will be recorded.</p>
                     </div>
                   </div>
                   <div className="flex items-start text-sm">
@@ -502,8 +502,8 @@ const QuizAttemptPage: React.FC = () => {
                       <Smartphone className="h-4 w-4 text-red-600" />
                     </div>
                     <div>
-                      <p className="font-medium text-gray-800">Do not use phones, notes, or other devices</p>
-                      <p className="text-gray-500 text-xs">Any suspicious objects detected by the camera will be flagged.</p>
+                      <p className="font-medium text-gray-800 dark:text-white">Do not use phones, notes, or other devices</p>
+                      <p className="text-gray-500 dark:text-gray-400 text-xs">Any suspicious objects detected by the camera will be flagged.</p>
                     </div>
                   </div>
                   <div className="flex items-start text-sm">
@@ -511,8 +511,8 @@ const QuizAttemptPage: React.FC = () => {
                       <Users className="h-4 w-4 text-red-600" />
                     </div>
                     <div>
-                      <p className="font-medium text-gray-800">Do not allow other people near you</p>
-                      <p className="text-gray-500 text-xs">Only your face should be visible in the camera.</p>
+                      <p className="font-medium text-gray-800 dark:text-white">Do not allow other people near you</p>
+                      <p className="text-gray-500 dark:text-gray-400 text-xs">Only your face should be visible in the camera.</p>
                     </div>
                   </div>
                 </div>
@@ -533,9 +533,9 @@ const QuizAttemptPage: React.FC = () => {
                   type="checkbox"
                   checked={rulesAccepted}
                   onChange={(e) => setRulesAccepted(e.target.checked)}
-                  className="mt-1 mr-3 h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                  className="mt-1 mr-3 h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-primary-600 focus:ring-primary-500"
                 />
-                <span className="text-sm text-gray-700 group-hover:text-gray-900">
+                <span className="text-sm text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white">
                   I have read and understood the exam rules. I agree to be monitored by the AI proctoring system during this exam.
                 </span>
               </label>
@@ -546,7 +546,7 @@ const QuizAttemptPage: React.FC = () => {
                     stopPreExamCamera();
                     navigate(-1);
                   }}
-                  className="flex-1 bg-gray-100 text-gray-700 py-3 rounded-xl font-bold hover:bg-gray-200 transition"
+                  className="flex-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 py-3 rounded-xl font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition"
                 >
                   Go Back
                 </button>
@@ -568,10 +568,10 @@ const QuizAttemptPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600 font-medium">Preparing your quiz...</p>
+          <p className="mt-4 text-gray-600 dark:text-gray-400 font-medium">Preparing your quiz...</p>
         </div>
       </div>
     );
@@ -581,21 +581,21 @@ const QuizAttemptPage: React.FC = () => {
 
   if (isCancelled) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
-        <div className="max-w-md w-full bg-white rounded-2xl shadow-xl border border-red-100 p-8 text-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center p-6">
+        <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-red-100 dark:border-red-900 p-8 text-center">
           <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <AlertTriangle className="h-10 w-10 text-red-600" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Exam Auto-Submitted</h1>
-          <p className="text-gray-600 mb-4">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Exam Auto-Submitted</h1>
+          <p className="text-gray-600 dark:text-gray-400 mb-4">
             Your quiz attempt has been automatically submitted due to security violations exceeding the allowed threshold (Score: {violationScore}/5).
           </p>
-          <p className="text-sm text-gray-500 mb-8">
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-8">
             This incident has been logged and reported to your lecturer. Contact your lecturer if you believe this was an error.
           </p>
           <button
             onClick={() => navigate('/student/quizzes')}
-            className="w-full bg-gray-900 text-white py-3 rounded-xl font-bold hover:bg-gray-800 transition"
+            className="w-full bg-gray-900 dark:bg-gray-700 text-white py-3 rounded-xl font-bold hover:bg-gray-800 dark:hover:bg-gray-600 transition"
           >
             Back to Quizzes
           </button>
@@ -607,14 +607,14 @@ const QuizAttemptPage: React.FC = () => {
   const currentQuestion = quiz.questions[currentQuestionIndex];
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between sticky top-0 z-10">
+      <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex items-center justify-between sticky top-0 z-10">
         <div>
-          <h1 className="text-lg font-bold text-gray-900">{quiz.title}</h1>
-          <p className="text-sm text-gray-500">Question {currentQuestionIndex + 1} of {quiz.questions.length}</p>
+          <h1 className="text-lg font-bold text-gray-900 dark:text-white">{quiz.title}</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400">Question {currentQuestionIndex + 1} of {quiz.questions.length}</p>
         </div>
-        
+
         <div className={`flex items-center px-4 py-2 rounded-lg font-mono text-lg font-bold ${timeLeft < 60 ? 'bg-red-100 text-red-600 animate-pulse' : 'bg-primary-50 text-primary-700'}`}>
           <Clock className="h-5 w-5 mr-2" />
           {formatTime(timeLeft)}
@@ -638,7 +638,7 @@ const QuizAttemptPage: React.FC = () => {
             className={`p-2 rounded-lg transition-colors ${
               isCameraOff
                 ? 'bg-red-100 text-red-600 hover:bg-red-200'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
             }`}
             title={isCameraOff ? "Turn Camera On" : "Turn Camera Off"}
           >
@@ -659,17 +659,17 @@ const QuizAttemptPage: React.FC = () => {
       </header>
 
       <main className="flex-1 max-w-4xl mx-auto w-full p-6">
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
           {/* Progress Bar */}
-          <div className="h-1.5 bg-gray-100 w-full">
-            <div 
-              className="h-full bg-primary-600 transition-all duration-300" 
+          <div className="h-1.5 bg-gray-100 dark:bg-gray-700 w-full">
+            <div
+              className="h-full bg-primary-600 transition-all duration-300"
               style={{ width: `${((currentQuestionIndex + 1) / quiz.questions.length) * 100}%` }}
             ></div>
           </div>
 
           <div className="p-8">
-            <h2 className="text-xl font-medium text-gray-900 mb-8">
+            <h2 className="text-xl font-medium text-gray-900 dark:text-white mb-8">
               {currentQuestion.questionText}
             </h2>
 
@@ -686,13 +686,13 @@ const QuizAttemptPage: React.FC = () => {
                     key={opt}
                     onClick={() => handleOptionSelect(currentQuestion.id, opt)}
                     className={`w-full p-4 rounded-xl border-2 text-left transition-all flex items-center group ${
-                      isSelected 
-                        ? 'border-primary-600 bg-primary-50 text-primary-900' 
-                        : 'border-gray-100 hover:border-gray-300 bg-white text-gray-700'
+                      isSelected
+                        ? 'border-primary-600 bg-primary-50 text-primary-900'
+                        : 'border-gray-100 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300'
                     }`}
                   >
                     <div className={`w-8 h-8 rounded-lg flex items-center justify-center mr-4 font-bold ${
-                      isSelected ? 'bg-primary-600 text-white' : 'bg-gray-100 text-gray-500 group-hover:bg-gray-200'
+                      isSelected ? 'bg-primary-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 group-hover:bg-gray-200 dark:group-hover:bg-gray-600'
                     }`}>
                       {opt}
                     </div>
@@ -703,11 +703,11 @@ const QuizAttemptPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-gray-50 px-8 py-4 flex justify-between items-center border-t">
+          <div className="bg-gray-50 dark:bg-gray-900 px-8 py-4 flex justify-between items-center border-t border-gray-200 dark:border-gray-700">
             <button
               onClick={() => setCurrentQuestionIndex(prev => prev - 1)}
               disabled={currentQuestionIndex === 0}
-              className="flex items-center text-gray-600 font-bold disabled:opacity-30"
+              className="flex items-center text-gray-600 dark:text-gray-400 font-bold disabled:opacity-30"
             >
               <ChevronLeft className="h-5 w-5 mr-1" />
               Previous
@@ -730,11 +730,11 @@ const QuizAttemptPage: React.FC = () => {
               key={q.id}
               onClick={() => setCurrentQuestionIndex(idx)}
               className={`h-10 rounded-lg flex items-center justify-center font-bold text-sm transition ${
-                currentQuestionIndex === idx 
-                  ? 'bg-primary-600 text-white shadow-md transform scale-110' 
-                  : answers[q.id] 
-                    ? 'bg-green-100 text-green-700' 
-                    : 'bg-white text-gray-400 border border-gray-200'
+                currentQuestionIndex === idx
+                  ? 'bg-primary-600 text-white shadow-md transform scale-110'
+                  : answers[q.id]
+                    ? 'bg-green-100 text-green-700'
+                    : 'bg-white dark:bg-gray-800 text-gray-400 dark:text-gray-500 border border-gray-200 dark:border-gray-700'
               }`}
             >
               {idx + 1}

@@ -114,7 +114,7 @@ const Register: React.FC = () => {
   return (
     <div className="min-h-screen flex">
       {/* Left Side - Registration Form */}
-      <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-white overflow-y-auto">
+      <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-800 overflow-y-auto">
         <div className="max-w-md w-full space-y-8 py-12">
           {/* Header */}
           <div className="text-center">
@@ -123,10 +123,10 @@ const Register: React.FC = () => {
                 <GraduationCap className="w-12 h-12 text-white" />
               </div>
             </div>
-            <h2 className="text-4xl font-bold text-gray-900 tracking-tight">
+            <h2 className="text-4xl font-bold text-gray-900 dark:text-white tracking-tight">
               Create Account
             </h2>
-            <p className="mt-3 text-base text-gray-600">
+            <p className="mt-3 text-base text-gray-600 dark:text-gray-400">
               Join Smart Campus and start your journey
             </p>
           </div>
@@ -137,7 +137,7 @@ const Register: React.FC = () => {
             <div>
               <label
                 htmlFor="role"
-                className="block text-sm font-semibold text-gray-700 mb-2"
+                className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2"
               >
                 I am a <span className="text-red-500">*</span>
               </label>
@@ -146,7 +146,7 @@ const Register: React.FC = () => {
                 name="role"
                 value={formData.role}
                 onChange={handleChange}
-                className="block w-full px-4 py-3.5 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-200 text-base bg-white cursor-pointer"
+                className="block w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-200 text-base cursor-pointer"
               >
                 <option value="ADMIN">Admin</option>
               </select>
@@ -155,7 +155,7 @@ const Register: React.FC = () => {
             {/* Name Fields */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                   First Name <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -164,12 +164,12 @@ const Register: React.FC = () => {
                   value={formData.firstName}
                   onChange={handleChange}
                   required
-                  className="block w-full px-4 py-3.5 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-200 text-base"
+                  className="block w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-200 text-base"
                   placeholder="John"
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                   Last Name <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -178,7 +178,7 @@ const Register: React.FC = () => {
                   value={formData.lastName}
                   onChange={handleChange}
                   required
-                  className="block w-full px-4 py-3.5 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-200 text-base"
+                  className="block w-full px-4 py-3.5 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-200 text-base"
                   placeholder="Doe"
                 />
               </div>
@@ -186,7 +186,7 @@ const Register: React.FC = () => {
 
             {/* Username */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                 Username <span className="text-red-500">*</span>
               </label>
               <div className="relative">
@@ -199,7 +199,7 @@ const Register: React.FC = () => {
                   value={formData.username}
                   onChange={handleChange}
                   required
-                  className="block w-full pl-12 pr-4 py-3.5 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-200 text-base"
+                  className="block w-full pl-12 pr-4 py-3.5 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-200 text-base"
                   placeholder="johndoe"
                 />
               </div>
@@ -207,7 +207,7 @@ const Register: React.FC = () => {
 
             {/* Email */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                 Email Address <span className="text-red-500">*</span>
               </label>
               <div className="relative">
@@ -221,7 +221,7 @@ const Register: React.FC = () => {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="block w-full pl-12 pr-4 py-3.5 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-200 text-base"
+                  className="block w-full pl-12 pr-4 py-3.5 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-200 text-base"
                   placeholder="john.doe@example.com"
                 />
               </div>
@@ -229,7 +229,7 @@ const Register: React.FC = () => {
 
             {/* Mobile Number */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                 Mobile Number <span className="text-red-500">*</span>
               </label>
               <div className="relative">
@@ -242,7 +242,7 @@ const Register: React.FC = () => {
                   value={formData.mobileNumber}
                   onChange={handleChange}
                   required
-                  className="block w-full pl-12 pr-4 py-3.5 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-200 text-base"
+                  className="block w-full pl-12 pr-4 py-3.5 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-200 text-base"
                   placeholder="0771234567"
                 />
               </div>
@@ -250,7 +250,7 @@ const Register: React.FC = () => {
 
             {/* NIC */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                 NIC Number <span className="text-red-500">*</span>
               </label>
               <div className="relative">
@@ -263,7 +263,7 @@ const Register: React.FC = () => {
                   value={formData.nic}
                   onChange={handleChange}
                   required
-                  className="block w-full pl-12 pr-4 py-3.5 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-200 text-base"
+                  className="block w-full pl-12 pr-4 py-3.5 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-200 text-base"
                   placeholder="123456789V or 200012345678"
                 />
               </div>
@@ -271,7 +271,7 @@ const Register: React.FC = () => {
 
             {/* Password */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                 Password <span className="text-red-500">*</span>
               </label>
               <div className="relative">
@@ -285,7 +285,7 @@ const Register: React.FC = () => {
                   value={formData.password}
                   onChange={handleChange}
                   required
-                  className="block w-full pl-12 pr-12 py-3.5 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-200 text-base"
+                  className="block w-full pl-12 pr-12 py-3.5 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-200 text-base"
                   placeholder="Create a strong password"
                 />
                 <button
@@ -304,7 +304,7 @@ const Register: React.FC = () => {
 
             {/* Confirm Password */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                 Confirm Password <span className="text-red-500">*</span>
               </label>
               <div className="relative">
@@ -318,7 +318,7 @@ const Register: React.FC = () => {
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   required
-                  className="block w-full pl-12 pr-12 py-3.5 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-200 text-base"
+                  className="block w-full pl-12 pr-12 py-3.5 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition duration-200 text-base"
                   placeholder="Confirm your password"
                 />
                 <button
@@ -336,11 +336,11 @@ const Register: React.FC = () => {
             </div>
 
             {/* Password Requirements */}
-            <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
-              <p className="text-xs font-medium text-gray-700 mb-1">
+            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
+              <p className="text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Password must contain:
               </p>
-              <ul className="text-xs text-gray-600 space-y-1">
+              <ul className="text-xs text-gray-600 dark:text-gray-400 space-y-1">
                 <li className="flex items-center">
                   <span className="mr-2">•</span>
                   At least 8 characters
@@ -375,7 +375,7 @@ const Register: React.FC = () => {
 
           {/* Login link */}
           <div className="text-center mt-6">
-            <p className="text-base text-gray-600">
+            <p className="text-base text-gray-600 dark:text-gray-400">
               Already have an account?{' '}
               <Link
                 to="/login"

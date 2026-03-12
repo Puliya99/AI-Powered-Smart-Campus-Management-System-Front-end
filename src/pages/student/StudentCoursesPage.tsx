@@ -79,8 +79,8 @@ const StudentCoursesPage: React.FC = () => {
       <div className="space-y-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">My Courses</h1>
-            <p className="text-gray-600 mt-1">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">My Courses</h1>
+            <p className="text-gray-600 dark:text-gray-400 mt-1">
               View and manage your enrolled modules and study materials.
             </p>
           </div>
@@ -93,14 +93,14 @@ const StudentCoursesPage: React.FC = () => {
               <input
                 type="text"
                 placeholder="Search courses..."
-                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md leading-5 bg-white dark:bg-gray-700 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
 
             <select
-              className="block w-full md:w-48 pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm rounded-md"
+              className="block w-full md:w-48 pl-3 pr-10 py-2 text-base border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm rounded-md"
               value={semesterFilter}
               onChange={(e) => setSemesterFilter(e.target.value)}
             >
@@ -123,23 +123,23 @@ const StudentCoursesPage: React.FC = () => {
             filteredCourses.map((course: any) => (
               <div
                 key={course.id}
-                className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow"
+                className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-md transition-shadow"
               >
                 <div className="p-5">
                   <div className="flex items-start justify-between">
                     <div className="p-2 bg-primary-50 rounded-lg">
                       <BookOpen className="h-6 w-6 text-primary-600" />
                     </div>
-                    <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                    <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
                       {course.moduleCode}
                     </span>
                   </div>
 
                   <div className="mt-4">
-                    <h3 className="text-lg font-bold text-gray-900 line-clamp-1">
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white line-clamp-1">
                       {course.moduleName}
                     </h3>
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                       Semester {course.semesterNumber}
                     </p>
                   </div>
@@ -166,12 +166,12 @@ const StudentCoursesPage: React.FC = () => {
                         </p>
                       </div>
                     )}
-                    <div className="flex items-center text-sm text-gray-600">
+                    <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
                       <Clock className="h-4 w-4 mr-2" />
                       <span>{course.credits} Credits</span>
                     </div>
                     {course.lecturer && (
-                      <div className="flex items-center text-sm text-gray-600 mt-2">
+                      <div className="flex items-center text-sm text-gray-600 dark:text-gray-400 mt-2">
                         <Users className="h-4 w-4 mr-2" />
                         <span>{course.lecturer.name}</span>
                       </div>
@@ -179,10 +179,10 @@ const StudentCoursesPage: React.FC = () => {
                   </div>
                 </div>
 
-                  <div className="px-5 py-4 bg-gray-50 border-t border-gray-200 flex items-center justify-between">
+                  <div className="px-5 py-4 bg-gray-50 dark:bg-gray-700/50 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between">
                     <Link
                       to={`/student/modules/${course.id}/materials`}
-                      className="flex items-center text-sm font-medium text-primary-600 hover:text-primary-700"
+                      className="flex items-center text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700"
                     >
                       <FileText className="h-4 w-4 mr-2" />
                       Materials
@@ -206,12 +206,12 @@ const StudentCoursesPage: React.FC = () => {
               </div>
             ))
           ) : (
-            <div className="col-span-full py-12 bg-white rounded-xl border-2 border-dashed border-gray-300 text-center">
+            <div className="col-span-full py-12 bg-white dark:bg-gray-800 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 text-center">
               <BookOpen className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900">
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white">
                 No courses found
               </h3>
-              <p className="text-gray-500 mt-1">
+              <p className="text-gray-500 dark:text-gray-400 mt-1">
                 You are not enrolled in any courses yet.
               </p>
             </div>

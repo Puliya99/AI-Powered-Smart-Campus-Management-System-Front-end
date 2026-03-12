@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { 
-  Users, 
-  BookOpen, 
-  Calendar, 
-  ClipboardList, 
-  FileText, 
+import {
+  Users,
+  BookOpen,
+  Calendar,
+  ClipboardList,
+  FileText,
   Award,
   CheckCircle,
   Clock,
@@ -39,7 +39,7 @@ const LecturerDashboard: React.FC = () => {
         <div className="flex items-center justify-center h-96">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading dashboard...</p>
+            <p className="mt-4 text-gray-600 dark:text-gray-400">Loading dashboard...</p>
           </div>
         </div>
       </DashboardLayout>
@@ -119,8 +119,8 @@ const LecturerDashboard: React.FC = () => {
       <div className="space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Lecturer Dashboard</h1>
-          <p className="text-gray-600 mt-1">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Lecturer Dashboard</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">
             Welcome back, {dashboardData?.profile?.name}! Here's your overview for today.
           </p>
         </div>
@@ -130,7 +130,7 @@ const LecturerDashboard: React.FC = () => {
           {statCards.map((stat) => (
             <div
               key={stat.name}
-              className="bg-white overflow-hidden shadow rounded-lg hover:shadow-lg transition-shadow"
+              className="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg hover:shadow-lg transition-shadow"
             >
               <div className="p-5">
                 <div className="flex items-center">
@@ -141,11 +141,11 @@ const LecturerDashboard: React.FC = () => {
                   </div>
                   <div className="ml-5 w-0 flex-1">
                     <dl>
-                      <dt className="text-sm font-medium text-gray-500 truncate">
+                      <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
                         {stat.name}
                       </dt>
                       <dd className="flex items-baseline">
-                        <div className="text-2xl font-semibold text-gray-900">
+                        <div className="text-2xl font-semibold text-gray-900 dark:text-white">
                           {stat.value}
                         </div>
                         <div className="ml-2 flex items-baseline text-sm font-medium text-gray-400">
@@ -162,12 +162,12 @@ const LecturerDashboard: React.FC = () => {
 
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
           {/* Upcoming Classes */}
-          <div className="bg-white shadow rounded-lg">
-            <div className="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
-              <h3 className="text-lg font-medium text-gray-900">
+          <div className="bg-white dark:bg-gray-800 shadow rounded-lg">
+            <div className="px-5 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white">
                 Upcoming Classes
               </h3>
-              <Link to="/lecturer/schedule" className="text-sm font-medium text-primary-600 hover:text-primary-500">
+              <Link to="/lecturer/schedule" className="text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-500">
                 View All
               </Link>
             </div>
@@ -177,21 +177,21 @@ const LecturerDashboard: React.FC = () => {
                   {upcomingClasses.map((item: any) => (
                     <div
                       key={item.id}
-                      className="flex items-center p-3 bg-gray-50 rounded-lg"
+                      className="flex items-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg"
                     >
                       <div className="flex-shrink-0 bg-primary-100 rounded-md p-2">
                         <Clock className="h-5 w-5 text-primary-600" />
                       </div>
                       <div className="ml-4 flex-1">
                         <div className="flex items-center justify-between">
-                          <p className="text-sm font-medium text-gray-900">
+                          <p className="text-sm font-medium text-gray-900 dark:text-white">
                             {item.module?.name}
                           </p>
                           <span className="text-xs font-semibold text-primary-600 bg-primary-50 px-2 py-0.5 rounded-full">
                             {item.startTime} - {item.endTime}
                           </span>
                         </div>
-                        <p className="text-xs text-gray-500 mt-1">
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                           {item.batch?.name} | {item.location || 'Online'} | <span className={`font-bold ${item.type === 'ONLINE' ? 'text-purple-600' : 'text-amber-600'}`}>{item.type || 'PHYSICAL'}</span>
                         </p>
                       </div>
@@ -200,16 +200,16 @@ const LecturerDashboard: React.FC = () => {
                 </div>
               ) : (
                 <div className="text-center py-6">
-                  <p className="text-gray-500 text-sm">No classes scheduled for today.</p>
+                  <p className="text-gray-500 dark:text-gray-400 text-sm">No classes scheduled for today.</p>
                 </div>
               )}
             </div>
           </div>
 
           {/* Performance Overview */}
-          <div className="bg-white shadow rounded-lg">
-            <div className="px-5 py-4 border-b border-gray-200">
-              <h3 className="text-lg font-medium text-gray-900">
+          <div className="bg-white dark:bg-gray-800 shadow rounded-lg">
+            <div className="px-5 py-4 border-b border-gray-200 dark:border-gray-700">
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white">
                 Class Performance
               </h3>
             </div>
@@ -219,8 +219,8 @@ const LecturerDashboard: React.FC = () => {
                   <div className="inline-flex items-center justify-center p-4 bg-green-100 rounded-full mb-3">
                     <Award className="h-10 w-10 text-green-600" />
                   </div>
-                  <p className="text-3xl font-bold text-gray-900">{performance.average}%</p>
-                  <p className="text-sm text-gray-500 mt-1">Average Student Performance</p>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-white">{performance.average}%</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Average Student Performance</p>
                   <div className={`mt-2 flex items-center justify-center text-sm font-medium ${performance.trend === 'up' ? 'text-green-600' : 'text-red-600'}`}>
                     <span>Trend: {performance.trend === 'up' ? '↑ Increasing' : '↓ Decreasing'}</span>
                   </div>
@@ -231,9 +231,9 @@ const LecturerDashboard: React.FC = () => {
         </div>
 
         {/* Quick Actions */}
-        <div className="bg-white shadow rounded-lg">
-          <div className="px-5 py-4 border-b border-gray-200">
-            <h3 className="text-lg font-medium text-gray-900">
+        <div className="bg-white dark:bg-gray-800 shadow rounded-lg">
+          <div className="px-5 py-4 border-b border-gray-200 dark:border-gray-700">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white">
               Quick Actions
             </h3>
           </div>
@@ -243,16 +243,16 @@ const LecturerDashboard: React.FC = () => {
                 <Link
                   key={action.name}
                   to={action.href}
-                  className="group p-4 border border-gray-200 rounded-xl hover:border-primary-500 hover:bg-primary-50 transition-all duration-200"
+                  className="group p-4 border border-gray-200 dark:border-gray-700 rounded-xl hover:border-primary-500 hover:bg-primary-50 transition-all duration-200"
                 >
                   <div className="flex items-center mb-3">
-                    <div className="p-2 bg-gray-100 rounded-lg group-hover:bg-primary-100 transition-colors">
-                      <action.icon className="w-6 h-6 text-gray-600 group-hover:text-primary-600" />
+                    <div className="p-2 bg-gray-100 dark:bg-gray-700 rounded-lg group-hover:bg-primary-100 transition-colors">
+                      <action.icon className="w-6 h-6 text-gray-600 dark:text-gray-300 group-hover:text-primary-600" />
                     </div>
                     <ExternalLink className="w-4 h-4 text-gray-300 ml-auto group-hover:text-primary-400" />
                   </div>
-                  <h4 className="text-sm font-semibold text-gray-900 mb-1">{action.name}</h4>
-                  <p className="text-xs text-gray-500 leading-relaxed">{action.description}</p>
+                  <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">{action.name}</h4>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">{action.description}</p>
                 </Link>
               ))}
             </div>

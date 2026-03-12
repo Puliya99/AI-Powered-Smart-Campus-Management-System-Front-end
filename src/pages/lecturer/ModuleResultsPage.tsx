@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { 
-  ArrowLeft, 
-  Save, 
-  Search, 
-  User, 
-  GraduationCap, 
+import {
+  ArrowLeft,
+  Save,
+  Search,
+  User,
+  GraduationCap,
   AlertCircle,
   CheckCircle,
   Clock,
@@ -129,7 +129,7 @@ const ModuleResultsPage: React.FC = () => {
   const handleResultChange = (index: number, field: keyof Result, value: any) => {
     const updatedResults = [...results];
     updatedResults[index] = { ...updatedResults[index], [field]: value };
-    
+
     // Auto-calculate PASS/FAIL if marks/maxMarks change
     if (field === 'marks' || field === 'maxMarks') {
       const marks = field === 'marks' ? value : updatedResults[index].marks;
@@ -137,7 +137,7 @@ const ModuleResultsPage: React.FC = () => {
       if (max > 0) {
         const percentage = (marks / max) * 100;
         updatedResults[index].status = percentage >= 40 ? 'PASS' : 'FAIL';
-        
+
         // Simple grade auto-assignment
         if (percentage >= 85) updatedResults[index].grade = 'A+';
         else if (percentage >= 75) updatedResults[index].grade = 'A';
@@ -189,7 +189,7 @@ const ModuleResultsPage: React.FC = () => {
     }
   };
 
-  const filteredResults = results.filter(r => 
+  const filteredResults = results.filter(r =>
     r.student.user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     r.student.user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     r.student.user.registrationNumber.toLowerCase().includes(searchTerm.toLowerCase())
@@ -222,27 +222,27 @@ const ModuleResultsPage: React.FC = () => {
             <div>
               <button
                 onClick={() => window.history.back()}
-                className="inline-flex items-center text-sm text-gray-500 hover:text-primary-600 mb-2"
+                className="inline-flex items-center text-sm text-gray-500 dark:text-gray-400 hover:text-primary-600 mb-2"
               >
                 <ArrowLeft className="h-4 w-4 mr-1" />
                 Back
               </button>
-              <h1 className="text-2xl font-bold text-gray-900">
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
                 Module Results
               </h1>
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-gray-400">
                 Please select a module to manage results.
               </p>
             </div>
           </div>
 
-          <div className="max-w-md mx-auto bg-white p-8 rounded-xl shadow-sm border border-gray-200">
+          <div className="max-w-md mx-auto bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
             <div className="text-center mb-6">
               <div className="p-3 bg-primary-50 rounded-full inline-block mb-4">
                 <GraduationCap className="h-8 w-8 text-primary-600" />
               </div>
-              <h3 className="text-lg font-medium text-gray-900">Select a Module</h3>
-              <p className="text-gray-500 mt-1 text-sm">
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white">Select a Module</h3>
+              <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">
                 Choose one of your assigned modules to manage its student results.
               </p>
             </div>
@@ -250,7 +250,7 @@ const ModuleResultsPage: React.FC = () => {
             <div className="space-y-4">
               <div className="relative">
                 <select
-                  className="block w-full pl-3 pr-10 py-3 text-base border-gray-300 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm rounded-lg appearance-none bg-white border cursor-pointer"
+                  className="block w-full pl-3 pr-10 py-3 text-base border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm rounded-lg appearance-none bg-white dark:bg-gray-700 dark:text-white border cursor-pointer"
                   onChange={handleModuleChange}
                   value=""
                 >
@@ -272,7 +272,7 @@ const ModuleResultsPage: React.FC = () => {
 
               <Link
                 to="/lecturer/classes"
-                className="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-primary-600 bg-white border border-primary-600 rounded-lg hover:bg-primary-50 transition-colors"
+                className="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-primary-600 bg-white dark:bg-gray-800 border border-primary-600 rounded-lg hover:bg-primary-50 transition-colors"
               >
                 Go to My Classes
               </Link>
@@ -291,12 +291,12 @@ const ModuleResultsPage: React.FC = () => {
             <div className="flex items-center space-x-2 mb-2">
               <button
                 onClick={() => window.history.back()}
-                className="inline-flex items-center text-sm text-gray-500 hover:text-primary-600"
+                className="inline-flex items-center text-sm text-gray-500 dark:text-gray-400 hover:text-primary-600"
               >
                 <ArrowLeft className="h-4 w-4 mr-1" />
                 Back
               </button>
-              <span className="text-gray-300">|</span>
+              <span className="text-gray-300 dark:text-gray-600">|</span>
               <div className="relative inline-block">
                 <select
                   className="bg-transparent border-none text-sm text-primary-600 font-medium focus:ring-0 p-0 pr-8 appearance-none cursor-pointer hover:text-primary-700"
@@ -312,9 +312,9 @@ const ModuleResultsPage: React.FC = () => {
                 <ChevronDown className="h-3 w-3 absolute right-2 top-1/2 -translate-y-1/2 text-primary-600 pointer-events-none" />
               </div>
             </div>
-            <h1 className="text-2xl font-bold text-gray-900">Module Results</h1>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Module Results</h1>
             {module && (
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-gray-400">
                 {module.moduleCode} - {module.moduleName}
               </p>
             )}
@@ -329,19 +329,19 @@ const ModuleResultsPage: React.FC = () => {
           </button>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-          <div className="p-4 border-b border-gray-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+          <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="relative flex-1 max-w-md">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
               <input
                 type="text"
                 placeholder="Search students..."
-                className="pl-10 w-full border border-gray-300 rounded-lg p-2 text-sm focus:ring-primary-500 focus:border-primary-500"
+                className="pl-10 w-full border border-gray-300 dark:border-gray-600 rounded-lg p-2 text-sm focus:ring-primary-500 focus:border-primary-500 bg-white dark:bg-gray-700 dark:text-white"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <div className="flex items-center space-x-4 text-sm text-gray-500">
+            <div className="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
               <div className="flex items-center">
                 <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
                 Pass
@@ -359,7 +359,7 @@ const ModuleResultsPage: React.FC = () => {
 
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
-              <thead className="bg-gray-50 text-gray-500 text-xs uppercase font-bold">
+              <thead className="bg-gray-50 dark:bg-gray-900 text-gray-500 dark:text-gray-400 text-xs uppercase font-bold">
                 <tr>
                   <th className="px-6 py-3 min-w-[200px]">Student</th>
                   <th className="px-6 py-3 w-24">Marks</th>
@@ -371,19 +371,19 @@ const ModuleResultsPage: React.FC = () => {
                   <th className="px-6 py-3 w-16 text-center">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
                 {filteredResults.map((result, idx) => (
-                  <tr key={result.student.id} className="hover:bg-gray-50 transition">
+                  <tr key={result.student.id} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition">
                     <td className="px-6 py-4">
                       <div className="flex items-center">
                         <div className="h-8 w-8 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center font-bold text-xs mr-3">
                           {result.student.user.firstName.charAt(0)}
                         </div>
                         <div>
-                          <p className="text-sm font-bold text-gray-900">
+                          <p className="text-sm font-bold text-gray-900 dark:text-white">
                             {result.student.user.firstName} {result.student.user.lastName}
                           </p>
-                          <p className="text-xs text-gray-500">
+                          <p className="text-xs text-gray-500 dark:text-gray-400">
                             {result.student.user.registrationNumber}
                           </p>
                         </div>
@@ -392,7 +392,7 @@ const ModuleResultsPage: React.FC = () => {
                     <td className="px-4 py-4">
                       <input
                         type="number"
-                        className="w-full border border-gray-200 rounded p-1 text-sm text-center focus:ring-primary-500"
+                        className="w-full border border-gray-200 dark:border-gray-600 rounded p-1 text-sm text-center focus:ring-primary-500 bg-white dark:bg-gray-700 dark:text-white"
                         value={result.marks}
                         onChange={(e) => handleResultChange(idx, 'marks', parseInt(e.target.value) || 0)}
                       />
@@ -400,7 +400,7 @@ const ModuleResultsPage: React.FC = () => {
                     <td className="px-4 py-4">
                       <input
                         type="number"
-                        className="w-full border border-gray-200 rounded p-1 text-sm text-center focus:ring-primary-500"
+                        className="w-full border border-gray-200 dark:border-gray-600 rounded p-1 text-sm text-center focus:ring-primary-500 bg-white dark:bg-gray-700 dark:text-white"
                         value={result.maxMarks}
                         onChange={(e) => handleResultChange(idx, 'maxMarks', parseInt(e.target.value) || 0)}
                       />
@@ -408,14 +408,14 @@ const ModuleResultsPage: React.FC = () => {
                     <td className="px-4 py-4">
                       <input
                         type="text"
-                        className="w-full border border-gray-200 rounded p-1 text-sm text-center font-bold focus:ring-primary-500"
+                        className="w-full border border-gray-200 dark:border-gray-600 rounded p-1 text-sm text-center font-bold focus:ring-primary-500 bg-white dark:bg-gray-700 dark:text-white"
                         value={result.grade}
                         onChange={(e) => handleResultChange(idx, 'grade', e.target.value)}
                       />
                     </td>
                     <td className="px-4 py-4">
                       <select
-                        className={`w-full border border-gray-200 rounded p-1 text-xs font-bold focus:ring-primary-500 ${
+                        className={`w-full border border-gray-200 dark:border-gray-600 rounded p-1 text-xs font-bold focus:ring-primary-500 bg-white dark:bg-gray-700 ${
                           result.status === 'PASS' ? 'text-green-600' : result.status === 'FAIL' ? 'text-red-600' : 'text-yellow-600'
                         }`}
                         value={result.status}
@@ -429,7 +429,7 @@ const ModuleResultsPage: React.FC = () => {
                     <td className="px-4 py-4">
                       <input
                         type="date"
-                        className="w-full border border-gray-200 rounded p-1 text-xs focus:ring-primary-500"
+                        className="w-full border border-gray-200 dark:border-gray-600 rounded p-1 text-xs focus:ring-primary-500 bg-white dark:bg-gray-700 dark:text-white"
                         value={result.examDate}
                         onChange={(e) => handleResultChange(idx, 'examDate', e.target.value)}
                       />
@@ -438,7 +438,7 @@ const ModuleResultsPage: React.FC = () => {
                       <input
                         type="text"
                         placeholder="Optional remarks..."
-                        className="w-full border border-gray-200 rounded p-1 text-sm focus:ring-primary-500"
+                        className="w-full border border-gray-200 dark:border-gray-600 rounded p-1 text-sm focus:ring-primary-500 bg-white dark:bg-gray-700 dark:text-white"
                         value={result.remarks}
                         onChange={(e) => handleResultChange(idx, 'remarks', e.target.value)}
                       />
@@ -460,7 +460,7 @@ const ModuleResultsPage: React.FC = () => {
                 ))}
                 {filteredResults.length === 0 && (
                   <tr>
-                    <td colSpan={8} className="px-6 py-12 text-center text-gray-500">
+                    <td colSpan={8} className="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
                       <div className="flex flex-col items-center">
                         <User className="h-8 w-8 mb-2 opacity-20" />
                         <p>No students found for this module.</p>

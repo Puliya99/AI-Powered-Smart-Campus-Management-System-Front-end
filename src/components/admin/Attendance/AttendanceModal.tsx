@@ -207,7 +207,7 @@ const AttendanceModal: React.FC<AttendanceModalProps> = ({
           onClick={onClose}
         ></div>
 
-        <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-5xl sm:w-full">
+        <div className="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-5xl sm:w-full">
           <div className="bg-primary-600 px-6 py-4 flex justify-between items-center">
             <div>
               <h3 className="text-xl font-semibold text-white">
@@ -226,41 +226,41 @@ const AttendanceModal: React.FC<AttendanceModalProps> = ({
           </div>
 
           {!loadingData && (
-            <div className="bg-gray-50 px-6 py-3 border-b border-gray-200">
+            <div className="bg-gray-50 dark:bg-gray-700/50 px-6 py-3 border-b border-gray-200 dark:border-gray-700">
               <div className="grid grid-cols-6 gap-4 text-center">
                 <div>
-                  <p className="text-xs text-gray-600">Total</p>
-                  <p className="text-lg font-bold text-gray-900">
+                  <p className="text-xs text-gray-600 dark:text-gray-400">Total</p>
+                  <p className="text-lg font-bold text-gray-900 dark:text-white">
                     {stats.total}
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-600">Present</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">Present</p>
                   <p className="text-lg font-bold text-green-600">
                     {stats.present}
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-600">Absent</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">Absent</p>
                   <p className="text-lg font-bold text-red-600">
                     {stats.absent}
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-600">Late</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">Late</p>
                   <p className="text-lg font-bold text-orange-600">
                     {stats.late}
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-600">Excused</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">Excused</p>
                   <p className="text-lg font-bold text-blue-600">
                     {stats.excused}
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-600">Unmarked</p>
-                  <p className="text-lg font-bold text-gray-600">
+                  <p className="text-xs text-gray-600 dark:text-gray-400">Unmarked</p>
+                  <p className="text-lg font-bold text-gray-600 dark:text-gray-400">
                     {stats.unmarked}
                   </p>
                 </div>
@@ -269,9 +269,9 @@ const AttendanceModal: React.FC<AttendanceModalProps> = ({
           )}
 
           {!loadingData && students.length > 0 && (
-            <div className="bg-white px-6 py-3 border-b border-gray-200">
+            <div className="bg-white dark:bg-gray-800 px-6 py-3 border-b border-gray-200 dark:border-gray-700">
               <div className="flex items-center space-x-2">
-                <span className="text-sm font-medium text-gray-700">
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                   Mark all as:
                 </span>
                 <button
@@ -299,7 +299,7 @@ const AttendanceModal: React.FC<AttendanceModalProps> = ({
             </div>
           )}
 
-          <div className="bg-white px-6 py-5 max-h-[calc(100vh-400px)] overflow-y-auto">
+          <div className="bg-white dark:bg-gray-800 px-6 py-5 max-h-[calc(100vh-400px)] overflow-y-auto">
             {loadingData ? (
               <div className="flex justify-center items-center py-12">
                 <Loader2 className="w-8 h-8 animate-spin text-primary-600" />
@@ -307,7 +307,7 @@ const AttendanceModal: React.FC<AttendanceModalProps> = ({
             ) : students.length === 0 ? (
               <div className="text-center py-12">
                 <User className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-600">
+                <p className="text-gray-600 dark:text-gray-400">
                   No students enrolled in this batch
                 </p>
               </div>
@@ -369,7 +369,7 @@ const AttendanceModal: React.FC<AttendanceModalProps> = ({
                           onChange={(e) =>
                             handleRemarksChange(s.student.id, e.target.value)
                           }
-                          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white"
+                          className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                         />
                       </div>
                     </div>
@@ -379,11 +379,11 @@ const AttendanceModal: React.FC<AttendanceModalProps> = ({
             )}
           </div>
 
-          <div className="bg-gray-50 px-6 py-4 flex justify-end space-x-3 border-t border-gray-200">
+          <div className="bg-gray-50 dark:bg-gray-700/50 px-6 py-4 flex justify-end space-x-3 border-t border-gray-200 dark:border-gray-700">
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition"
+              className="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
               disabled={loading}
             >
               Cancel

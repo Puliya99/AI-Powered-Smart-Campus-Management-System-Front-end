@@ -102,24 +102,24 @@ const StudentFeedbackPage: React.FC = () => {
     <DashboardLayout>
       <div className="max-w-6xl mx-auto space-y-8">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Module Feedback</h1>
-          <p className="text-gray-600 mt-1">Share your thoughts on the modules you've completed.</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Module Feedback</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">Share your thoughts on the modules you've completed.</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Submit Feedback Form */}
           <div className="lg:col-span-1">
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 sticky top-24">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 sticky top-24">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
                 <Send className="w-5 h-5 mr-2 text-primary-600" />
                 Give New Feedback
               </h2>
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Select Module</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Select Module</label>
                   <select
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none dark:bg-gray-700 dark:text-white"
                     value={newFeedback.moduleId}
                     onChange={(e) => setNewFeedback({ ...newFeedback, moduleId: e.target.value })}
                     required
@@ -134,7 +134,7 @@ const StudentFeedbackPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Rating</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Rating</label>
                   <div className="flex items-center space-x-1">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <button
@@ -149,7 +149,7 @@ const StudentFeedbackPage: React.FC = () => {
                           className={`w-8 h-8 ${
                             star <= (hoverRating || newFeedback.rating)
                               ? 'fill-yellow-400 text-yellow-400'
-                              : 'text-gray-300'
+                              : 'text-gray-300 dark:text-gray-600'
                           }`}
                         />
                       </button>
@@ -158,9 +158,9 @@ const StudentFeedbackPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Your Comments</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Your Comments</label>
                   <textarea
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none resize-none"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none resize-none dark:bg-gray-700 dark:text-white"
                     rows={4}
                     placeholder="How was the module? What did you like or dislike?"
                     value={newFeedback.comment}
@@ -182,7 +182,7 @@ const StudentFeedbackPage: React.FC = () => {
 
           {/* Feedback History */}
           <div className="lg:col-span-2 space-y-4">
-            <h2 className="text-lg font-semibold text-gray-900 flex items-center">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
               <MessageSquare className="w-5 h-5 mr-2 text-primary-600" />
               Your Feedback History
             </h2>
@@ -192,33 +192,33 @@ const StudentFeedbackPage: React.FC = () => {
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
               </div>
             ) : feedbacks.length === 0 ? (
-              <div className="bg-gray-50 rounded-xl border border-dashed border-gray-300 p-12 text-center">
-                <MessageSquare className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-500">You haven't provided any feedback yet.</p>
+              <div className="bg-gray-50 dark:bg-gray-900 rounded-xl border border-dashed border-gray-300 dark:border-gray-600 p-12 text-center">
+                <MessageSquare className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+                <p className="text-gray-500 dark:text-gray-400">You haven't provided any feedback yet.</p>
               </div>
             ) : (
               <div className="grid gap-4">
                 {feedbacks.map((feedback) => (
-                  <div key={feedback.id} className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:border-primary-100 transition-colors">
+                  <div key={feedback.id} className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 hover:border-primary-100 dark:hover:border-primary-800 transition-colors">
                     <div className="flex justify-between items-start mb-3">
                       <div>
                         <div className="flex items-center space-x-2">
                           <BookOpen className="w-4 h-4 text-primary-500" />
-                          <h3 className="font-semibold text-gray-900">
+                          <h3 className="font-semibold text-gray-900 dark:text-white">
                             {feedback.module.moduleCode}: {feedback.module.moduleName}
                           </h3>
                         </div>
-                        <div className="flex items-center mt-1 text-sm text-gray-500">
+                        <div className="flex items-center mt-1 text-sm text-gray-500 dark:text-gray-400">
                           <Calendar className="w-4 h-4 mr-1" />
                           {formatDate(feedback.feedbackDate)}
                         </div>
                       </div>
-                      <div className="flex items-center bg-yellow-50 px-2 py-1 rounded text-yellow-700">
+                      <div className="flex items-center bg-yellow-50 dark:bg-yellow-900/30 px-2 py-1 rounded text-yellow-700 dark:text-yellow-400">
                         <Star className="w-4 h-4 fill-yellow-400 mr-1" />
                         <span className="font-bold">{feedback.rating}</span>
                       </div>
                     </div>
-                    <p className="text-gray-700 leading-relaxed italic border-l-4 border-gray-100 pl-4">
+                    <p className="text-gray-700 dark:text-gray-300 leading-relaxed italic border-l-4 border-gray-100 dark:border-gray-700 pl-4">
                       "{feedback.comment}"
                     </p>
                   </div>

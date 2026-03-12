@@ -58,19 +58,15 @@ const ModuleViewModal: React.FC<ModuleViewModalProps> = ({
           onClick={onClose}
         ></div>
 
-        <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
-          {/* Header */}
+        <div className="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
           <div className="bg-primary-600 px-6 py-4 flex justify-between items-center">
             <h3 className="text-xl font-semibold text-white">Module Details</h3>
-            <button
-              onClick={onClose}
-              className="text-white hover:text-gray-200 transition"
-            >
+            <button onClick={onClose} className="text-white hover:text-gray-200 transition">
               <X className="w-6 h-6" />
             </button>
           </div>
 
-          <div className="bg-white px-6 py-5 max-h-[calc(100vh-200px)] overflow-y-auto">
+          <div className="bg-white dark:bg-gray-800 px-6 py-5 max-h-[calc(100vh-200px)] overflow-y-auto">
             {loading ? (
               <div className="flex justify-center items-center py-20">
                 <Loader2 className="w-12 h-12 text-primary-600 animate-spin" />
@@ -78,22 +74,22 @@ const ModuleViewModal: React.FC<ModuleViewModalProps> = ({
             ) : moduleData ? (
               <div className="space-y-8">
                 {/* Profile Header */}
-                <div className="flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-6 pb-6 border-b">
+                <div className="flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-6 pb-6 border-b dark:border-gray-700">
                   <div className="w-24 h-24 bg-primary-100 rounded-lg flex items-center justify-center text-primary-600">
                     <BookOpen className="w-12 h-12" />
                   </div>
                   <div className="text-center md:text-left">
-                    <h2 className="text-2xl font-bold text-gray-900">
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
                       {moduleData.moduleName}
                     </h2>
-                    <p className="text-gray-500 font-medium">
+                    <p className="text-gray-500 dark:text-gray-400 font-medium">
                       {moduleData.moduleCode}
                     </p>
                     <div className="mt-2 flex flex-wrap justify-center md:justify-start gap-2">
-                      <span className="px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                      <span className="px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
                         Semester {moduleData.semesterNumber}
                       </span>
-                      <span className="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                      <span className="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
                         {moduleData.credits} Credits
                       </span>
                     </div>
@@ -102,47 +98,45 @@ const ModuleViewModal: React.FC<ModuleViewModalProps> = ({
 
                 {/* Info Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  {/* General Information */}
                   <div className="space-y-4">
                     <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wider flex items-center">
                       <Info className="w-4 h-4 mr-2" /> General Information
                     </h4>
-                    <div className="bg-gray-50 rounded-lg p-4 space-y-3">
+                    <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 space-y-3">
                       <div className="flex items-start">
                         <Hash className="w-5 h-5 text-gray-400 mr-3 mt-0.5" />
                         <div>
-                          <p className="text-xs text-gray-500">Module Code</p>
-                          <p className="text-sm font-medium text-gray-900">{moduleData.moduleCode}</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">Module Code</p>
+                          <p className="text-sm font-medium text-gray-900 dark:text-white">{moduleData.moduleCode}</p>
                         </div>
                       </div>
                       <div className="flex items-start">
                         <BookOpen className="w-5 h-5 text-gray-400 mr-3 mt-0.5" />
                         <div>
-                          <p className="text-xs text-gray-500">Program</p>
-                          <p className="text-sm font-medium text-gray-900">{moduleData.program?.programName}</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">Program</p>
+                          <p className="text-sm font-medium text-gray-900 dark:text-white">{moduleData.program?.programName}</p>
                         </div>
                       </div>
                       <div className="flex items-start">
                         <Award className="w-5 h-5 text-gray-400 mr-3 mt-0.5" />
                         <div>
-                          <p className="text-xs text-gray-500">Credits</p>
-                          <p className="text-sm font-medium text-gray-900">{moduleData.credits}</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">Credits</p>
+                          <p className="text-sm font-medium text-gray-900 dark:text-white">{moduleData.credits}</p>
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  {/* Lecturer & Description */}
                   <div className="space-y-4">
                     <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wider flex items-center">
                       <User className="w-4 h-4 mr-2" /> Academic Details
                     </h4>
-                    <div className="bg-gray-50 rounded-lg p-4 space-y-3">
+                    <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 space-y-3">
                       <div className="flex items-start">
                         <User className="w-5 h-5 text-gray-400 mr-3 mt-0.5" />
                         <div>
-                          <p className="text-xs text-gray-500">Assigned Lecturer</p>
-                          <p className="text-sm font-medium text-gray-900">
+                          <p className="text-xs text-gray-500 dark:text-gray-400">Assigned Lecturer</p>
+                          <p className="text-sm font-medium text-gray-900 dark:text-white">
                             {moduleData.lecturer
                               ? `${moduleData.lecturer.user.title} ${moduleData.lecturer.user.firstName} ${moduleData.lecturer.user.lastName}`
                               : 'Not assigned'}
@@ -152,8 +146,8 @@ const ModuleViewModal: React.FC<ModuleViewModalProps> = ({
                       <div className="flex items-start">
                         <FileText className="w-5 h-5 text-gray-400 mr-3 mt-0.5" />
                         <div>
-                          <p className="text-xs text-gray-500">Description</p>
-                          <p className="text-sm text-gray-700 line-clamp-3">
+                          <p className="text-xs text-gray-500 dark:text-gray-400">Description</p>
+                          <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-3">
                             {moduleData.description || 'No description provided.'}
                           </p>
                         </div>
@@ -162,79 +156,77 @@ const ModuleViewModal: React.FC<ModuleViewModalProps> = ({
                   </div>
                 </div>
 
-                {/* Statistics/Quick Stats */}
+                {/* Statistics */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="bg-primary-50 p-4 rounded-lg border border-primary-100">
-                      <p className="text-xs text-primary-600 font-medium">Schedules</p>
-                      <p className="text-xl font-bold text-primary-900 mt-1">{moduleData.schedules?.length || 0}</p>
-                    </div>
-                    <div className="bg-green-50 p-4 rounded-lg border border-green-100">
-                      <p className="text-xs text-green-600 font-medium">Assignments</p>
-                      <p className="text-xl font-bold text-green-900 mt-1">{moduleData.assignments?.length || 0}</p>
-                    </div>
-                    <div className="bg-purple-50 p-4 rounded-lg border border-purple-100">
-                      <p className="text-xs text-purple-600 font-medium">Results</p>
-                      <p className="text-xl font-bold text-purple-900 mt-1">{moduleData.results?.length || 0}</p>
-                    </div>
-                    <div className="bg-orange-50 p-4 rounded-lg border border-orange-100">
-                      <p className="text-xs text-orange-600 font-medium">Feedbacks</p>
-                      <p className="text-xl font-bold text-orange-900 mt-1">{moduleData.feedbacks?.length || 0}</p>
-                    </div>
+                  <div className="bg-primary-50 dark:bg-primary-900/20 p-4 rounded-lg border border-primary-100 dark:border-primary-800">
+                    <p className="text-xs text-primary-600 dark:text-primary-400 font-medium">Schedules</p>
+                    <p className="text-xl font-bold text-primary-900 dark:text-primary-300 mt-1">{moduleData.schedules?.length || 0}</p>
+                  </div>
+                  <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-100 dark:border-green-800">
+                    <p className="text-xs text-green-600 dark:text-green-400 font-medium">Assignments</p>
+                    <p className="text-xl font-bold text-green-900 dark:text-green-300 mt-1">{moduleData.assignments?.length || 0}</p>
+                  </div>
+                  <div className="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg border border-purple-100 dark:border-purple-800">
+                    <p className="text-xs text-purple-600 dark:text-purple-400 font-medium">Results</p>
+                    <p className="text-xl font-bold text-purple-900 dark:text-purple-300 mt-1">{moduleData.results?.length || 0}</p>
+                  </div>
+                  <div className="bg-orange-50 dark:bg-orange-900/20 p-4 rounded-lg border border-orange-100 dark:border-orange-800">
+                    <p className="text-xs text-orange-600 dark:text-orange-400 font-medium">Feedbacks</p>
+                    <p className="text-xl font-bold text-orange-900 dark:text-orange-300 mt-1">{moduleData.feedbacks?.length || 0}</p>
+                  </div>
                 </div>
 
                 {/* Related Data Lists */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pt-4">
-                   {/* Schedules List */}
-                   <div className="bg-gray-50 rounded-lg p-4">
-                      <h5 className="text-sm font-bold text-gray-900 mb-3 flex items-center">
+                   <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
+                      <h5 className="text-sm font-bold text-gray-900 dark:text-white mb-3 flex items-center">
                         <Calendar className="w-4 h-4 mr-2 text-primary-600" />
                         Recent Schedules
                       </h5>
                       {moduleData.schedules && moduleData.schedules.length > 0 ? (
                         <div className="space-y-3">
                           {moduleData.schedules.slice(0, 5).map((s: any) => (
-                            <div key={s.id} className="flex items-center justify-between p-2 bg-white rounded border border-gray-100 shadow-sm">
+                            <div key={s.id} className="flex items-center justify-between p-2 bg-white dark:bg-gray-700 rounded border border-gray-100 dark:border-gray-600 shadow-sm">
                               <div>
-                                <p className="text-sm font-medium text-gray-800">{s.batch?.batchNumber || 'N/A'}</p>
-                                <p className="text-xs text-gray-500">{s.date} • {s.startTime} - {s.endTime}</p>
+                                <p className="text-sm font-medium text-gray-800 dark:text-white">{s.batch?.batchNumber || 'N/A'}</p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400">{s.date} • {s.startTime} - {s.endTime}</p>
                               </div>
                               <span className={`text-xs px-2 py-0.5 rounded-full ${
-                                s.status === 'COMPLETED' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'
+                                s.status === 'COMPLETED' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
                               }`}>{s.status}</span>
                             </div>
                           ))}
                         </div>
                       ) : (
-                        <p className="text-sm text-gray-500 italic text-center py-4">No schedules found.</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 italic text-center py-4">No schedules found.</p>
                       )}
                    </div>
 
-                   {/* Assignments List */}
-                   <div className="bg-gray-50 rounded-lg p-4">
-                      <h5 className="text-sm font-bold text-gray-900 mb-3 flex items-center">
+                   <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
+                      <h5 className="text-sm font-bold text-gray-900 dark:text-white mb-3 flex items-center">
                         <FileText className="w-4 h-4 mr-2 text-primary-600" />
                         Assignments
                       </h5>
                       {moduleData.assignments && moduleData.assignments.length > 0 ? (
                         <div className="space-y-3">
                           {moduleData.assignments.slice(0, 5).map((a: any) => (
-                            <div key={a.id} className="flex items-center justify-between p-2 bg-white rounded border border-gray-100 shadow-sm">
+                            <div key={a.id} className="flex items-center justify-between p-2 bg-white dark:bg-gray-700 rounded border border-gray-100 dark:border-gray-600 shadow-sm">
                               <div>
-                                <p className="text-sm font-medium text-gray-800">{a.title}</p>
-                                <p className="text-xs text-gray-500">Due: {new Date(a.dueDate).toLocaleDateString()}</p>
+                                <p className="text-sm font-medium text-gray-800 dark:text-white">{a.title}</p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400">Due: {new Date(a.dueDate).toLocaleDateString()}</p>
                               </div>
-                              <span className="text-xs px-2 py-0.5 rounded-full bg-primary-100 text-primary-700">{a.type}</span>
+                              <span className="text-xs px-2 py-0.5 rounded-full bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-400">{a.type}</span>
                             </div>
                           ))}
                         </div>
                       ) : (
-                        <p className="text-sm text-gray-500 italic text-center py-4">No assignments found.</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 italic text-center py-4">No assignments found.</p>
                       )}
                    </div>
                 </div>
 
                 {/* Audit Info */}
-                <div className="pt-6 border-t flex justify-between text-xs text-gray-400">
+                <div className="pt-6 border-t dark:border-gray-700 flex justify-between text-xs text-gray-400">
                   <div className="flex items-center">
                     <Clock className="w-3 h-3 mr-1" />
                     Created: {new Date(moduleData.createdAt).toLocaleString()}
@@ -246,20 +238,19 @@ const ModuleViewModal: React.FC<ModuleViewModalProps> = ({
                     </div>
                   )}
                 </div>
-
               </div>
             ) : (
               <div className="text-center py-20">
-                <p className="text-gray-500">No module data found.</p>
+                <p className="text-gray-500 dark:text-gray-400">No module data found.</p>
               </div>
             )}
           </div>
 
-          <div className="bg-gray-50 px-6 py-4 flex justify-end">
+          <div className="bg-gray-50 dark:bg-gray-900 px-6 py-4 flex justify-end">
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition"
+              className="px-6 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 transition"
             >
               Close
             </button>

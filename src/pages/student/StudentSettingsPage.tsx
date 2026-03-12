@@ -214,8 +214,8 @@ const StudentSettingsPage: React.FC = () => {
                       onChange={(e) => setSettings({...settings, preferences: {...settings.preferences, language: e.target.value}})}
                     >
                       <option>English</option>
-                      <option>French</option>
-                      <option>Spanish</option>
+                      <option>Sinhala</option>
+                      <option>Tamil</option>
                     </select>
                   </div>
                   <div>

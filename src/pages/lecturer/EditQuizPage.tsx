@@ -19,7 +19,7 @@ interface Question {
 const EditQuizPage: React.FC = () => {
   const { quizId } = useParams<{ quizId: string }>();
   const navigate = useNavigate();
-  
+
   const [quizData, setQuizData] = useState({
     title: '',
     description: '',
@@ -40,14 +40,14 @@ const EditQuizPage: React.FC = () => {
       setLoading(true);
       const response = await axiosInstance.get(`/quizzes/${quizId}`);
       const quiz = response.data.data.quiz;
-      
+
       setQuizData({
         title: quiz.title,
         description: quiz.description,
         durationMinutes: quiz.durationMinutes,
         moduleId: quiz.module.id,
       });
-      
+
       setQuestions(quiz.questions || []);
     } catch (error) {
       toast.error('Failed to fetch quiz details');
@@ -70,12 +70,12 @@ const EditQuizPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!quizData.title) return toast.error('Please enter quiz title');
-    
+
     setSaving(true);
     try {
       // Update quiz basic info
       await axiosInstance.put(`/quizzes/${quizId}`, quizData);
-      
+
       // Update individual questions
       const questionPromises = questions.map(q => {
         if (q.id) {
@@ -86,9 +86,9 @@ const EditQuizPage: React.FC = () => {
           return axiosInstance.post(`/quizzes/${quizId}/questions`, { questions: [q] });
         }
       });
-      
+
       await Promise.all(questionPromises);
-      
+
       toast.success('Quiz and questions updated successfully!');
       navigate(`/lecturer/modules/${quizData.moduleId}/quizzes`);
     } catch (error) {
@@ -110,7 +110,7 @@ const EditQuizPage: React.FC = () => {
         return;
       }
     }
-    
+
     const newQuestions = questions.filter((_, i) => i !== index);
     setQuestions(newQuestions);
   };
@@ -129,46 +129,46 @@ const EditQuizPage: React.FC = () => {
     <DashboardLayout>
       <div className="max-w-4xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
-          <button onClick={() => navigate(-1)} className="flex items-center text-gray-500 hover:text-primary-600">
+          <button onClick={() => navigate(-1)} className="flex items-center text-gray-500 dark:text-gray-400 hover:text-primary-600">
             <ArrowLeft className="h-4 w-4 mr-1" /> Back
           </button>
-          <h1 className="text-2xl font-bold">Edit Quiz</h1>
+          <h1 className="text-2xl font-bold dark:text-white">Edit Quiz</h1>
           <div className="w-10"></div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-8">
-          <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
-            <h2 className="text-lg font-bold flex items-center">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm space-y-4">
+            <h2 className="text-lg font-bold flex items-center dark:text-white">
               <HelpCircle className="h-5 w-5 mr-2 text-primary-600" />
               Quiz Information
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700">Title</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Title</label>
                 <input
                   type="text"
                   required
-                  className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                  className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md p-2 dark:bg-gray-700 dark:text-white"
                   value={quizData.title}
                   onChange={(e) => setQuizData({ ...quizData, title: e.target.value })}
                 />
               </div>
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700">Description</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
                 <textarea
-                  className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                  className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md p-2 dark:bg-gray-700 dark:text-white"
                   rows={2}
                   value={quizData.description}
                   onChange={(e) => setQuizData({ ...quizData, description: e.target.value })}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Duration (Minutes)</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Duration (Minutes)</label>
                 <input
                   type="number"
                   required
                   min="1"
-                  className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                  className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md p-2 dark:bg-gray-700 dark:text-white"
                   value={quizData.durationMinutes}
                   onChange={(e) => setQuizData({ ...quizData, durationMinutes: parseInt(e.target.value) })}
                 />
@@ -179,7 +179,7 @@ const EditQuizPage: React.FC = () => {
           {/* Questions */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-bold">Questions ({questions.length})</h2>
+              <h2 className="text-lg font-bold dark:text-white">Questions ({questions.length})</h2>
               <button
                 type="button"
                 onClick={handleAddQuestion}
@@ -190,7 +190,7 @@ const EditQuizPage: React.FC = () => {
             </div>
 
             {questions.map((q, index) => (
-              <div key={index} className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4 relative">
+              <div key={index} className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm space-y-4 relative">
                 <button
                   type="button"
                   onClick={() => handleDeleteQuestion(index)}
@@ -198,13 +198,13 @@ const EditQuizPage: React.FC = () => {
                 >
                   <Trash2 className="h-5 w-5" />
                 </button>
-                
+
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Question {index + 1}</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Question {index + 1}</label>
                   <input
                     type="text"
                     required
-                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                    className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md p-2 dark:bg-gray-700 dark:text-white"
                     value={q.questionText}
                     onChange={(e) => handleQuestionChange(index, 'questionText', e.target.value)}
                   />
@@ -212,39 +212,39 @@ const EditQuizPage: React.FC = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Option A</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Option A</label>
                     <input
                       type="text"
                       required
-                      className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                      className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md p-2 dark:bg-gray-700 dark:text-white"
                       value={q.optionA}
                       onChange={(e) => handleQuestionChange(index, 'optionA', e.target.value)}
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Option B</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Option B</label>
                     <input
                       type="text"
                       required
-                      className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                      className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md p-2 dark:bg-gray-700 dark:text-white"
                       value={q.optionB}
                       onChange={(e) => handleQuestionChange(index, 'optionB', e.target.value)}
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Option C</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Option C</label>
                     <input
                       type="text"
-                      className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                      className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md p-2 dark:bg-gray-700 dark:text-white"
                       value={q.optionC}
                       onChange={(e) => handleQuestionChange(index, 'optionC', e.target.value)}
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Option D</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Option D</label>
                     <input
                       type="text"
-                      className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                      className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md p-2 dark:bg-gray-700 dark:text-white"
                       value={q.optionD}
                       onChange={(e) => handleQuestionChange(index, 'optionD', e.target.value)}
                     />
@@ -253,9 +253,9 @@ const EditQuizPage: React.FC = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Correct Option</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Correct Option</label>
                     <select
-                      className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                      className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md p-2 dark:bg-gray-700 dark:text-white"
                       value={q.correctOption}
                       onChange={(e) => handleQuestionChange(index, 'correctOption', e.target.value)}
                     >
@@ -266,12 +266,12 @@ const EditQuizPage: React.FC = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Marks</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Marks</label>
                     <input
                       type="number"
                       required
                       min="1"
-                      className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                      className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md p-2 dark:bg-gray-700 dark:text-white"
                       value={q.marks}
                       onChange={(e) => handleQuestionChange(index, 'marks', parseInt(e.target.value))}
                     />
@@ -285,7 +285,7 @@ const EditQuizPage: React.FC = () => {
             <button
               type="button"
               onClick={() => navigate(-1)}
-              className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+              className="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition dark:text-gray-300"
             >
               Cancel
             </button>

@@ -127,7 +127,7 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, user, onSuccess 
     <div className="fixed inset-0 z-50 overflow-y-auto">
       <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
         <div className="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" onClick={onClose}></div>
-        <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
+        <div className="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
           <div className="bg-primary-600 px-6 py-4 flex justify-between items-center">
             <h3 className="text-xl font-semibold text-white">
               {user ? 'Edit User' : 'Add New User'}
@@ -137,16 +137,16 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, user, onSuccess 
             </button>
           </div>
 
-          <form onSubmit={handleSubmit} className="p-6">
+          <form onSubmit={handleSubmit} className="p-6 bg-white dark:bg-gray-800">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Account Details */}
               <div className="space-y-4">
-                <h4 className="font-semibold text-gray-700 border-b pb-2 flex items-center">
+                <h4 className="font-semibold text-gray-700 dark:text-gray-300 border-b dark:border-gray-700 pb-2 flex items-center">
                   <Shield className="w-4 h-4 mr-2" /> Account Details
                 </h4>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="col-span-2">
-                    <label className="block text-sm font-medium text-gray-700">Username *</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Username *</label>
                     <div className="mt-1 relative rounded-md shadow-sm">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <User className="h-4 w-4 text-gray-400" />
@@ -157,12 +157,12 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, user, onSuccess 
                         required
                         value={formData.username}
                         onChange={handleChange}
-                        className="block w-full pl-10 border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 sm:text-sm h-10 border"
+                        className="block w-full pl-10 border-gray-300 dark:border-gray-600 rounded-lg focus:ring-primary-500 focus:border-primary-500 sm:text-sm h-10 border dark:bg-gray-700 dark:text-white"
                       />
                     </div>
                   </div>
                   <div className="col-span-2">
-                    <label className="block text-sm font-medium text-gray-700">Email Address *</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Email Address *</label>
                     <div className="mt-1 relative rounded-md shadow-sm">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <Mail className="h-4 w-4 text-gray-400" />
@@ -173,29 +173,29 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, user, onSuccess 
                         required
                         value={formData.email}
                         onChange={handleChange}
-                        className="block w-full pl-10 border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 sm:text-sm h-10 border"
+                        className="block w-full pl-10 border-gray-300 dark:border-gray-600 rounded-lg focus:ring-primary-500 focus:border-primary-500 sm:text-sm h-10 border dark:bg-gray-700 dark:text-white"
                       />
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Role *</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Role *</label>
                     <select
                       name="role"
                       value={formData.role}
                       onChange={handleChange}
-                      className="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm h-10 border"
+                      className="mt-1 block w-full border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm h-10 border dark:bg-gray-700 dark:text-white"
                     >
                       <option value="ADMIN">Admin</option>
                       <option value="USER">Staff</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Center</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Center</label>
                     <select
                       name="centerId"
                       value={formData.centerId}
                       onChange={handleChange}
-                      className="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm h-10 border"
+                      className="mt-1 block w-full border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm h-10 border dark:bg-gray-700 dark:text-white"
                     >
                       <option value="">Select Center</option>
                       {centers.map(c => (
@@ -204,7 +204,7 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, user, onSuccess 
                     </select>
                   </div>
                   <div className="col-span-2">
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                       Password {user && '(Leave blank to keep current)'} {!user && '*'}
                     </label>
                     <div className="mt-1 relative rounded-md shadow-sm">
@@ -217,7 +217,7 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, user, onSuccess 
                         required={!user}
                         value={formData.password}
                         onChange={handleChange}
-                        className="block w-full pl-10 border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 sm:text-sm h-10 border"
+                        className="block w-full pl-10 border-gray-300 dark:border-gray-600 rounded-lg focus:ring-primary-500 focus:border-primary-500 sm:text-sm h-10 border dark:bg-gray-700 dark:text-white"
                       />
                     </div>
                   </div>
@@ -228,9 +228,9 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, user, onSuccess 
                       id="isActive"
                       checked={formData.isActive}
                       onChange={handleChange}
-                      className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                      className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 dark:border-gray-600 rounded"
                     />
-                    <label htmlFor="isActive" className="ml-2 block text-sm text-gray-900">
+                    <label htmlFor="isActive" className="ml-2 block text-sm text-gray-900 dark:text-white">
                       Active Account
                     </label>
                   </div>
@@ -239,17 +239,17 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, user, onSuccess 
 
               {/* Personal Details */}
               <div className="space-y-4">
-                <h4 className="font-semibold text-gray-700 border-b pb-2 flex items-center">
+                <h4 className="font-semibold text-gray-700 dark:text-gray-300 border-b dark:border-gray-700 pb-2 flex items-center">
                   <User className="w-4 h-4 mr-2" /> Personal Details
                 </h4>
                 <div className="grid grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Title</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Title</label>
                     <select
                       name="title"
                       value={formData.title}
                       onChange={handleChange}
-                      className="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm h-10 border"
+                      className="mt-1 block w-full border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm h-10 border dark:bg-gray-700 dark:text-white"
                     >
                       <option value="Mr">Mr</option>
                       <option value="Ms">Ms</option>
@@ -258,7 +258,7 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, user, onSuccess 
                     </select>
                   </div>
                   <div className="col-span-2">
-                    <label className="block text-sm font-medium text-gray-700">Gender</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Gender</label>
                     <div className="mt-2 flex space-x-4">
                       {['MALE', 'FEMALE', 'OTHER'].map(g => (
                         <label key={g} className="flex items-center">
@@ -268,9 +268,9 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, user, onSuccess 
                             value={g}
                             checked={formData.gender === g}
                             onChange={handleChange}
-                            className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300"
+                            className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 dark:border-gray-600"
                           />
-                          <span className="ml-2 text-sm text-gray-700 capitalize">{g.toLowerCase()}</span>
+                          <span className="ml-2 text-sm text-gray-700 dark:text-gray-300 capitalize">{g.toLowerCase()}</span>
                         </label>
                       ))}
                     </div>
@@ -278,50 +278,50 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, user, onSuccess 
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">First Name *</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">First Name *</label>
                     <input
                       type="text"
                       name="firstName"
                       required
                       value={formData.firstName}
                       onChange={handleChange}
-                      className="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm h-10 border px-3"
+                      className="mt-1 block w-full border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm h-10 border px-3 dark:bg-gray-700 dark:text-white"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Last Name *</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Last Name *</label>
                     <input
                       type="text"
                       name="lastName"
                       required
                       value={formData.lastName}
                       onChange={handleChange}
-                      className="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm h-10 border px-3"
+                      className="mt-1 block w-full border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm h-10 border px-3 dark:bg-gray-700 dark:text-white"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">NIC *</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">NIC *</label>
                     <input
                       type="text"
                       name="nic"
                       required
                       value={formData.nic}
                       onChange={handleChange}
-                      className="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm h-10 border px-3"
+                      className="mt-1 block w-full border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm h-10 border px-3 dark:bg-gray-700 dark:text-white"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Date of Birth</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Date of Birth</label>
                     <input
                       type="date"
                       name="dateOfBirth"
                       value={formData.dateOfBirth}
                       onChange={handleChange}
-                      className="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm h-10 border px-3"
+                      className="mt-1 block w-full border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm h-10 border px-3 dark:bg-gray-700 dark:text-white"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Mobile Number *</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Mobile Number *</label>
                     <div className="mt-1 relative rounded-md shadow-sm">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <Phone className="h-4 w-4 text-gray-400" />
@@ -332,12 +332,12 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, user, onSuccess 
                         required
                         value={formData.mobileNumber}
                         onChange={handleChange}
-                        className="block w-full pl-10 border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 sm:text-sm h-10 border"
+                        className="block w-full pl-10 border-gray-300 dark:border-gray-600 rounded-lg focus:ring-primary-500 focus:border-primary-500 sm:text-sm h-10 border dark:bg-gray-700 dark:text-white"
                       />
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Home Number</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Home Number</label>
                     <div className="mt-1 relative rounded-md shadow-sm">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <Phone className="h-4 w-4 text-gray-400" />
@@ -347,12 +347,12 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, user, onSuccess 
                         name="homeNumber"
                         value={formData.homeNumber}
                         onChange={handleChange}
-                        className="block w-full pl-10 border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 sm:text-sm h-10 border"
+                        className="block w-full pl-10 border-gray-300 dark:border-gray-600 rounded-lg focus:ring-primary-500 focus:border-primary-500 sm:text-sm h-10 border dark:bg-gray-700 dark:text-white"
                       />
                     </div>
                   </div>
                   <div className="col-span-2">
-                    <label className="block text-sm font-medium text-gray-700">Address</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Address</label>
                     <div className="mt-1 relative rounded-md shadow-sm">
                       <div className="absolute top-3 left-3 flex items-center pointer-events-none">
                         <MapPin className="h-4 w-4 text-gray-400" />
@@ -362,7 +362,7 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, user, onSuccess 
                         rows={2}
                         value={formData.address}
                         onChange={handleChange}
-                        className="block w-full pl-10 pt-2 border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 sm:text-sm border"
+                        className="block w-full pl-10 pt-2 border-gray-300 dark:border-gray-600 rounded-lg focus:ring-primary-500 focus:border-primary-500 sm:text-sm border dark:bg-gray-700 dark:text-white"
                       ></textarea>
                     </div>
                   </div>
@@ -370,11 +370,11 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, user, onSuccess 
               </div>
             </div>
 
-            <div className="mt-8 flex justify-end space-x-3 border-t pt-6">
+            <div className="mt-8 flex justify-end space-x-3 border-t dark:border-gray-700 pt-6">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition"
+                className="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition"
               >
                 Cancel
               </button>

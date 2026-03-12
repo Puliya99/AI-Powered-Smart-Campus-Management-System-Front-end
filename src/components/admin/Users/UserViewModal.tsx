@@ -59,7 +59,7 @@ const UserViewModal: React.FC<UserViewModalProps> = ({
           onClick={onClose}
         ></div>
 
-        <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
+        <div className="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
           {/* Header */}
           <div className="bg-primary-600 px-6 py-4 flex justify-between items-center">
             <h3 className="text-xl font-semibold text-white">User Details</h3>
@@ -71,7 +71,7 @@ const UserViewModal: React.FC<UserViewModalProps> = ({
             </button>
           </div>
 
-          <div className="bg-white px-6 py-5 max-h-[calc(100vh-200px)] overflow-y-auto">
+          <div className="bg-white dark:bg-gray-800 px-6 py-5 max-h-[calc(100vh-200px)] overflow-y-auto">
             {loading ? (
               <div className="flex justify-center items-center py-20">
                 <Loader2 className="w-12 h-12 text-primary-600 animate-spin" />
@@ -79,29 +79,29 @@ const UserViewModal: React.FC<UserViewModalProps> = ({
             ) : user ? (
               <div className="space-y-8">
                 {/* Profile Header */}
-                <div className="flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-6 pb-6 border-b">
+                <div className="flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-6 pb-6 border-b dark:border-gray-700">
                   <div className="w-24 h-24 bg-primary-100 rounded-full flex items-center justify-center text-primary-700 text-3xl font-bold">
                     {user.firstName.charAt(0)}
                     {user.lastName.charAt(0)}
                   </div>
                   <div className="text-center md:text-left">
-                    <h2 className="text-2xl font-bold text-gray-900">
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
                       {user.title} {user.firstName} {user.lastName}
                     </h2>
-                    <p className="text-gray-500 font-medium">
+                    <p className="text-gray-500 dark:text-gray-400 font-medium">
                       {user.username} • {user.registrationNumber}
                     </p>
                     <div className="mt-2 flex flex-wrap justify-center md:justify-start gap-2">
                       <span
                         className={`px-3 py-1 text-xs font-semibold rounded-full ${
                           user.isActive
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-red-100 text-red-800'
+                            ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                            : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
                         }`}
                       >
                         {user.isActive ? 'Active' : 'Inactive'}
                       </span>
-                      <span className="px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                      <span className="px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
                         {user.role === 'USER' ? 'STAFF' : user.role}
                       </span>
                     </div>
@@ -111,34 +111,34 @@ const UserViewModal: React.FC<UserViewModalProps> = ({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   {/* Personal Information */}
                   <div className="space-y-4">
-                    <h4 className="text-lg font-semibold text-gray-900 flex items-center">
+                    <h4 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
                       <UserIcon className="w-5 h-5 mr-2 text-primary-600" />
                       Personal Information
                     </h4>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <p className="text-sm text-gray-500">Full Name</p>
-                        <p className="font-medium text-gray-900">
+                        <p className="text-sm text-gray-500 dark:text-gray-400">Full Name</p>
+                        <p className="font-medium text-gray-900 dark:text-white">
                           {user.firstName} {user.lastName}
                         </p>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-500">NIC Number</p>
-                        <p className="font-medium text-gray-900">{user.nic}</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">NIC Number</p>
+                        <p className="font-medium text-gray-900 dark:text-white">{user.nic}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-500">Gender</p>
-                        <p className="font-medium text-gray-900">{user.gender}</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">Gender</p>
+                        <p className="font-medium text-gray-900 dark:text-white">{user.gender}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-500">Date of Birth</p>
-                        <p className="font-medium text-gray-900">
+                        <p className="text-sm text-gray-500 dark:text-gray-400">Date of Birth</p>
+                        <p className="font-medium text-gray-900 dark:text-white">
                           {new Date(user.dateOfBirth).toLocaleDateString()}
                         </p>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-500">Join Date</p>
-                        <p className="font-medium text-gray-900">
+                        <p className="text-sm text-gray-500 dark:text-gray-400">Join Date</p>
+                        <p className="font-medium text-gray-900 dark:text-white">
                           {new Date(user.createdAt).toLocaleDateString()}
                         </p>
                       </div>
@@ -147,7 +147,7 @@ const UserViewModal: React.FC<UserViewModalProps> = ({
 
                   {/* Contact Information */}
                   <div className="space-y-4">
-                    <h4 className="text-lg font-semibold text-gray-900 flex items-center">
+                    <h4 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
                       <Mail className="w-5 h-5 mr-2 text-primary-600" />
                       Contact Information
                     </h4>
@@ -155,8 +155,8 @@ const UserViewModal: React.FC<UserViewModalProps> = ({
                       <div className="flex items-center">
                         <Mail className="w-4 h-4 mr-3 text-gray-400" />
                         <div>
-                          <p className="text-sm text-gray-500">Email Address</p>
-                          <p className="font-medium text-gray-900">
+                          <p className="text-sm text-gray-500 dark:text-gray-400">Email Address</p>
+                          <p className="font-medium text-gray-900 dark:text-white">
                             {user.email}
                           </p>
                         </div>
@@ -164,8 +164,8 @@ const UserViewModal: React.FC<UserViewModalProps> = ({
                       <div className="flex items-center">
                         <Phone className="w-4 h-4 mr-3 text-gray-400" />
                         <div>
-                          <p className="text-sm text-gray-500">Mobile Number</p>
-                          <p className="font-medium text-gray-900">
+                          <p className="text-sm text-gray-500 dark:text-gray-400">Mobile Number</p>
+                          <p className="font-medium text-gray-900 dark:text-white">
                             {user.mobileNumber}
                           </p>
                         </div>
@@ -174,8 +174,8 @@ const UserViewModal: React.FC<UserViewModalProps> = ({
                         <div className="flex items-center">
                           <Phone className="w-4 h-4 mr-3 text-gray-400" />
                           <div>
-                            <p className="text-sm text-gray-500">Home Number</p>
-                            <p className="font-medium text-gray-900">
+                            <p className="text-sm text-gray-500 dark:text-gray-400">Home Number</p>
+                            <p className="font-medium text-gray-900 dark:text-white">
                               {user.homeNumber}
                             </p>
                           </div>
@@ -184,8 +184,8 @@ const UserViewModal: React.FC<UserViewModalProps> = ({
                       <div className="flex items-start">
                         <MapPin className="w-4 h-4 mr-3 mt-1 text-gray-400" />
                         <div>
-                          <p className="text-sm text-gray-500">Address</p>
-                          <p className="font-medium text-gray-900">
+                          <p className="text-sm text-gray-500 dark:text-gray-400">Address</p>
+                          <p className="font-medium text-gray-900 dark:text-white">
                             {user.address}
                           </p>
                         </div>
@@ -195,26 +195,26 @@ const UserViewModal: React.FC<UserViewModalProps> = ({
 
                   {/* Administrative Information */}
                   <div className="space-y-4">
-                    <h4 className="text-lg font-semibold text-gray-900 flex items-center">
+                    <h4 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
                       <Building className="w-5 h-5 mr-2 text-primary-600" />
                       Administrative Information
                     </h4>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <p className="text-sm text-gray-500">Assigned Center</p>
-                        <p className="font-medium text-gray-900">
+                        <p className="text-sm text-gray-500 dark:text-gray-400">Assigned Center</p>
+                        <p className="font-medium text-gray-900 dark:text-white">
                           {user.center?.centerName || 'Not Assigned'}
                         </p>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-500">Registration No.</p>
-                        <p className="font-medium text-gray-900">
+                        <p className="text-sm text-gray-500 dark:text-gray-400">Registration No.</p>
+                        <p className="font-medium text-gray-900 dark:text-white">
                           {user.registrationNumber}
                         </p>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-500">Role</p>
-                        <p className="font-medium text-gray-900">
+                        <p className="text-sm text-gray-500 dark:text-gray-400">Role</p>
+                        <p className="font-medium text-gray-900 dark:text-white">
                            {user.role === 'USER' ? 'STAFF' : user.role}
                         </p>
                       </div>
@@ -223,16 +223,16 @@ const UserViewModal: React.FC<UserViewModalProps> = ({
                 </div>
               </div>
             ) : (
-              <div className="text-center py-20 text-gray-500">
+              <div className="text-center py-20 text-gray-500 dark:text-gray-400">
                 User data not found
               </div>
             )}
           </div>
 
-          <div className="bg-gray-50 px-6 py-4 flex justify-end">
+          <div className="bg-gray-50 dark:bg-gray-900 px-6 py-4 flex justify-end">
             <button
               onClick={onClose}
-              className="px-6 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition"
+              className="px-6 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition"
             >
               Close
             </button>

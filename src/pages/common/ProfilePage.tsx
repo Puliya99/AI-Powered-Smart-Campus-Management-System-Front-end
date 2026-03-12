@@ -194,18 +194,18 @@ const ProfilePage: React.FC = () => {
     <DashboardLayout>
       <div className="max-w-4xl mx-auto space-y-6">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">My Profile</h1>
-          <p className="text-gray-600 mt-1">Manage your personal information and security</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">My Profile</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">Manage your personal information and security</p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md overflow-hidden">
-          <div className="flex border-b">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+          <div className="flex border-b dark:border-gray-700">
             <button
               onClick={() => setActiveTab('profile')}
               className={`px-6 py-4 text-sm font-medium transition-colors ${
                 activeTab === 'profile'
                   ? 'border-b-2 border-primary-600 text-primary-600'
-                  : 'text-gray-500 hover:text-gray-700'
+                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
               }`}
             >
               Profile Information
@@ -215,7 +215,7 @@ const ProfilePage: React.FC = () => {
               className={`px-6 py-4 text-sm font-medium transition-colors ${
                 activeTab === 'password'
                   ? 'border-b-2 border-primary-600 text-primary-600'
-                  : 'text-gray-500 hover:text-gray-700'
+                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
               }`}
             >
               Security Settings
@@ -229,7 +229,7 @@ const ProfilePage: React.FC = () => {
                   {/* Profile Pic Placeholder */}
                   <div className="flex flex-col items-center space-y-4">
                     <div className="relative">
-                      <div className="w-32 h-32 bg-gray-200 rounded-full flex items-center justify-center border-4 border-white shadow-sm overflow-hidden">
+                      <div className="w-32 h-32 bg-gray-200 dark:bg-gray-600 rounded-full flex items-center justify-center border-4 border-white dark:border-gray-700 shadow-sm overflow-hidden">
                         {(user as any)?.profilePic ? (
                           <img 
                             src={(user as any).profilePic} 
@@ -237,7 +237,7 @@ const ProfilePage: React.FC = () => {
                             className="w-full h-full object-cover"
                           />
                         ) : (
-                          <UserCircle className="w-24 h-24 text-gray-400" />
+                          <UserCircle className="w-24 h-24 text-gray-400 dark:text-gray-500" />
                         )}
                       </div>
                       <button 
@@ -262,9 +262,9 @@ const ProfilePage: React.FC = () => {
                       />
                     </div>
                     <div className="text-center">
-                      <p className="font-semibold text-gray-900">{user?.firstName} {user?.lastName}</p>
-                      <p className="text-sm text-gray-500 uppercase">{user?.role}</p>
-                      <p className="text-xs text-gray-400 mt-1">{user?.registrationNumber}</p>
+                      <p className="font-semibold text-gray-900 dark:text-white">{user?.firstName} {user?.lastName}</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400 uppercase">{user?.role}</p>
+                      <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{user?.registrationNumber}</p>
                       
                       {canDownload && (user as any)?.profilePic && (
                         <button
@@ -282,12 +282,12 @@ const ProfilePage: React.FC = () => {
                   {/* Profile Fields */}
                   <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Title</label>
                       <select
                         name="title"
                         value={formData.title}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
                       >
                         <option value="Mr">Mr</option>
                         <option value="Ms">Ms</option>
@@ -296,12 +296,12 @@ const ProfilePage: React.FC = () => {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Gender</label>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Gender</label>
                       <select
                         name="gender"
                         value={formData.gender}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
                       >
                         <option value="MALE">Male</option>
                         <option value="FEMALE">Female</option>
@@ -309,80 +309,80 @@ const ProfilePage: React.FC = () => {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">First Name</label>
                       <input
                         type="text"
                         name="firstName"
                         value={formData.firstName}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
                         required
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Last Name</label>
                       <input
                         type="text"
                         name="lastName"
                         value={formData.lastName}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
                         required
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Email (Read-only)</label>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email (Read-only)</label>
                       <input
                         type="email"
                         value={user?.email}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-500"
+                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-400"
                         readOnly
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Date of Birth</label>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date of Birth</label>
                       <input
                         type="date"
                         name="dateOfBirth"
                         value={formData.dateOfBirth}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Mobile Number</label>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Mobile Number</label>
                       <input
                         type="tel"
                         name="mobileNumber"
                         value={formData.mobileNumber}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Home Number</label>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Home Number</label>
                       <input
                         type="tel"
                         name="homeNumber"
                         value={formData.homeNumber}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
                       />
                     </div>
                     <div className="md:col-span-2">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Address</label>
                       <textarea
                         name="address"
                         value={formData.address}
                         onChange={handleInputChange}
                         rows={3}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
                       />
                     </div>
                   </div>
                 </div>
 
-                <div className="pt-6 border-t flex justify-end">
+                <div className="pt-6 border-t dark:border-gray-700 flex justify-end">
                   <button
                     type="submit"
                     disabled={loading}
@@ -405,12 +405,12 @@ const ProfilePage: React.FC = () => {
             ) : (
               <form onSubmit={handlePasswordSubmit} className="max-w-md space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Current Password
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Lock className="h-5 w-5 text-gray-400" />
+                      <Lock className="h-5 w-5 text-gray-400 dark:text-gray-500" />
                     </div>
                     <input
                       type="password"
@@ -418,18 +418,18 @@ const ProfilePage: React.FC = () => {
                       value={passwordData.currentPassword}
                       onChange={handlePasswordChange}
                       required
-                      className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                      className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
                       placeholder="••••••••"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     New Password
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Lock className="h-5 w-5 text-gray-400" />
+                      <Lock className="h-5 w-5 text-gray-400 dark:text-gray-500" />
                     </div>
                     <input
                       type="password"
@@ -438,18 +438,18 @@ const ProfilePage: React.FC = () => {
                       onChange={handlePasswordChange}
                       required
                       minLength={6}
-                      className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                      className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
                       placeholder="••••••••"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Confirm New Password
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Lock className="h-5 w-5 text-gray-400" />
+                      <Lock className="h-5 w-5 text-gray-400 dark:text-gray-500" />
                     </div>
                     <input
                       type="password"
@@ -457,13 +457,13 @@ const ProfilePage: React.FC = () => {
                       value={passwordData.confirmPassword}
                       onChange={handlePasswordChange}
                       required
-                      className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                      className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
                       placeholder="••••••••"
                     />
                   </div>
                 </div>
 
-                <div className="pt-6 border-t flex justify-end">
+                <div className="pt-6 border-t dark:border-gray-700 flex justify-end">
                   <button
                     type="submit"
                     disabled={passwordLoading}

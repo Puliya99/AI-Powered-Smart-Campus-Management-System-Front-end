@@ -54,15 +54,15 @@ const ReportsPage: React.FC = () => {
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Reports Management</h1>
-            <p className="text-gray-600 mt-1">Generate and view campus reports</p>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Reports Management</h1>
+            <p className="text-gray-600 dark:text-gray-400 mt-1">Generate and view campus reports</p>
           </div>
           {user?.role === 'ADMIN' && (
             <div className="w-full md:w-64">
               <select
                 value={selectedCenter}
                 onChange={(e) => setSelectedCenter(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
               >
                 <option value="">All Centers</option>
                 {centers.map((center) => (
@@ -77,38 +77,38 @@ const ReportsPage: React.FC = () => {
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-blue-500">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md border-l-4 border-blue-500">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500 font-medium">Total Students</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.totalStudents}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Total Students</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.totalStudents}</p>
               </div>
               <Users className="w-10 h-10 text-blue-100" />
             </div>
           </div>
-          <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-green-500">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md border-l-4 border-green-500">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500 font-medium">Total Programs</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.totalPrograms}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Total Programs</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.totalPrograms}</p>
               </div>
               <BookOpen className="w-10 h-10 text-green-100" />
             </div>
           </div>
-          <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-purple-500">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md border-l-4 border-purple-500">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500 font-medium">Total Batches</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.totalBatches}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Total Batches</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.totalBatches}</p>
               </div>
               <Layers className="w-10 h-10 text-purple-100" />
             </div>
           </div>
-          <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-yellow-500">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md border-l-4 border-yellow-500">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500 font-medium">Total Revenue</p>
-                <p className="text-2xl font-bold text-gray-900">LKR {stats.totalRevenue.toLocaleString()}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Total Revenue</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">LKR {stats.totalRevenue.toLocaleString()}</p>
               </div>
               <DollarSign className="w-10 h-10 text-yellow-100" />
             </div>
@@ -122,9 +122,9 @@ const ReportsPage: React.FC = () => {
         )}
 
         {!reportData && (
-          <div className="bg-white p-12 rounded-lg shadow-md text-center">
+          <div className="bg-white dark:bg-gray-800 p-12 rounded-lg shadow-md text-center">
             <FileBarChart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <p className="text-gray-500 text-lg">Select a report type and click generate to view data.</p>
+            <p className="text-gray-500 dark:text-gray-400 text-lg">Select a report type and click generate to view data.</p>
           </div>
         )}
       </div>

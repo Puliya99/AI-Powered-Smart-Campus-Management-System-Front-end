@@ -111,8 +111,8 @@ const OnlineClassesPage: React.FC = () => {
       <div className="space-y-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Online Classes</h1>
-            <p className="text-gray-600 mt-1">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Online Classes</h1>
+            <p className="text-gray-600 dark:text-gray-400 mt-1">
               Host and manage virtual lectures.
             </p>
           </div>
@@ -134,7 +134,7 @@ const OnlineClassesPage: React.FC = () => {
             {activeMeetings.map((meeting) => (
               <div
                 key={meeting.id}
-                className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow"
+                className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-md transition-shadow"
               >
                 <div className="p-5">
                   <div className="flex items-center justify-between mb-4">
@@ -146,10 +146,10 @@ const OnlineClassesPage: React.FC = () => {
                       Live
                     </span>
                   </div>
-                  <h3 className="text-lg font-bold text-gray-900 mb-1">
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">
                     {meeting.title}
                   </h3>
-                  <p className="text-sm text-gray-500 mb-1">
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
                     {meeting.module?.moduleName}
                   </p>
                   {meeting.batch && (
@@ -160,14 +160,14 @@ const OnlineClassesPage: React.FC = () => {
                   )}
 
                   <div className="space-y-2 mb-6">
-                    <div className="flex items-center text-xs text-gray-500">
+                    <div className="flex items-center text-xs text-gray-500 dark:text-gray-400">
                       <Calendar className="h-3.5 w-3.5 mr-2" />
                       Started {new Date(meeting.startTime).toLocaleTimeString()}
                     </div>
-                    <div className="flex items-center text-xs text-gray-500">
+                    <div className="flex items-center text-xs text-gray-500 dark:text-gray-400">
                       <Users className="h-3.5 w-3.5 mr-2" />
                       Meeting Code:{' '}
-                      <span className="ml-1 font-mono font-bold text-gray-700">
+                      <span className="ml-1 font-mono font-bold text-gray-700 dark:text-gray-300">
                         {meeting.meetingCode}
                       </span>
                     </div>
@@ -187,12 +187,12 @@ const OnlineClassesPage: React.FC = () => {
             ))}
           </div>
         ) : (
-          <div className="text-center py-16 bg-white rounded-xl border-2 border-dashed border-gray-300">
+          <div className="text-center py-16 bg-white dark:bg-gray-800 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600">
             <Video className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white">
               No active classes
             </h3>
-            <p className="text-gray-500 mt-1">
+            <p className="text-gray-500 dark:text-gray-400 mt-1">
               Start a new online lecture to interact with your students.
             </p>
             <button
@@ -208,8 +208,8 @@ const OnlineClassesPage: React.FC = () => {
         {/* Create Meeting Modal */}
         {showCreateModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-            <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden">
-              <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between bg-primary-600">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-md overflow-hidden">
+              <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between bg-primary-600">
                 <h2 className="text-xl font-bold text-white">
                   Start Online Lecture
                 </h2>
@@ -223,13 +223,13 @@ const OnlineClassesPage: React.FC = () => {
 
               <form onSubmit={handleCreateMeeting} className="p-6 space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Lecture Title
                   </label>
                   <input
                     type="text"
                     required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none bg-white dark:bg-gray-700 dark:text-white"
                     placeholder="e.g., Introduction to Advanced React"
                     value={formData.title}
                     onChange={(e) =>
@@ -239,12 +239,12 @@ const OnlineClassesPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Module
                   </label>
                   <select
                     required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none bg-white dark:bg-gray-700 dark:text-white"
                     value={formData.moduleId}
                     onChange={(e) =>
                       setFormData({ ...formData, moduleId: e.target.value, batchId: '' })
@@ -260,13 +260,13 @@ const OnlineClassesPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Batch
                   </label>
                   <select
                     required
                     disabled={!formData.moduleId || batchesLoading}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none disabled:bg-gray-100 disabled:text-gray-400"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none disabled:bg-gray-100 dark:disabled:bg-gray-600 disabled:text-gray-400 bg-white dark:bg-gray-700 dark:text-white"
                     value={formData.batchId}
                     onChange={(e) =>
                       setFormData({ ...formData, batchId: e.target.value })
@@ -298,7 +298,7 @@ const OnlineClassesPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={handleCloseModal}
-                    className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                    className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                   >
                     Cancel
                   </button>

@@ -288,7 +288,7 @@ const StudentModal: React.FC<StudentModalProps> = ({
 
   const filteredBatches = batches.filter((b) => {
     if (!formData.programId) return true
-    // If b.program is just an ID (due to how TypeORM might return it if not careful, 
+    // If b.program is just an ID (due to how TypeORM might return it if not careful,
     // but we use leftJoinAndSelect with select)
     return b.program?.id === formData.programId
   })
@@ -303,7 +303,7 @@ const StudentModal: React.FC<StudentModalProps> = ({
         ></div>
 
         {/* Modal panel */}
-        <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
+        <div className="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
           {/* Header */}
           <div className="bg-primary-600 px-6 py-4 flex justify-between items-center">
             <h3 className="text-xl font-semibold text-white">
@@ -319,18 +319,18 @@ const StudentModal: React.FC<StudentModalProps> = ({
 
           {/* Form */}
           <form onSubmit={handleSubmit}>
-            <div className="bg-white px-6 py-5 max-h-[calc(100vh-200px)] overflow-y-auto">
+            <div className="bg-white dark:bg-gray-800 px-6 py-5 max-h-[calc(100vh-200px)] overflow-y-auto">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Personal Information */}
                 <div className="md:col-span-2">
-                  <h4 className="text-lg font-semibold text-gray-900 mb-4 border-b pb-2">
+                  <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 border-b dark:border-gray-700 pb-2">
                     Personal Information
                   </h4>
                 </div>
 
                 {/* Title */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Title <span className="text-red-500">*</span>
                   </label>
                   <select
@@ -338,7 +338,7 @@ const StudentModal: React.FC<StudentModalProps> = ({
                     value={formData.title}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                   >
                     <option value="Mr">Mr</option>
                     <option value="Ms">Ms</option>
@@ -349,7 +349,7 @@ const StudentModal: React.FC<StudentModalProps> = ({
 
                 {/* First Name */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     First Name <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -358,14 +358,14 @@ const StudentModal: React.FC<StudentModalProps> = ({
                     value={formData.firstName}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                     placeholder="John"
                   />
                 </div>
 
                 {/* Last Name */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Last Name <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -374,14 +374,14 @@ const StudentModal: React.FC<StudentModalProps> = ({
                     value={formData.lastName}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                     placeholder="Doe"
                   />
                 </div>
 
                 {/* Gender */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Gender <span className="text-red-500">*</span>
                   </label>
                   <select
@@ -389,7 +389,7 @@ const StudentModal: React.FC<StudentModalProps> = ({
                     value={formData.gender}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                   >
                     <option value="MALE">Male</option>
                     <option value="FEMALE">Female</option>
@@ -399,7 +399,7 @@ const StudentModal: React.FC<StudentModalProps> = ({
 
                 {/* Date of Birth */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Date of Birth <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -408,20 +408,20 @@ const StudentModal: React.FC<StudentModalProps> = ({
                     value={formData.dateOfBirth}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                   />
                 </div>
 
                 {/* Account Information */}
                 <div className="md:col-span-2 mt-4">
-                  <h4 className="text-lg font-semibold text-gray-900 mb-4 border-b pb-2">
+                  <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 border-b dark:border-gray-700 pb-2">
                     Account Information
                   </h4>
                 </div>
 
                 {/* Username */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Username <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -431,14 +431,14 @@ const StudentModal: React.FC<StudentModalProps> = ({
                     onChange={handleChange}
                     required
                     disabled={!!student}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:bg-gray-100"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:bg-gray-100 dark:disabled:bg-gray-700 dark:bg-gray-700 dark:text-white"
                     placeholder="johndoe"
                   />
                 </div>
 
                 {/* Email */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Email <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -447,7 +447,7 @@ const StudentModal: React.FC<StudentModalProps> = ({
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                     placeholder="john.doe@example.com"
                   />
                 </div>
@@ -455,7 +455,7 @@ const StudentModal: React.FC<StudentModalProps> = ({
                 {/* Password (only for new students) */}
                 {!student && (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Password <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -464,7 +464,7 @@ const StudentModal: React.FC<StudentModalProps> = ({
                       value={formData.password}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                       placeholder="Minimum 8 characters"
                     />
                   </div>
@@ -472,7 +472,7 @@ const StudentModal: React.FC<StudentModalProps> = ({
 
                 {/* Payment Type */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Payment Type <span className="text-red-500">*</span>
                   </label>
                   <select
@@ -480,7 +480,7 @@ const StudentModal: React.FC<StudentModalProps> = ({
                     value={formData.paymentType}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                   >
                     <option value="FULL">Full Payment</option>
                     <option value="INSTALLMENT">Installment</option>
@@ -489,7 +489,7 @@ const StudentModal: React.FC<StudentModalProps> = ({
 
                 {/* Academic Information */}
                 <div className="md:col-span-2 mt-4">
-                  <h4 className="text-lg font-semibold text-gray-900 mb-4 border-b pb-2">
+                  <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 border-b dark:border-gray-700 pb-2">
                     Academic Information
                   </h4>
                 </div>
@@ -497,7 +497,7 @@ const StudentModal: React.FC<StudentModalProps> = ({
                 {/* Center */}
                 {isAdmin ? (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Center <span className="text-red-500">*</span>
                     </label>
                     <select
@@ -505,7 +505,7 @@ const StudentModal: React.FC<StudentModalProps> = ({
                       value={formData.centerId}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                     >
                       <option value="">Select Center</option>
                       {centers.map((center) => (
@@ -517,8 +517,8 @@ const StudentModal: React.FC<StudentModalProps> = ({
                   </div>
                 ) : formData.centerId && centers.length > 0 ? (
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Center</label>
-                      <p className="px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-700">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Center</label>
+                      <p className="px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300">
                         {centers.find(c => c.id === formData.centerId)?.centerName || 'Your Center'}
                       </p>
                     </div>
@@ -526,7 +526,7 @@ const StudentModal: React.FC<StudentModalProps> = ({
 
                 {/* Program */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Program <span className="text-red-500">*</span>
                   </label>
                   <select
@@ -534,7 +534,7 @@ const StudentModal: React.FC<StudentModalProps> = ({
                     value={formData.programId}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                   >
                     <option value="">Select Program</option>
                     {programs.map((program) => (
@@ -547,7 +547,7 @@ const StudentModal: React.FC<StudentModalProps> = ({
 
                 {/* Batch */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Batch <span className="text-red-500">*</span>
                   </label>
                   <select
@@ -555,7 +555,7 @@ const StudentModal: React.FC<StudentModalProps> = ({
                     value={formData.batchId}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                   >
                     <option value="">Select Batch</option>
                     {filteredBatches.map((batch) => (
@@ -568,7 +568,7 @@ const StudentModal: React.FC<StudentModalProps> = ({
 
                 {/* Nic */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     NIC <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -577,21 +577,21 @@ const StudentModal: React.FC<StudentModalProps> = ({
                     value={formData.nic}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                     placeholder="123456789V"
                   />
                 </div>
 
                 {/* Contact Information */}
                 <div className="md:col-span-2 mt-4">
-                  <h4 className="text-lg font-semibold text-gray-900 mb-4 border-b pb-2">
+                  <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 border-b dark:border-gray-700 pb-2">
                     Contact Information
                   </h4>
                 </div>
 
                 {/* Mobile Number */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Mobile Number <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -600,14 +600,14 @@ const StudentModal: React.FC<StudentModalProps> = ({
                     value={formData.mobileNumber}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                     placeholder="0771234567"
                   />
                 </div>
 
                 {/* Home Number */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Home Number
                   </label>
                   <input
@@ -615,14 +615,14 @@ const StudentModal: React.FC<StudentModalProps> = ({
                     name="homeNumber"
                     value={formData.homeNumber}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                     placeholder="0112345678"
                   />
                 </div>
 
                 {/* Address */}
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Address <span className="text-red-500">*</span>
                   </label>
                   <textarea
@@ -631,7 +631,7 @@ const StudentModal: React.FC<StudentModalProps> = ({
                     onChange={handleChange}
                     required
                     rows={3}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                     placeholder="Enter full address"
                   />
                 </div>
@@ -639,11 +639,11 @@ const StudentModal: React.FC<StudentModalProps> = ({
             </div>
 
             {/* Footer */}
-            <div className="bg-gray-50 px-6 py-4 flex justify-end space-x-3">
+            <div className="bg-gray-50 dark:bg-gray-900 px-6 py-4 flex justify-end space-x-3">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition"
+                className="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
                 disabled={loading}
               >
                 Cancel

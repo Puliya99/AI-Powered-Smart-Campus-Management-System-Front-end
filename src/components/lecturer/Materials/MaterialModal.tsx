@@ -77,7 +77,7 @@ const MaterialModal: React.FC<MaterialModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-lg overflow-hidden">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-lg overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between bg-primary-600">
           <h2 className="text-xl font-bold text-white">Share Lecture Material</h2>
           <button
@@ -90,13 +90,13 @@ const MaterialModal: React.FC<MaterialModalProps> = ({
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Title
             </label>
             <input
               type="text"
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
+              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all dark:bg-gray-700 dark:text-white"
               placeholder="Enter material title..."
               value={formData.title}
               onChange={(e) =>
@@ -106,7 +106,7 @@ const MaterialModal: React.FC<MaterialModalProps> = ({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Material Type
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -126,7 +126,7 @@ const MaterialModal: React.FC<MaterialModalProps> = ({
                   className={`flex flex-col items-center p-3 rounded-lg border-2 transition-all ${
                     formData.type === type.id
                       ? 'border-primary-600 bg-primary-50 text-primary-600'
-                      : 'border-gray-100 bg-gray-50 text-gray-500 hover:border-gray-200'
+                      : 'border-gray-100 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-400 hover:border-gray-200 dark:hover:border-gray-500'
                   }`}
                 >
                   <type.icon className="h-6 w-6 mb-1" />
@@ -138,13 +138,13 @@ const MaterialModal: React.FC<MaterialModalProps> = ({
 
           {formData.type === 'TEXT' || formData.type === 'LINK' ? (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 {formData.type === 'TEXT' ? 'Content' : 'Link URL'}
               </label>
               <textarea
                 required
                 rows={formData.type === 'TEXT' ? 4 : 2}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all dark:bg-gray-700 dark:text-white"
                 placeholder={
                   formData.type === 'TEXT'
                     ? 'Enter text content...'
@@ -161,21 +161,21 @@ const MaterialModal: React.FC<MaterialModalProps> = ({
           {formData.type !== 'TEXT' && formData.type !== 'LINK' ? (
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Upload {formData.type === 'IMAGE' ? 'Image' : 'File'}
                 </label>
                 <div 
                   onClick={() => fileInputRef.current?.click()}
-                  className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer hover:border-primary-500 hover:bg-gray-50 transition-all"
+                  className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 dark:border-gray-600 border-dashed rounded-lg cursor-pointer hover:border-primary-500 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all"
                 >
                   <div className="space-y-1 text-center">
-                    <Upload className="mx-auto h-12 w-12 text-gray-400" />
-                    <div className="flex text-sm text-gray-600">
+                    <Upload className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" />
+                    <div className="flex text-sm text-gray-600 dark:text-gray-400">
                       <span className="relative rounded-md font-medium text-primary-600 hover:text-primary-500 focus-within:outline-none">
                         {selectedFile ? selectedFile.name : `Upload a ${formData.type.toLowerCase()}`}
                       </span>
                     </div>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
                       PNG, JPG, PDF, DOC up to 5MB
                     </p>
                   </div>
@@ -191,20 +191,20 @@ const MaterialModal: React.FC<MaterialModalProps> = ({
 
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-gray-300"></div>
+                  <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="px-2 bg-white text-gray-500">OR</span>
+                  <span className="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">OR</span>
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   {formData.type === 'IMAGE' ? 'Image URL' : 'File URL'}
                 </label>
                 <input
                   type="url"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all dark:bg-gray-700 dark:text-white"
                   placeholder="https://example.com/file.pdf"
                   value={formData.fileUrl}
                   disabled={!!selectedFile}
@@ -212,7 +212,7 @@ const MaterialModal: React.FC<MaterialModalProps> = ({
                     setFormData({ ...formData, fileUrl: e.target.value })
                   }
                 />
-                <p className="mt-1 text-xs text-gray-500">
+                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                   Provide a public URL if you don't want to upload a file.
                 </p>
               </div>
@@ -220,7 +220,7 @@ const MaterialModal: React.FC<MaterialModalProps> = ({
           ) : null}
 
           {formData.type === 'IMAGE' && (selectedFile || formData.fileUrl) && (
-            <div className="mt-2 border rounded-lg overflow-hidden bg-gray-50">
+            <div className="mt-2 border dark:border-gray-600 rounded-lg overflow-hidden bg-gray-50 dark:bg-gray-700">
                <img 
                 src={selectedFile ? URL.createObjectURL(selectedFile) : formData.fileUrl} 
                 alt="Preview" 
@@ -234,7 +234,7 @@ const MaterialModal: React.FC<MaterialModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             >
               Cancel
             </button>

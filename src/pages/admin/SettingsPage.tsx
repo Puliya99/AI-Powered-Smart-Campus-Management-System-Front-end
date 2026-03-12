@@ -57,7 +57,7 @@ const SettingsPage: React.FC = () => {
       const settingsToUpdate = settings
         .filter(s => s.group === group)
         .map(s => ({ key: s.key, value: s.value }));
-      
+
       await settingService.updateMultipleSettings(settingsToUpdate);
       toast.success('Settings updated successfully');
     } catch (error) {
@@ -73,7 +73,7 @@ const SettingsPage: React.FC = () => {
       return true;
     });
   if (groups.length === 0 && !loading) groups.push('general');
-  
+
   // If activeTab is not in groups and we have groups, set it to the first group
   useEffect(() => {
     if (groups.length > 0 && !groups.includes(activeTab)) {
@@ -86,12 +86,12 @@ const SettingsPage: React.FC = () => {
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">System Settings</h1>
-            <p className="text-gray-600 mt-1">Configure global campus management parameters</p>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">System Settings</h1>
+            <p className="text-gray-600 dark:text-gray-400 mt-1">Configure global campus management parameters</p>
           </div>
-          <button 
+          <button
             onClick={fetchSettings}
-            className="p-2 text-gray-500 hover:text-primary-600 transition"
+            className="p-2 text-gray-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition"
             title="Refresh"
           >
             <RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
@@ -103,16 +103,16 @@ const SettingsPage: React.FC = () => {
             <Loader2 className="w-12 h-12 animate-spin text-primary-600" />
           </div>
         ) : (
-          <div className="bg-white rounded-lg shadow-md overflow-hidden">
-            <div className="flex border-b overflow-x-auto">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+            <div className="flex border-b border-gray-200 dark:border-gray-700 overflow-x-auto">
               {groups.map(group => (
                 <button
                   key={group}
                   onClick={() => setActiveTab(group)}
                   className={`px-6 py-4 text-sm font-medium whitespace-nowrap transition-colors ${
-                    activeTab === group 
-                      ? 'border-b-2 border-primary-600 text-primary-600' 
-                      : 'text-gray-500 hover:text-gray-700'
+                    activeTab === group
+                      ? 'border-b-2 border-primary-600 text-primary-600 dark:text-primary-400 dark:border-primary-400'
+                      : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
                   }`}
                 >
                   {group.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
@@ -125,30 +125,30 @@ const SettingsPage: React.FC = () => {
                 {settings.filter(s => s.group === activeTab || (!s.group && activeTab === 'general')).map(setting => (
                   <div key={setting.id} className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700">
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
                         {setting.key.split('_').join(' ')}
                       </label>
-                      <p className="text-xs text-gray-500 mt-1">{setting.description}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{setting.description}</p>
                     </div>
                     <div className="md:col-span-2">
                       {setting.type === 'boolean' ? (
                         <select
                           value={setting.value}
                           onChange={(e) => handleValueChange(setting.key, e.target.value)}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
                         >
                           <option value="true">Enabled</option>
                           <option value="false">Disabled</option>
                         </select>
                       ) : setting.type === 'json' ? (
-                        <div className="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                        <div className="grid grid-cols-2 gap-4 bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
                           {['ADMIN', 'USER', 'LECTURER', 'STUDENT'].map(role => {
                             let isChecked = false;
                             try {
                               const jsonVal = JSON.parse(setting.value);
                               isChecked = !!jsonVal[role];
                             } catch (e) {}
-                            
+
                             return (
                               <div key={role} className="flex items-center space-x-3">
                                 <input
@@ -156,9 +156,9 @@ const SettingsPage: React.FC = () => {
                                   id={`${setting.key}-${role}`}
                                   checked={isChecked}
                                   onChange={(e) => handleJsonValueChange(setting.key, role, e.target.checked)}
-                                  className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                                  className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 dark:border-gray-600 rounded"
                                 />
-                                <label htmlFor={`${setting.key}-${role}`} className="text-sm font-medium text-gray-700">
+                                <label htmlFor={`${setting.key}-${role}`} className="text-sm font-medium text-gray-700 dark:text-gray-300">
                                   {role.charAt(0) + role.slice(1).toLowerCase()}
                                 </label>
                               </div>
@@ -170,14 +170,14 @@ const SettingsPage: React.FC = () => {
                           type={setting.type}
                           value={setting.value}
                           onChange={(e) => handleValueChange(setting.key, e.target.value)}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                         />
                       ) : (
                         <textarea
                           value={setting.value}
                           onChange={(e) => handleValueChange(setting.key, e.target.value)}
                           rows={3}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                         />
                       )}
                     </div>
@@ -187,11 +187,11 @@ const SettingsPage: React.FC = () => {
                 {settings.filter(s => s.group === activeTab || (!s.group && activeTab === 'general')).length === 0 && (
                   <div className="text-center py-12">
                     <Settings className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                    <p className="text-gray-500">No settings found in this group.</p>
+                    <p className="text-gray-500 dark:text-gray-400">No settings found in this group.</p>
                   </div>
                 )}
 
-                <div className="pt-6 border-t flex justify-end">
+                <div className="pt-6 border-t border-gray-200 dark:border-gray-700 flex justify-end">
                   <button
                     onClick={() => handleSave(activeTab)}
                     disabled={saving}
@@ -216,20 +216,20 @@ const SettingsPage: React.FC = () => {
         )}
 
         {/* System Info Section */}
-        <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">System Information</h3>
+        <div className="bg-gray-50 dark:bg-gray-900 p-6 rounded-lg border border-gray-200 dark:border-gray-700">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">System Information</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
-              <p className="text-sm text-gray-500">App Version</p>
-              <p className="text-base font-medium text-gray-900">1.0.0-stable</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">App Version</p>
+              <p className="text-base font-medium text-gray-900 dark:text-white">1.0.0-stable</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500">Environment</p>
-              <p className="text-base font-medium text-gray-900">Production</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Environment</p>
+              <p className="text-base font-medium text-gray-900 dark:text-white">Production</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500">Last System Update</p>
-              <p className="text-base font-medium text-gray-900">{new Date().toLocaleDateString()}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Last System Update</p>
+              <p className="text-base font-medium text-gray-900 dark:text-white">{new Date().toLocaleDateString()}</p>
             </div>
           </div>
         </div>

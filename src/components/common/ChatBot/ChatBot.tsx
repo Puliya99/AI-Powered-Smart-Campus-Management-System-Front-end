@@ -92,7 +92,7 @@ const ChatBot: React.FC<ChatBotProps> = ({ courseId }) => {
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="bg-white rounded-2xl shadow-2xl w-[350px] sm:w-[400px] h-[500px] flex flex-col overflow-hidden border border-gray-100 animate-in slide-in-from-bottom-5 duration-300">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-[350px] sm:w-[400px] h-[500px] flex flex-col overflow-hidden border border-gray-100 dark:border-gray-700 animate-in slide-in-from-bottom-5 duration-300">
           {/* Header */}
           <div className="bg-primary-600 p-4 flex items-center justify-between text-white">
             <div className="flex items-center space-x-2">
@@ -110,13 +110,13 @@ const ChatBot: React.FC<ChatBotProps> = ({ courseId }) => {
           </div>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
+          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 dark:bg-gray-900">
             {messages.map((m) => (
               <div key={m.id} className={`flex ${m.type === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div className={`max-w-[85%] rounded-2xl p-3 text-sm ${
                   m.type === 'user' 
                     ? 'bg-primary-600 text-white rounded-tr-none' 
-                    : 'bg-white text-gray-800 shadow-sm border border-gray-100 rounded-tl-none'
+                    : 'bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 shadow-sm border border-gray-100 dark:border-gray-700 rounded-tl-none'
                 }`}>
                   <div className="flex items-start space-x-2">
                     {m.type === 'bot' && <Bot className="h-4 w-4 mt-0.5 text-primary-600" />}
@@ -125,11 +125,11 @@ const ChatBot: React.FC<ChatBotProps> = ({ courseId }) => {
                   </div>
                   
                   {m.citations && m.citations.length > 0 && (
-                    <div className="mt-3 pt-3 border-t border-gray-100">
-                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Sources:</p>
+                    <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
+                      <p className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2">Sources:</p>
                       <div className="space-y-1">
                         {m.citations.map((c, i) => (
-                          <div key={i} className="flex items-center text-[11px] text-primary-700 bg-primary-50 p-1.5 rounded hover:bg-primary-100 cursor-pointer transition-colors">
+                          <div key={i} className="flex items-center text-[11px] text-primary-700 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/30 p-1.5 rounded hover:bg-primary-100 dark:hover:bg-primary-900/50 cursor-pointer transition-colors">
                             <BookOpen className="h-3 w-3 mr-1.5" />
                             <span className="flex-1 truncate">
                               {c.metadata.page ? `Page ${c.metadata.page}` : 
@@ -146,10 +146,10 @@ const ChatBot: React.FC<ChatBotProps> = ({ courseId }) => {
             ))}
             {loading && (
               <div className="flex justify-start">
-                <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex space-x-1">
-                  <div className="h-1.5 w-1.5 bg-gray-300 rounded-full animate-bounce"></div>
-                  <div className="h-1.5 w-1.5 bg-gray-300 rounded-full animate-bounce delay-100"></div>
-                  <div className="h-1.5 w-1.5 bg-gray-300 rounded-full animate-bounce delay-200"></div>
+                <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-gray-700 flex space-x-1">
+                  <div className="h-1.5 w-1.5 bg-gray-300 dark:bg-gray-600 rounded-full animate-bounce"></div>
+                  <div className="h-1.5 w-1.5 bg-gray-300 dark:bg-gray-600 rounded-full animate-bounce delay-100"></div>
+                  <div className="h-1.5 w-1.5 bg-gray-300 dark:bg-gray-600 rounded-full animate-bounce delay-200"></div>
                 </div>
               </div>
             )}
@@ -157,13 +157,13 @@ const ChatBot: React.FC<ChatBotProps> = ({ courseId }) => {
           </div>
 
           {/* Input */}
-          <form onSubmit={handleSend} className="p-4 bg-white border-t border-gray-100 flex items-center space-x-2">
+          <form onSubmit={handleSend} className="p-4 bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700 flex items-center space-x-2">
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Ask about the lectures..."
-              className="flex-1 bg-gray-50 border-none rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-primary-500 outline-none transition-all"
+              className="flex-1 bg-gray-50 dark:bg-gray-700 dark:text-white border-none rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-primary-500 outline-none transition-all"
             />
             <button
               type="submit"
